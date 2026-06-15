@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root>
+  <data name="Language">
+    <value>Sprache</value>
+  </data>
+  <data name="Notifications">
+    <value>Benachrichtigungen</value>
+  </data>
+  <data name="Apprentice">
+    <value>Auszubildende</value>
+  </data>
+  <data name="FriendlyError">
+    <value>Etwas ist schiefgelaufen. Bitte versuche es erneut.</value>
+  </data>
+  <data name="Reload">
+    <value>Neu laden</value>
+  </data>
+</root>

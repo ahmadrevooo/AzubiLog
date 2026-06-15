@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root>
+  <data name="Language">
+    <value>Language</value>
+  </data>
+  <data name="Notifications">
+    <value>Notifications</value>
+  </data>
+  <data name="Apprentice">
+    <value>Apprentice</value>
+  </data>
+  <data name="FriendlyError">
+    <value>Something went wrong. Please try again.</value>
+  </data>
+  <data name="Reload">
+    <value>Reload</value>
+  </data>
+</root>

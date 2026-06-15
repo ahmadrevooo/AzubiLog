@@ -1,7 +1,14 @@
 ﻿@page "/"
+@using AzubiLog.DTOs
+@using System.Globalization
+@rendermode InteractiveServer
 
-<PageTitle>Home</PageTitle>
-
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
+<PageTitle>@Localizer["Dashboard"] · AzubiLog</PageTitle>
+@if (dashboard is null) { <p aria-live="polite">@Localizer["Loading"]</p> }
+else {
+<div class="welcome"><div><p class="eyebrow">@dashboard.Today.ToString("D", CultureInfo.CurrentCulture)</p><h1>@Localizer["Greeting", dashboard.ApprenticeName]</h1><p>@Localizer["Introduction"]</p></div><button class="primary-action" @onclick="CreateDraftAsync"><span aria-hidden="true">＋</span> @Localizer["NewEntry"]</button></div>
+@if (draftCreated) { <div class="notice" role="status">✓ @Localizer["DraftCreated"]</div> }
+<section class="stats" aria-label="@Localizer["WeeklyOverview"]"><article class="stat"><div class="stat-icon blue">◷</div><div><span>@Localizer["HoursThisWeek"]</span><strong>@dashboard.CompletedHours <small>/ @dashboard.TargetHours h</small></strong><progress value="@HoursPercent" max="100"></progress></div></article><article class="stat"><div class="stat-icon green">✓</div><div><span>@Localizer["EntriesCompleted"]</span><strong>@dashboard.CompletedEntries <small>/ @dashboard.RequiredEntries @Localizer["Days"]</small></strong><progress value="@EntriesPercent" max="100"></progress></div></article><article class="stat"><div class="stat-icon amber">☀</div><div><span>@Localizer["VacationRemaining"]</span><strong>@dashboard.RemainingVacationDays <small>@Localizer["Days"]</small></strong><p>@Localizer["VacationOf", dashboard.AnnualVacationDays]</p></div></article></section>
+<div class="dashboard-grid"><section class="panel week-panel"><header><div><p class="eyebrow">@Localizer["CurrentReport"]</p><h2>@Localizer["Week", dashboard.CalendarWeek]</h2><span>@dashboard.WeekStart.ToString("d", CultureInfo.CurrentCulture) – @dashboard.WeekEnd.ToString("d", CultureInfo.CurrentCulture)</span></div><button class="secondary">@Localizer["OpenWeek"] →</button></header><div class="day-list">@foreach (var entry in dashboard.Entries) { <div class="day-row"><div class="day-date"><strong>@entry.Date.ToString("dddd", CultureInfo.CurrentCulture)</strong><span>@entry.Date.ToString("d MMM", CultureInfo.CurrentCulture)</span></div><div class="category-dot @(entry.Status == DashboardEntryStatus.Complete ? "blue-dot" : "gray-dot")"></div><div class="day-content"><strong>@Localizer[entry.TitleKey]</strong><span>@Localizer[entry.CategoryKey]</span></div><span class="hours">@(entry.Hours is null ? "—" : $"{entry.Hours} h")</span><span class="status @(entry.Status == DashboardEntryStatus.Complete ? "done" : "open")">@Localizer[entry.Status.ToString()]</span></div> }</div></section>
+<aside><section class="panel quick-panel"><h2>@Localizer["QuickActions"]</h2><a href="entries"><span class="quick-icon blue">＋</span><div><strong>@Localizer["AddDailyEntry"]</strong><small>@Localizer["DocumentActivities"]</small></div>›</a><a href="reports"><span class="quick-icon purple">▦</span><div><strong>@Localizer["ReviewReports"]</strong><small>@Localizer["ViewExportReports"]</small></div>›</a><a href="absences"><span class="quick-icon amber">☀</span><div><strong>@Localizer["RecordAbsence"]</strong><small>@Localizer["VacationOrSick"]</small></div>›</a></section><section class="panel reminder"><span>✦</span><div><strong>@Localizer["WeeklyReminder"]</strong><p>@Localizer["MissingReminder"]</p></div></section></aside></div>
+}

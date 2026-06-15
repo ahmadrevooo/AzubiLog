@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root>
+  <data name="Dashboard">
+    <value>Übersicht</value>
+  </data>
+  <data name="Loading">
+    <value>Wird geladen…</value>
+  </data>
+  <data name="Greeting">
+    <value>Guten Morgen, {0}!</value>
+  </data>
+  <data name="Introduction">
+    <value>Halte deinen Ausbildungsnachweis aktuell – es dauert nur wenige Minuten.</value>
+  </data>
+  <data name="NewEntry">
+    <value>Neuer Eintrag</value>
+  </data>
+  <data name="DraftCreated">
+    <value>Ein neuer Entwurf wurde erstellt.</value>
+  </data>
+  <data name="WeeklyOverview">
+    <value>Wochenübersicht</value>
+  </data>
+  <data name="HoursThisWeek">
+    <value>Stunden diese Woche</value>
+  </data>
+  <data name="EntriesCompleted">
+    <value>Einträge vollständig</value>
+  </data>
+  <data name="Days">
+    <value>Tage</value>
+  </data>
+  <data name="VacationRemaining">
+    <value>Resturlaub</value>
+  </data>
+  <data name="VacationOf">
+    <value>von {0} Tagen dieses Jahr</value>
+  </data>
+  <data name="CurrentReport">
+    <value>Aktueller Nachweis</value>
+  </data>
+  <data name="Week">
+    <value>Woche {0}</value>
+  </data>
+  <data name="OpenWeek">
+    <value>Woche öffnen</value>
+  </data>
+  <data name="ApiIntegration">
+    <value>API-Integration und Unit-Tests</value>
+  </data>
+  <data name="DatabaseDesign">
+    <value>Datenbankdesign und Dokumentation</value>
+  </data>
+  <data name="BusinessProcesses">
+    <value>Geschäftsprozesse und Wirtschaft</value>
+  </data>
+  <data name="NoEntry">
+    <value>Noch kein Eintrag</value>
+  </data>
+  <data name="VocationalSchool">
+    <value>Berufsschule</value>
+  </data>
+  <data name="Development">
+    <value>Entwicklung</value>
+  </data>
+  <data name="AddEntry">
+    <value>Eintrag hinzufügen</value>
+  </data>
+  <data name="Complete">
+    <value>Fertig</value>
+  </data>
+  <data name="Missing">
+    <value>Offen</value>
+  </data>
+  <data name="QuickActions">
+    <value>Schnellzugriff</value>
+  </data>
+  <data name="AddDailyEntry">
+    <value>Tageseintrag erstellen</value>
+  </data>
+  <data name="DocumentActivities">
+    <value>Heutige Tätigkeiten dokumentieren</value>
+  </data>
+  <data name="ReviewReports">
+    <value>Wochenberichte ansehen</value>
+  </data>
+  <data name="ViewExportReports">
+    <value>Berichte ansehen und exportieren</value>
+  </data>
+  <data name="RecordAbsence">
+    <value>Abwesenheit eintragen</value>
+  </data>
+  <data name="VacationOrSick">
+    <value>Urlaub oder Krankheit</value>
+  </data>
+  <data name="WeeklyReminder">
+    <value>Wöchentliche Erinnerung</value>
+  </data>
+  <data name="MissingReminder">
+    <value>Zwei Tageseinträge fehlen noch. Vervollständige sie bis Freitag.</value>
+  </data>
+</root>
