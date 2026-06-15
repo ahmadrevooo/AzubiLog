@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root>
+  <data name="Reports">
+    <value>Ausbildungsnachweise</value>
+  </data>
+  <data name="Menu">
+    <value>Menü</value>
+  </data>
+  <data name="Overview">
+    <value>Übersicht</value>
+  </data>
+  <data name="DailyEntries">
+    <value>Tageseinträge</value>
+  </data>
+  <data name="WeeklyReports">
+    <value>Wochenberichte</value>
+  </data>
+  <data name="WorkingHours">
+    <value>Arbeitszeiten</value>
+  </data>
+  <data name="Absences">
+    <value>Abwesenheiten</value>
+  </data>
+  <data name="Categories">
+    <value>Kategorien</value>
+  </data>
+  <data name="Account">
+    <value>Konto</value>
+  </data>
+  <data name="MasterData">
+    <value>Stammdaten</value>
+  </data>
+  <data name="Settings">
+    <value>Einstellungen</value>
+  </data>
+  <data name="Help">
+    <value>Hilfe &amp; Support</value>
+  </data>
+  <data name="HappyToHelp">
+    <value>Wir helfen gerne weiter</value>
+  </data>
+</root>

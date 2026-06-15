@@ -1,4 +1,11 @@
 using AzubiLog.Components;
+using AzubiLog.Data;
+using AzubiLog.Models;
+using Microsoft.EntityFrameworkCore;
+using AzubiLog.Interfaces;
+using AzubiLog.Services;
+using Microsoft.AspNetCore.Localization;
+using System.Globalization;
 
 namespace AzubiLog
 {
@@ -8,7 +15,14 @@ namespace AzubiLog
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
+                options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedEmail = true)
+                .AddEntityFrameworkStores<ApplicationDbContext>();
+            builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+            builder.Services.AddScoped<IDashboardService, DashboardService>();
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
+            builder.Services.AddSingleton<IWeeklyProgressCalculator, WeeklyProgressCalculator>();
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
 
@@ -21,6 +35,14 @@ namespace AzubiLog
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            var supportedCultures = new[] { new CultureInfo("de"), new CultureInfo("en") };
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture("de"),
+                SupportedCultures = supportedCultures,
+                SupportedUICultures = supportedCultures
+            });
 
             app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
             app.UseHttpsRedirection();

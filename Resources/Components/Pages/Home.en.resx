@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root>
+  <data name="Dashboard">
+    <value>Dashboard</value>
+  </data>
+  <data name="Loading">
+    <value>Loading…</value>
+  </data>
+  <data name="Greeting">
+    <value>Good morning, {0}!</value>
+  </data>
+  <data name="Introduction">
+    <value>Keep your apprenticeship report up to date — it only takes a few minutes.</value>
+  </data>
+  <data name="NewEntry">
+    <value>New entry</value>
+  </data>
+  <data name="DraftCreated">
+    <value>A new draft entry was created.</value>
+  </data>
+  <data name="WeeklyOverview">
+    <value>Weekly overview</value>
+  </data>
+  <data name="HoursThisWeek">
+    <value>Hours this week</value>
+  </data>
+  <data name="EntriesCompleted">
+    <value>Entries completed</value>
+  </data>
+  <data name="Days">
+    <value>days</value>
+  </data>
+  <data name="VacationRemaining">
+    <value>Vacation remaining</value>
+  </data>
+  <data name="VacationOf">
+    <value>of {0} days this year</value>
+  </data>
+  <data name="CurrentReport">
+    <value>Current report</value>
+  </data>
+  <data name="Week">
+    <value>Week {0}</value>
+  </data>
+  <data name="OpenWeek">
+    <value>Open week</value>
+  </data>
+  <data name="ApiIntegration">
+    <value>API integration and unit tests</value>
+  </data>
+  <data name="DatabaseDesign">
+    <value>Database design and documentation</value>
+  </data>
+  <data name="BusinessProcesses">
+    <value>Business processes and economics</value>
+  </data>
+  <data name="NoEntry">
+    <value>No entry yet</value>
+  </data>
+  <data name="VocationalSchool">
+    <value>Vocational school</value>
+  </data>
+  <data name="Development">
+    <value>Development</value>
+  </data>
+  <data name="AddEntry">
+    <value>Add an entry</value>
+  </data>
+  <data name="Complete">
+    <value>Complete</value>
+  </data>
+  <data name="Missing">
+    <value>Missing</value>
+  </data>
+  <data name="QuickActions">
+    <value>Quick actions</value>
+  </data>
+  <data name="AddDailyEntry">
+    <value>Add daily entry</value>
+  </data>
+  <data name="DocumentActivities">
+    <value>Document today's activities</value>
+  </data>
+  <data name="ReviewReports">
+    <value>Review weekly reports</value>
+  </data>
+  <data name="ViewExportReports">
+    <value>View and export reports</value>
+  </data>
+  <data name="RecordAbsence">
+    <value>Record absence</value>
+  </data>
+  <data name="VacationOrSick">
+    <value>Vacation or sick leave</value>
+  </data>
+  <data name="WeeklyReminder">
+    <value>Weekly reminder</value>
+  </data>
+  <data name="MissingReminder">
+    <value>Two daily entries are still missing. Complete them before Friday.</value>
+  </data>
+</root>

@@ -1,12 +1,14 @@
-﻿namespace AzubiLog.Models
+namespace AzubiLog.Models;
+
+/// <summary>Groups a user's report entries.</summary>
+public class Kategorie
 {
-    public class Kategorie
-    {
-        public int ID { get; set; }
-        public int BenutzerId { get; set; }
-        public User Benutzer { get; set; } = null!;
-        public string Name { get; set; } = "";
-        public string FarbeHex { get; set; } = "#000000";
-        public int Reihenfolge { get; set; }
-    }
+    public int Id { get; set; }
+    public string UserId { get; set; } = string.Empty;
+    public ApplicationUser User { get; set; } = null!;
+    public string Name { get; set; } = string.Empty;
+    public string ColorHex { get; set; } = "#000000";
+    public int SortOrder { get; set; }
+    public ICollection<BerichtEintrag> ReportEntries { get; set; } = new List<BerichtEintrag>();
+    public ICollection<ActivityTemplate> ActivityTemplates { get; set; } = new List<ActivityTemplate>();
 }
