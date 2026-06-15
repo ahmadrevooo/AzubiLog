@@ -1,0 +1,3 @@
+namespace AzubiLog.Models;
+/// <summary>Stores reusable content for creating report entries.</summary>
+public sealed class ActivityTemplate { public int Id { get; set; } public string UserId { get; set; } = string.Empty; public ApplicationUser User { get; set; } = null!; public int CategoryId { get; set; } public Kategorie Category { get; set; } = null!; public string Name { get; set; } = string.Empty; public string DefaultTitle { get; set; } = string.Empty; public string DefaultDescription { get; set; } = string.Empty; public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow; public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow; }

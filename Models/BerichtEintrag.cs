@@ -1,28 +1,28 @@
-﻿namespace AzubiLog.Models
+namespace AzubiLog.Models;
+
+/// <summary>Represents one daily apprenticeship activity or absence.</summary>
+public class BerichtEintrag
 {
-    public class BerichtEintrag
-    {
-        public int Id { get; set; }
-        public int BenutzerId { get; set; }
-        public User Benutzer { get; set; } = null!;
-        public int? AusbilderId { get; set; }
-        public Ausbilder? Ausbilder { get; set; }
-        public int? KategorieId { get; set; }
-        public Kategorie? Kategorie { get; set; }
-        public int WochenberichtId { get; set; }
-        public Wochenbericht Wochenbericht { get; set; } = null!;
-        public DateTime Datum { get; set; } = DateTime.Now;
-        public string Tagestyp { get; set; } = "Betrieb";
-        public string? Auftragsnummer { get; set; }
-        public string Titel { get; set; } = "";
-        public string Beschreibung { get; set; } = "";
-        public string Notiz { get; set; } = "";
-        public string? Fach { get; set; }
-        public DateTime Startzeit { get; set; }
-        public DateTime Endzeit { get; set; }
-        public decimal? Dauer { get; set; }
-        public string Status { get; set; } = "";
-        public DateTime ErstelltAm { get; set; } = DateTime.Now;
-        public DateTime GeändertAm { get; set; } = DateTime.Now;
-    }
+    public int Id { get; set; }
+    public string UserId { get; set; } = string.Empty;
+    public ApplicationUser User { get; set; } = null!;
+    public int? TrainerId { get; set; }
+    public Ausbilder? Trainer { get; set; }
+    public int CategoryId { get; set; }
+    public Kategorie Category { get; set; } = null!;
+    public int WeeklyReportId { get; set; }
+    public Wochenbericht WeeklyReport { get; set; } = null!;
+    public DateOnly Date { get; set; }
+    public string Title { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+    public string Notes { get; set; } = string.Empty;
+    public TimeOnly? StartTime { get; set; }
+    public TimeOnly? EndTime { get; set; }
+    public decimal WorkingHours { get; set; }
+    public bool IsSchoolDay { get; set; }
+    public string? Subject { get; set; }
+    public bool IsDraft { get; set; } = true;
+    public DateTimeOffset? LastAutoSaveAt { get; set; }
+    public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
+    public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
 }

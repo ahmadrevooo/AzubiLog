@@ -1,23 +1,4 @@
 ﻿@inherits LayoutComponentBase
-
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
-
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
-
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
-
-<div id="blazor-error-ui" data-nosnippet>
-    An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
-    <span class="dismiss">🗙</span>
-</div>
+@rendermode InteractiveServer
+<div class="app-shell"><aside class="sidebar"><NavMenu /></aside><main><header class="topbar"><div class="mobile-brand">Azubi<span>Log</span></div><nav class="language" aria-label="@Localizer["Language"]"><a href="@CultureUrl("de")">DE</a><a href="@CultureUrl("en")">EN</a></nav><button class="icon-button" aria-label="@Localizer["Notifications"]">♧<i></i></button><div class="profile"><span>LM</span><div><strong>Lena Müller</strong><small>@Localizer["Apprentice"]</small></div><b>⌄</b></div></header><article class="content">@Body</article></main></div>
+<div id="blazor-error-ui">@Localizer["FriendlyError"]<a href="." class="reload">@Localizer["Reload"]</a><span class="dismiss">🗙</span></div>
