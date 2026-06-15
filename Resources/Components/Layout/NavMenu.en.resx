@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root>
+  <data name="Reports">
+    <value>Apprenticeship reports</value>
+  </data>
+  <data name="Menu">
+    <value>Menu</value>
+  </data>
+  <data name="Overview">
+    <value>Overview</value>
+  </data>
+  <data name="DailyEntries">
+    <value>Daily entries</value>
+  </data>
+  <data name="WeeklyReports">
+    <value>Weekly reports</value>
+  </data>
+  <data name="WorkingHours">
+    <value>Working hours</value>
+  </data>
+  <data name="Absences">
+    <value>Absences</value>
+  </data>
+  <data name="Categories">
+    <value>Categories</value>
+  </data>
+  <data name="Account">
+    <value>Account</value>
+  </data>
+  <data name="MasterData">
+    <value>Master data</value>
+  </data>
+  <data name="Settings">
+    <value>Settings</value>
+  </data>
+  <data name="Help">
+    <value>Help &amp; support</value>
+  </data>
+  <data name="HappyToHelp">
+    <value>We are happy to help</value>
+  </data>
+</root>
