@@ -103,7 +103,7 @@
     <value>Review entries and weekly status.</value>
   </data>
   <data name="DashboardExportPdf" xml:space="preserve">
-    <value>Export Weekly Report PDF</value>
+    <value>Generate Weekly Report</value>
   </data>
   <data name="DashboardRecentEntries" xml:space="preserve">
     <value>Recent Report Entries</value>

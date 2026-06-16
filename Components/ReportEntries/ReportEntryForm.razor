@@ -9,45 +9,65 @@
                 <p>@Localizer["ReportEntryFormEyebrow"]</p>
                 <h1>@Localizer[Model.Id.HasValue ? "ReportEntryEditTitle" : "ReportEntryCreateTitle"]</h1>
             </div>
-            <div class="report-entry-draft-state">
-                @if (RestoredDraft)
-                {
-                    <span>@Localizer["ReportEntryDraftRestored"]</span>
-                }
-                else if (Model.IsDraft)
-                {
-                    <span>@Localizer["ReportEntryDraft"]</span>
-                }
-            </div>
         </div>
 
-        <div class="report-entry-grid">
+        <div class="report-entry-compact-grid">
             <label>
                 <span>@Localizer["ReportEntryDate"] *</span>
                 <InputDate class="form-control" @bind-Value="Model.Date" @bind-Value:after="FieldChangedAsync" />
             </label>
 
-            <label>
+            <label class="report-entry-category-field">
                 <span>@Localizer["ReportEntryCategory"] *</span>
-                <InputSelect class="form-select" TValue="int?" @bind-Value="Model.CategoryId" @bind-Value:after="FieldChangedAsync">
-                    <option value="">@Localizer["ReportEntrySelectCategory"]</option>
-                    @foreach (var category in Categories)
+                <div class="report-entry-category-control">
+                    <InputSelect class="form-select" TValue="int?" @bind-Value="Model.CategoryId" @bind-Value:after="FieldChangedAsync">
+                        <option value="">@Localizer["ReportEntrySelectCategory"]</option>
+                        @foreach (var category in Categories)
+                        {
+                            <option value="@category.Id">@category.Name</option>
+                        }
+                    </InputSelect>
+                    <button class="report-entry-icon-button" type="button" title="@Localizer["ReportEntryAddCategory"]" @onclick="ToggleCategoryCreator">
+                        +
+                    </button>
+                </div>
+                <ValidationMessage For="() => Model.CategoryId" />
+                @if (IsCategoryCreatorOpen)
+                {
+                    <div class="report-entry-category-popover">
+                        <InputText class="form-control" @bind-Value="NewCategoryName" placeholder="@Localizer["ReportEntryNewCategory"]" />
+                        <button class="btn btn-primary btn-sm" type="button" @onclick="CreateCategoryAsync">
+                            @Localizer["ReportEntryAddCategory"]
+                        </button>
+                    </div>
+                }
+            </label>
+
+            <label>
+                <span>@Localizer["ReportEntryStartTime"]</span>
+                <InputText class="form-control report-entry-time-input" type="time" @bind-Value="Model.StartTime" @bind-Value:after="TimeChanged" />
+            </label>
+
+            <label>
+                <span>@Localizer["ReportEntryEndTime"]</span>
+                <InputText class="form-control report-entry-time-input" type="time" @bind-Value="Model.EndTime" @bind-Value:after="TimeChanged" />
+            </label>
+
+            <label>
+                <span>@Localizer["ReportEntryTrainer"]</span>
+                <InputSelect class="form-select" TValue="int?" @bind-Value="Model.TrainerId" @bind-Value:after="FieldChangedAsync">
+                    <option value="">@Localizer["ReportEntryNoTrainer"]</option>
+                    @foreach (var trainer in Trainers)
                     {
-                        <option value="@category.Id">@category.Name</option>
+                        <option value="@trainer.Id">@trainer.Name</option>
                     }
                 </InputSelect>
-                <ValidationMessage For="() => Model.CategoryId" />
             </label>
         </div>
 
-        <div class="report-entry-category-create">
-            <label>
-                <span>@Localizer["ReportEntryNewCategory"]</span>
-                <InputText class="form-control" @bind-Value="NewCategoryName" />
-            </label>
-            <button class="btn btn-outline-secondary" type="button" @onclick="CreateCategoryAsync">
-                @Localizer["ReportEntryAddCategory"]
-            </button>
+        <div class="report-entry-hours">
+            <span>@Localizer["ReportEntryCalculatedHours"]</span>
+            <strong>@LocalCalculatedHours.ToString("0.##") h</strong>
         </div>
 
         <label>
@@ -61,23 +81,6 @@
             <InputTextArea class="form-control report-entry-description" @bind-Value="Model.Description" @bind-Value:after="FieldChangedAsync" />
             <ValidationMessage For="() => Model.Description" />
         </label>
-
-        <div class="report-entry-grid">
-            <label>
-                <span>@Localizer["ReportEntryStartTime"]</span>
-                <InputText class="form-control" type="time" @bind-Value="Model.StartTime" @bind-Value:after="FieldChangedAsync" />
-            </label>
-
-            <label>
-                <span>@Localizer["ReportEntryEndTime"]</span>
-                <InputText class="form-control" type="time" @bind-Value="Model.EndTime" @bind-Value:after="FieldChangedAsync" />
-            </label>
-        </div>
-
-        <div class="report-entry-hours">
-            <span>@Localizer["ReportEntryCalculatedHours"]</span>
-            <strong>@CalculatedHours.ToString("0.##") h</strong>
-        </div>
 
         <label class="report-entry-check">
             <InputCheckbox @bind-Value="Model.IsVocationalSchoolDay" @bind-Value:after="FieldChangedAsync" />
@@ -93,34 +96,21 @@
             </label>
         }
 
-        <div class="report-entry-grid">
-            <label>
-                <span>@Localizer["ReportEntryTrainer"]</span>
-                <InputSelect class="form-select" TValue="int?" @bind-Value="Model.TrainerId" @bind-Value:after="FieldChangedAsync">
-                    <option value="">@Localizer["ReportEntryNoTrainer"]</option>
-                    @foreach (var trainer in Trainers)
-                    {
-                        <option value="@trainer.Id">@trainer.Name</option>
-                    }
-                </InputSelect>
-            </label>
-
-            <label>
-                <span>@Localizer["ReportEntryNotes"]</span>
-                <InputText class="form-control" @bind-Value="Model.Notes" @bind-Value:after="FieldChangedAsync" />
-                <ValidationMessage For="() => Model.Notes" />
-            </label>
-        </div>
+        <label>
+            <span>@Localizer["ReportEntryNotes"]</span>
+            <InputText class="form-control" @bind-Value="Model.Notes" @bind-Value:after="FieldChangedAsync" />
+            <ValidationMessage For="() => Model.Notes" />
+        </label>
 
         <ValidationSummary />
 
         <div class="report-entry-actions">
-            @if (Model.Id.HasValue)
-            {
-                <button class="btn btn-outline-danger" type="button" @onclick="OnDelete">@Localizer["ReportEntryDelete"]</button>
-            }
             <button class="btn btn-outline-secondary" type="button" @onclick="HandleDraftRequestedAsync">@Localizer["ReportEntrySaveDraft"]</button>
             <button class="btn btn-primary" type="submit">@Localizer["ReportEntrySave"]</button>
+            @if (Model.Id.HasValue)
+            {
+                <button class="report-entry-delete-link" type="button" @onclick="OnDelete">@Localizer["ReportEntryDelete"]</button>
+            }
         </div>
     </div>
 </EditForm>
@@ -157,10 +147,22 @@
     public EventCallback<string> OnCreateCategory { get; set; }
 
     private string NewCategoryName { get; set; } = string.Empty;
+    private decimal LocalCalculatedHours { get; set; }
+    private bool IsCategoryCreatorOpen { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        LocalCalculatedHours = CalculateHours(Model.StartTime, Model.EndTime);
+    }
 
     private Task FieldChangedAsync()
     {
         return OnFieldChanged.InvokeAsync(Model);
+    }
+
+    private void TimeChanged()
+    {
+        LocalCalculatedHours = CalculateHours(Model.StartTime, Model.EndTime);
     }
 
     private Task HandleDraftRequestedAsync()
@@ -173,6 +175,11 @@
         return OnSave.InvokeAsync(Model);
     }
 
+    private void ToggleCategoryCreator()
+    {
+        IsCategoryCreatorOpen = !IsCategoryCreatorOpen;
+    }
+
     private async Task CreateCategoryAsync()
     {
         if (string.IsNullOrWhiteSpace(NewCategoryName))
@@ -182,5 +189,18 @@
 
         await OnCreateCategory.InvokeAsync(NewCategoryName);
         NewCategoryName = string.Empty;
+        IsCategoryCreatorOpen = false;
+    }
+
+    private static decimal CalculateHours(string startTime, string endTime)
+    {
+        if (!TimeSpan.TryParse(startTime, System.Globalization.CultureInfo.InvariantCulture, out var start)
+            || !TimeSpan.TryParse(endTime, System.Globalization.CultureInfo.InvariantCulture, out var end)
+            || end <= start)
+        {
+            return 0m;
+        }
+
+        return Math.Round((decimal)(end - start).TotalHours, 2, MidpointRounding.AwayFromZero);
     }
 }

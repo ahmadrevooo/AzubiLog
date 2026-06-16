@@ -103,7 +103,7 @@
     <value>Eintraege und Wochenstatus ansehen.</value>
   </data>
   <data name="DashboardExportPdf" xml:space="preserve">
-    <value>Wochenbericht PDF exportieren</value>
+    <value>Wochenbericht generieren</value>
   </data>
   <data name="DashboardRecentEntries" xml:space="preserve">
     <value>Letzte Berichtseintraege</value>
@@ -157,7 +157,7 @@
     <value>Titel</value>
   </data>
   <data name="ReportEntryDescription" xml:space="preserve">
-    <value>Taetigkeitsbeschreibung</value>
+    <value>Beschreibung</value>
   </data>
   <data name="ReportEntryStartTime" xml:space="preserve">
     <value>Startzeit</value>
@@ -181,7 +181,7 @@
     <value>Kein Ausbilder</value>
   </data>
   <data name="ReportEntryNotes" xml:space="preserve">
-    <value>Notizen</value>
+    <value>Notiz</value>
   </data>
   <data name="ReportEntryDelete" xml:space="preserve">
     <value>Loeschen</value>
