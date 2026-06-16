@@ -20,6 +20,7 @@ namespace AzubiLog.Data.Migrations
                 {
                     b.Property<string>("Id").HasColumnType("TEXT");
                     b.Property<int>("AccessFailedCount").HasColumnType("INTEGER");
+                    b.Property<int>("AnnualVacationDays").ValueGeneratedOnAdd().HasColumnType("INTEGER").HasDefaultValue(30);
                     b.Property<string>("ClassName").IsRequired().HasMaxLength(80).HasColumnType("TEXT");
                     b.Property<string>("ConcurrencyStamp").IsConcurrencyToken().HasColumnType("TEXT");
                     b.Property<string>("Email").HasMaxLength(256).HasColumnType("TEXT");
@@ -39,6 +40,7 @@ namespace AzubiLog.Data.Migrations
                     b.Property<bool>("TwoFactorEnabled").HasColumnType("INTEGER");
                     b.Property<string>("TrainingOccupation").IsRequired().HasMaxLength(150).HasColumnType("TEXT");
                     b.Property<string>("UserName").HasMaxLength(256).HasColumnType("TEXT");
+                    b.Property<double>("WeeklyTargetHours").ValueGeneratedOnAdd().HasColumnType("REAL").HasDefaultValue(40.0);
 
                     b.HasKey("Id");
                     b.HasIndex("NormalizedEmail").HasDatabaseName("EmailIndex");

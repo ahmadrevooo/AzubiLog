@@ -1,4 +1,5 @@
 @page "/weekly-reports"
+@attribute [Authorize(Policy = "ConfirmedEmail")]
 @inject IStringLocalizer<SharedResource> Localizer
 
 <PageTitle>@Localizer["WeeklyOverviewPageTitle"]</PageTitle>

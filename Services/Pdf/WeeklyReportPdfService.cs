@@ -1,6 +1,7 @@
 using System.Globalization;
 using AzubiLog.Data;
 using AzubiLog.Models;
+using AzubiLog.Services.Identity;
 using AzubiLog.Services.ReportEntries;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +13,7 @@ namespace AzubiLog.Services.Pdf;
 
 public class WeeklyReportPdfService(
     ApplicationDbContext dbContext,
-    UserManager<ApplicationUser> userManager) : IWeeklyReportPdfService
+    ICurrentUserService currentUserService) : IWeeklyReportPdfService
 {
     /// <inheritdoc />
     public async Task<byte[]> GenerateWeeklyReportPdfAsync(
@@ -35,8 +36,7 @@ public class WeeklyReportPdfService(
         DateTime date,
         CancellationToken cancellationToken)
     {
-        var user = await userManager.FindByEmailAsync(ApplicationDataInitializer.SingleUserEmail)
-            ?? throw new InvalidOperationException("Default apprentice user was not found.");
+        var user = await currentUserService.GetRequiredUserAsync(cancellationToken);
         var monday = GetMonday(date);
         var friday = monday.AddDays(4);
 

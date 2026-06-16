@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using AzubiLog.Data;
 using AzubiLog.Models;
+using AzubiLog.Services.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,7 +10,7 @@ namespace AzubiLog.Services.ReportEntries;
 
 public class ReportEntryService(
     ApplicationDbContext dbContext,
-    UserManager<ApplicationUser> userManager) : IReportEntryService
+    ICurrentUserService currentUserService) : IReportEntryService
 {
     private const decimal WeeklyTargetHours = 40m;
 
@@ -18,7 +19,7 @@ public class ReportEntryService(
         DateTime? date,
         CancellationToken cancellationToken = default)
     {
-        var user = await GetSingleUserAsync(cancellationToken);
+        var user = await currentUserService.GetRequiredUserAsync(cancellationToken);
         var categories = await GetCategoryOptionsAsync(user.Id, cancellationToken);
         var trainers = await GetTrainerOptionsAsync(cancellationToken);
         var restoredDraft = false;
@@ -45,7 +46,7 @@ public class ReportEntryService(
         ReportEntryFormModel form,
         CancellationToken cancellationToken = default)
     {
-        var user = await GetSingleUserAsync(cancellationToken);
+        var user = await currentUserService.GetRequiredUserAsync(cancellationToken);
         var categories = await GetCategoryOptionsAsync(user.Id, cancellationToken);
         var trainers = await GetTrainerOptionsAsync(cancellationToken);
 
@@ -56,7 +57,7 @@ public class ReportEntryService(
         ReportEntryFormModel form,
         CancellationToken cancellationToken = default)
     {
-        var user = await GetSingleUserAsync(cancellationToken);
+        var user = await currentUserService.GetRequiredUserAsync(cancellationToken);
         var entry = await GetOrCreateEntryAsync(form, user.Id, cancellationToken);
         await ApplyFormAsync(entry, form, user.Id, ReportEntryStatus.Draft, cancellationToken);
         await dbContext.SaveChangesAsync(cancellationToken);
@@ -70,7 +71,7 @@ public class ReportEntryService(
     {
         ValidateForSave(form);
 
-        var user = await GetSingleUserAsync(cancellationToken);
+        var user = await currentUserService.GetRequiredUserAsync(cancellationToken);
         var entry = await GetOrCreateEntryAsync(form, user.Id, cancellationToken);
         await ApplyFormAsync(entry, form, user.Id, ReportEntryStatus.Saved, cancellationToken);
         await dbContext.SaveChangesAsync(cancellationToken);
@@ -82,7 +83,7 @@ public class ReportEntryService(
 
     public async Task DeleteEntryAsync(int entryId, CancellationToken cancellationToken = default)
     {
-        var user = await GetSingleUserAsync(cancellationToken);
+        var user = await currentUserService.GetRequiredUserAsync(cancellationToken);
         var entry = await GetEntryForUserAsync(entryId, user.Id, cancellationToken);
         var weeklyReportId = entry.WeeklyReportId;
 
@@ -99,7 +100,7 @@ public class ReportEntryService(
             throw new ValidationException("Category name is required.");
         }
 
-        var user = await GetSingleUserAsync(cancellationToken);
+        var user = await currentUserService.GetRequiredUserAsync(cancellationToken);
         var existingCategory = await dbContext.Categories
             .FirstOrDefaultAsync(
                 category => category.UserId == user.Id && category.Name.ToLower() == trimmedName.ToLower(),
@@ -132,7 +133,7 @@ public class ReportEntryService(
         DateTime date,
         CancellationToken cancellationToken = default)
     {
-        var user = await GetSingleUserAsync(cancellationToken);
+        var user = await currentUserService.GetRequiredUserAsync(cancellationToken);
         return await BuildWeeklyOverviewAsync(user.Id, date, cancellationToken);
     }
 
@@ -155,7 +156,7 @@ public class ReportEntryService(
         bool restoredDraft,
         CancellationToken cancellationToken)
     {
-        var user = await GetSingleUserAsync(cancellationToken);
+        var user = await currentUserService.GetRequiredUserAsync(cancellationToken);
         var summary = await BuildDailySummaryAsync(user.Id, form.Date, cancellationToken);
         var weeklyOverview = await BuildWeeklyOverviewAsync(user.Id, form.Date, cancellationToken);
 
@@ -169,35 +170,6 @@ public class ReportEntryService(
             CalculatedHours = CalculateHours(form.StartTime, form.EndTime),
             RestoredDraft = restoredDraft
         };
-    }
-
-    private async Task<ApplicationUser> GetSingleUserAsync(CancellationToken cancellationToken)
-    {
-        var user = await userManager.FindByEmailAsync(ApplicationDataInitializer.SingleUserEmail);
-        if (user is not null)
-        {
-            return user;
-        }
-
-        await dbContext.Database.MigrateAsync(cancellationToken);
-        var initializerUser = new ApplicationUser
-        {
-            UserName = ApplicationDataInitializer.SingleUserEmail,
-            Email = ApplicationDataInitializer.SingleUserEmail,
-            EmailConfirmed = true,
-            FirstName = "Apprentice",
-            LastName = "User",
-            IsActive = true
-        };
-
-        var result = await userManager.CreateAsync(initializerUser);
-        if (!result.Succeeded)
-        {
-            var errors = string.Join(", ", result.Errors.Select(error => error.Description));
-            throw new InvalidOperationException($"Could not create default apprentice user: {errors}");
-        }
-
-        return initializerUser;
     }
 
     private async Task<IReadOnlyList<ReportEntryOption>> GetCategoryOptionsAsync(

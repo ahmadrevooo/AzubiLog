@@ -1,5 +1,6 @@
 @page "/report-entries/new"
 @page "/report-entries/{EntryId:int}"
+@attribute [Authorize(Policy = "ConfirmedEmail")]
 @inject IStringLocalizer<SharedResource> Localizer
 
 <PageTitle>@Localizer["ReportEntryPageTitle"]</PageTitle>

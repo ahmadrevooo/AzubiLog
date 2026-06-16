@@ -1,0 +1,16 @@
+@page "/account/logout"
+@attribute [Authorize]
+@inject IStringLocalizer<SharedResource> Localizer
+
+<PageTitle>@Localizer["AccountLogoutTitle"]</PageTitle>
+
+<section class="account-page">
+    <div class="account-card">
+        <p class="account-eyebrow">@Localizer["AppName"]</p>
+        <h1>@Localizer["AccountLogoutTitle"]</h1>
+        <p>@Localizer["AccountLogoutIntro"]</p>
+        <form method="post" action="/account/logout/submit" class="account-form">
+            <button class="btn btn-primary" type="submit">@Localizer["AccountLogoutAction"]</button>
+        </form>
+    </div>
+</section>

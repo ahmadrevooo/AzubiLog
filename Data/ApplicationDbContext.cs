@@ -43,6 +43,12 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
             entity.Property(user => user.TrainingOccupation)
                 .HasMaxLength(150);
+
+            entity.Property(user => user.WeeklyTargetHours)
+                .HasDefaultValue(40d);
+
+            entity.Property(user => user.AnnualVacationDays)
+                .HasDefaultValue(30);
         });
     }
 

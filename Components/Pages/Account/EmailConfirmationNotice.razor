@@ -1,0 +1,25 @@
+@page "/account/email-confirmation-notice"
+@attribute [AllowAnonymous]
+@inject IStringLocalizer<SharedResource> Localizer
+
+<PageTitle>@Localizer["AccountEmailConfirmationNoticeTitle"]</PageTitle>
+
+<section class="account-page">
+    <div class="account-card">
+        <p class="account-eyebrow">@Localizer["AppName"]</p>
+        <h1>@Localizer["AccountEmailConfirmationNoticeTitle"]</h1>
+        <p>@Localizer["AccountEmailConfirmationNoticeIntro"]</p>
+        @if (!string.IsNullOrWhiteSpace(Email))
+        {
+            <div class="account-status">@Email</div>
+        }
+        <div class="account-links">
+            <a href="/account/login">@Localizer["AccountBackToLogin"]</a>
+        </div>
+    </div>
+</section>
+
+@code {
+    [SupplyParameterFromQuery(Name = "email")]
+    private string? Email { get; set; }
+}

@@ -11,6 +11,14 @@
 
     <main>
         <div class="top-row px-4">
+            <AuthorizeView>
+                <Authorized>
+                    <a class="app-shell-account-link" href="/account/logout">@Localizer["AccountLogoutAction"]</a>
+                </Authorized>
+                <NotAuthorized>
+                    <a class="app-shell-account-link" href="/account/login">@Localizer["AccountLoginAction"]</a>
+                </NotAuthorized>
+            </AuthorizeView>
             <label class="app-shell-control">
                 <span>@Localizer["LanguageLabel"]</span>
                 <select class="form-select form-select-sm" value="@CurrentCulture" @onchange="HandleCultureChangedAsync">

@@ -1,0 +1,21 @@
+@inject NavigationManager Navigation
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationStateTask { get; set; } = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authenticationState = await AuthenticationStateTask;
+        var currentPath = Navigation.ToBaseRelativePath(Navigation.Uri);
+
+        if (authenticationState.User.Identity?.IsAuthenticated == true)
+        {
+            Navigation.NavigateTo("/account/email-confirmation-notice");
+            return;
+        }
+
+        var returnUrl = Uri.EscapeDataString("/" + currentPath);
+        Navigation.NavigateTo($"/account/login?returnUrl={returnUrl}");
+    }
+}

@@ -10,6 +10,8 @@ public class ApplicationUser : IdentityUser
     public string ClassName { get; set; } = string.Empty;
     public string TrainingOccupation { get; set; } = string.Empty;
     public bool IsActive { get; set; } = true;
+    public double WeeklyTargetHours { get; set; } = 40;
+    public int AnnualVacationDays { get; set; } = 30;
 
     public List<WeeklyReport> WeeklyReports { get; set; } = new();
     public List<ReportEntry> ReportEntries { get; set; } = new();

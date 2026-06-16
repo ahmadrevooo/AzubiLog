@@ -5,10 +5,7 @@
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)">
                 <NotAuthorized>
-                    <LayoutView Layout="typeof(Layout.MainLayout)">
-                        <h1>@Localizer["ErrorTitle"]</h1>
-                        <p>@Localizer["ErrorMessage"]</p>
-                    </LayoutView>
+                    <AccountRedirect />
                 </NotAuthorized>
             </AuthorizeRouteView>
             <FocusOnNavigate RouteData="routeData" Selector="h1" />

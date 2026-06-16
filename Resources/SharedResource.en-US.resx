@@ -357,6 +357,114 @@
   <data name="RequestId" xml:space="preserve">
     <value>Request ID</value>
   </data>
+  <data name="AccountEmail" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="AccountPassword" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="AccountConfirmPassword" xml:space="preserve">
+    <value>Confirm Password</value>
+  </data>
+  <data name="AccountFirstName" xml:space="preserve">
+    <value>First Name</value>
+  </data>
+  <data name="AccountLastName" xml:space="preserve">
+    <value>Last Name</value>
+  </data>
+  <data name="AccountLoginTitle" xml:space="preserve">
+    <value>Log in</value>
+  </data>
+  <data name="AccountLoginIntro" xml:space="preserve">
+    <value>Use your AzubiLog account to continue.</value>
+  </data>
+  <data name="AccountLoginAction" xml:space="preserve">
+    <value>Log in</value>
+  </data>
+  <data name="AccountLoginFailed" xml:space="preserve">
+    <value>Login failed. Check your email and password.</value>
+  </data>
+  <data name="AccountRememberMe" xml:space="preserve">
+    <value>Remember me</value>
+  </data>
+  <data name="AccountCreateAccount" xml:space="preserve">
+    <value>Create account</value>
+  </data>
+  <data name="AccountAlreadyRegistered" xml:space="preserve">
+    <value>I already have an account</value>
+  </data>
+  <data name="AccountForgotPassword" xml:space="preserve">
+    <value>Forgot password?</value>
+  </data>
+  <data name="AccountBackToLogin" xml:space="preserve">
+    <value>Back to login</value>
+  </data>
+  <data name="AccountRegisterTitle" xml:space="preserve">
+    <value>Register</value>
+  </data>
+  <data name="AccountRegisterIntro" xml:space="preserve">
+    <value>Create your apprentice account.</value>
+  </data>
+  <data name="AccountRegisterAction" xml:space="preserve">
+    <value>Create account</value>
+  </data>
+  <data name="AccountRegistrationFailed" xml:space="preserve">
+    <value>Registration failed. Please check your input.</value>
+  </data>
+  <data name="AccountEmailConfirmationNoticeTitle" xml:space="preserve">
+    <value>Confirm email</value>
+  </data>
+  <data name="AccountEmailConfirmationNoticeIntro" xml:space="preserve">
+    <value>Please confirm your email address before using AzubiLog. In development, the link is written to the server log.</value>
+  </data>
+  <data name="AccountConfirmEmailTitle" xml:space="preserve">
+    <value>Email confirmation</value>
+  </data>
+  <data name="AccountConfirmEmailSucceeded" xml:space="preserve">
+    <value>Your email address has been confirmed. You can now log in.</value>
+  </data>
+  <data name="AccountConfirmEmailFailed" xml:space="preserve">
+    <value>The email address could not be confirmed.</value>
+  </data>
+  <data name="AccountForgotPasswordTitle" xml:space="preserve">
+    <value>Reset password</value>
+  </data>
+  <data name="AccountForgotPasswordIntro" xml:space="preserve">
+    <value>Enter your email address. If the account exists, a reset link will be created.</value>
+  </data>
+  <data name="AccountSendResetLink" xml:space="preserve">
+    <value>Send link</value>
+  </data>
+  <data name="AccountResetLinkSent" xml:space="preserve">
+    <value>If a confirmed account exists, the link has been created. In development, it is in the server log.</value>
+  </data>
+  <data name="AccountResetPasswordTitle" xml:space="preserve">
+    <value>Set new password</value>
+  </data>
+  <data name="AccountResetPasswordIntro" xml:space="preserve">
+    <value>Choose a new password for your account.</value>
+  </data>
+  <data name="AccountResetPasswordAction" xml:space="preserve">
+    <value>Save password</value>
+  </data>
+  <data name="AccountResetPasswordFailed" xml:space="preserve">
+    <value>The password could not be reset.</value>
+  </data>
+  <data name="AccountPasswordResetComplete" xml:space="preserve">
+    <value>Your password has been changed. Please log in.</value>
+  </data>
+  <data name="AccountLogoutTitle" xml:space="preserve">
+    <value>Log out</value>
+  </data>
+  <data name="AccountLogoutIntro" xml:space="preserve">
+    <value>Do you want to log out?</value>
+  </data>
+  <data name="AccountLogoutAction" xml:space="preserve">
+    <value>Log out</value>
+  </data>
+  <data name="AccountLoggedOut" xml:space="preserve">
+    <value>You have been logged out.</value>
+  </data>
   <data name="Retry" xml:space="preserve">
     <value>Retry</value>
   </data>

@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using AzubiLog.Data;
 using AzubiLog.Models;
+using AzubiLog.Services.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,11 +9,11 @@ namespace AzubiLog.Services.Todos;
 
 public class TodoService(
     ApplicationDbContext dbContext,
-    UserManager<ApplicationUser> userManager) : ITodoService
+    ICurrentUserService currentUserService) : ITodoService
 {
     public async Task<TodoPageViewModel> GetTodoPageAsync(CancellationToken cancellationToken = default)
     {
-        var user = await GetSingleUserAsync(cancellationToken);
+        var user = await currentUserService.GetRequiredUserAsync(cancellationToken);
         var todos = await dbContext.Todos
             .Where(todo => todo.UserId == user.Id)
             .OrderBy(todo => todo.IsCompleted)
@@ -32,7 +33,7 @@ public class TodoService(
         int take,
         CancellationToken cancellationToken = default)
     {
-        var user = await GetSingleUserAsync(cancellationToken);
+        var user = await currentUserService.GetRequiredUserAsync(cancellationToken);
         return await dbContext.Todos
             .Where(todo => todo.UserId == user.Id && !todo.IsCompleted)
             .OrderBy(todo => todo.DueDate ?? DateTime.MaxValue)
@@ -49,7 +50,7 @@ public class TodoService(
 
     public async Task<int> GetOpenTodoCountAsync(CancellationToken cancellationToken = default)
     {
-        var user = await GetSingleUserAsync(cancellationToken);
+        var user = await currentUserService.GetRequiredUserAsync(cancellationToken);
         return await dbContext.Todos
             .CountAsync(todo => todo.UserId == user.Id && !todo.IsCompleted, cancellationToken);
     }
@@ -57,7 +58,7 @@ public class TodoService(
     public async Task CreateTodoAsync(TodoFormModel form, CancellationToken cancellationToken = default)
     {
         Validate(form);
-        var user = await GetSingleUserAsync(cancellationToken);
+        var user = await currentUserService.GetRequiredUserAsync(cancellationToken);
 
         dbContext.Todos.Add(new TodoItem
         {
@@ -73,7 +74,7 @@ public class TodoService(
 
     public async Task CompleteTodoAsync(int todoId, CancellationToken cancellationToken = default)
     {
-        var user = await GetSingleUserAsync(cancellationToken);
+        var user = await currentUserService.GetRequiredUserAsync(cancellationToken);
         var todo = await GetTodoForUserAsync(todoId, user.Id, cancellationToken);
 
         todo.IsCompleted = true;
@@ -84,22 +85,11 @@ public class TodoService(
 
     public async Task DeleteTodoAsync(int todoId, CancellationToken cancellationToken = default)
     {
-        var user = await GetSingleUserAsync(cancellationToken);
+        var user = await currentUserService.GetRequiredUserAsync(cancellationToken);
         var todo = await GetTodoForUserAsync(todoId, user.Id, cancellationToken);
 
         dbContext.Todos.Remove(todo);
         await dbContext.SaveChangesAsync(cancellationToken);
-    }
-
-    private async Task<ApplicationUser> GetSingleUserAsync(CancellationToken cancellationToken)
-    {
-        var user = await userManager.FindByEmailAsync(ApplicationDataInitializer.SingleUserEmail);
-        if (user is not null)
-        {
-            return user;
-        }
-
-        throw new InvalidOperationException("Default apprentice user was not found.");
     }
 
     private async Task<TodoItem> GetTodoForUserAsync(

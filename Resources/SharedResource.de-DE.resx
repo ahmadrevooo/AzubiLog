@@ -357,6 +357,114 @@
   <data name="RequestId" xml:space="preserve">
     <value>Anfrage-ID</value>
   </data>
+  <data name="AccountEmail" xml:space="preserve">
+    <value>E-Mail</value>
+  </data>
+  <data name="AccountPassword" xml:space="preserve">
+    <value>Passwort</value>
+  </data>
+  <data name="AccountConfirmPassword" xml:space="preserve">
+    <value>Passwort bestaetigen</value>
+  </data>
+  <data name="AccountFirstName" xml:space="preserve">
+    <value>Vorname</value>
+  </data>
+  <data name="AccountLastName" xml:space="preserve">
+    <value>Nachname</value>
+  </data>
+  <data name="AccountLoginTitle" xml:space="preserve">
+    <value>Anmelden</value>
+  </data>
+  <data name="AccountLoginIntro" xml:space="preserve">
+    <value>Melde dich mit deinem AzubiLog Konto an.</value>
+  </data>
+  <data name="AccountLoginAction" xml:space="preserve">
+    <value>Anmelden</value>
+  </data>
+  <data name="AccountLoginFailed" xml:space="preserve">
+    <value>Anmeldung fehlgeschlagen. Bitte pruefe E-Mail und Passwort.</value>
+  </data>
+  <data name="AccountRememberMe" xml:space="preserve">
+    <value>Angemeldet bleiben</value>
+  </data>
+  <data name="AccountCreateAccount" xml:space="preserve">
+    <value>Konto erstellen</value>
+  </data>
+  <data name="AccountAlreadyRegistered" xml:space="preserve">
+    <value>Ich habe bereits ein Konto</value>
+  </data>
+  <data name="AccountForgotPassword" xml:space="preserve">
+    <value>Passwort vergessen?</value>
+  </data>
+  <data name="AccountBackToLogin" xml:space="preserve">
+    <value>Zur Anmeldung</value>
+  </data>
+  <data name="AccountRegisterTitle" xml:space="preserve">
+    <value>Registrieren</value>
+  </data>
+  <data name="AccountRegisterIntro" xml:space="preserve">
+    <value>Erstelle dein Konto als Auszubildende/r.</value>
+  </data>
+  <data name="AccountRegisterAction" xml:space="preserve">
+    <value>Konto erstellen</value>
+  </data>
+  <data name="AccountRegistrationFailed" xml:space="preserve">
+    <value>Registrierung fehlgeschlagen. Bitte pruefe deine Eingaben.</value>
+  </data>
+  <data name="AccountEmailConfirmationNoticeTitle" xml:space="preserve">
+    <value>E-Mail bestaetigen</value>
+  </data>
+  <data name="AccountEmailConfirmationNoticeIntro" xml:space="preserve">
+    <value>Bitte bestaetige deine E-Mail-Adresse, bevor du AzubiLog nutzt. In der Entwicklungsumgebung wird der Link im Server-Log ausgegeben.</value>
+  </data>
+  <data name="AccountConfirmEmailTitle" xml:space="preserve">
+    <value>E-Mail-Bestaetigung</value>
+  </data>
+  <data name="AccountConfirmEmailSucceeded" xml:space="preserve">
+    <value>Deine E-Mail-Adresse wurde bestaetigt. Du kannst dich jetzt anmelden.</value>
+  </data>
+  <data name="AccountConfirmEmailFailed" xml:space="preserve">
+    <value>Die E-Mail-Adresse konnte nicht bestaetigt werden.</value>
+  </data>
+  <data name="AccountForgotPasswordTitle" xml:space="preserve">
+    <value>Passwort zuruecksetzen</value>
+  </data>
+  <data name="AccountForgotPasswordIntro" xml:space="preserve">
+    <value>Gib deine E-Mail-Adresse ein. Wenn das Konto existiert, wird ein Link zum Zuruecksetzen erstellt.</value>
+  </data>
+  <data name="AccountSendResetLink" xml:space="preserve">
+    <value>Link senden</value>
+  </data>
+  <data name="AccountResetLinkSent" xml:space="preserve">
+    <value>Wenn ein bestaetigtes Konto existiert, wurde der Link erstellt. In der Entwicklungsumgebung steht er im Server-Log.</value>
+  </data>
+  <data name="AccountResetPasswordTitle" xml:space="preserve">
+    <value>Neues Passwort setzen</value>
+  </data>
+  <data name="AccountResetPasswordIntro" xml:space="preserve">
+    <value>Lege ein neues Passwort fuer dein Konto fest.</value>
+  </data>
+  <data name="AccountResetPasswordAction" xml:space="preserve">
+    <value>Passwort speichern</value>
+  </data>
+  <data name="AccountResetPasswordFailed" xml:space="preserve">
+    <value>Das Passwort konnte nicht zurueckgesetzt werden.</value>
+  </data>
+  <data name="AccountPasswordResetComplete" xml:space="preserve">
+    <value>Dein Passwort wurde geaendert. Bitte melde dich an.</value>
+  </data>
+  <data name="AccountLogoutTitle" xml:space="preserve">
+    <value>Abmelden</value>
+  </data>
+  <data name="AccountLogoutIntro" xml:space="preserve">
+    <value>Moechtest du dich abmelden?</value>
+  </data>
+  <data name="AccountLogoutAction" xml:space="preserve">
+    <value>Abmelden</value>
+  </data>
+  <data name="AccountLoggedOut" xml:space="preserve">
+    <value>Du wurdest abgemeldet.</value>
+  </data>
   <data name="Retry" xml:space="preserve">
     <value>Erneut versuchen</value>
   </data>

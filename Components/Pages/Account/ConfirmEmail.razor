@@ -1,0 +1,49 @@
+@page "/account/confirm-email"
+@attribute [AllowAnonymous]
+@inject IStringLocalizer<SharedResource> Localizer
+@inject UserManager<ApplicationUser> UserManager
+
+<PageTitle>@Localizer["AccountConfirmEmailTitle"]</PageTitle>
+
+<section class="account-page">
+    <div class="account-card">
+        <p class="account-eyebrow">@Localizer["AppName"]</p>
+        <h1>@Localizer["AccountConfirmEmailTitle"]</h1>
+        <p>@Message</p>
+        <div class="account-links">
+            <a href="/account/login">@Localizer["AccountBackToLogin"]</a>
+        </div>
+    </div>
+</section>
+
+@code {
+    [SupplyParameterFromQuery(Name = "userId")]
+    private string? UserId { get; set; }
+
+    [SupplyParameterFromQuery(Name = "code")]
+    private string? Code { get; set; }
+
+    private string Message { get; set; } = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (string.IsNullOrWhiteSpace(UserId) || string.IsNullOrWhiteSpace(Code))
+        {
+            Message = Localizer["AccountConfirmEmailFailed"];
+            return;
+        }
+
+        var user = await UserManager.FindByIdAsync(UserId);
+        if (user is null)
+        {
+            Message = Localizer["AccountConfirmEmailFailed"];
+            return;
+        }
+
+        var token = AccountFlowService.DecodeToken(Code);
+        var result = await UserManager.ConfirmEmailAsync(user, token);
+        Message = result.Succeeded
+            ? Localizer["AccountConfirmEmailSucceeded"]
+            : Localizer["AccountConfirmEmailFailed"];
+    }
+}

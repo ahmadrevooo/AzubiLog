@@ -1,0 +1,72 @@
+@page "/account/login"
+@attribute [AllowAnonymous]
+@inject IStringLocalizer<SharedResource> Localizer
+
+<PageTitle>@Localizer["AccountLoginTitle"]</PageTitle>
+
+<section class="account-page">
+    <div class="account-card">
+        <p class="account-eyebrow">@Localizer["AppName"]</p>
+        <h1>@Localizer["AccountLoginTitle"]</h1>
+        <p>@Localizer["AccountLoginIntro"]</p>
+
+        @if (!string.IsNullOrWhiteSpace(StatusMessage))
+        {
+            <div class="account-status">@StatusMessage</div>
+        }
+
+        <form method="post" action="/account/login/submit" class="account-form">
+            <input type="hidden" name="returnUrl" value="@ReturnUrl" />
+            <label>
+                <span>@Localizer["AccountEmail"]</span>
+                <input class="form-control" type="email" name="email" autocomplete="email" required />
+            </label>
+            <label>
+                <span>@Localizer["AccountPassword"]</span>
+                <input class="form-control" type="password" name="password" autocomplete="current-password" required />
+            </label>
+            <label class="account-check">
+                <input class="form-check-input" type="checkbox" name="rememberMe" value="true" />
+                <span>@Localizer["AccountRememberMe"]</span>
+            </label>
+            <button class="btn btn-primary" type="submit">@Localizer["AccountLoginAction"]</button>
+        </form>
+
+        <div class="account-links">
+            <a href="/account/register">@Localizer["AccountCreateAccount"]</a>
+            <a href="/account/forgot-password">@Localizer["AccountForgotPassword"]</a>
+        </div>
+    </div>
+</section>
+
+@code {
+    [SupplyParameterFromQuery(Name = "returnUrl")]
+    private string? ReturnUrl { get; set; }
+
+    [SupplyParameterFromQuery(Name = "error")]
+    private string? Error { get; set; }
+
+    [SupplyParameterFromQuery(Name = "loggedOut")]
+    private bool LoggedOut { get; set; }
+
+    [SupplyParameterFromQuery(Name = "reset")]
+    private bool Reset { get; set; }
+
+    private string? StatusMessage
+    {
+        get
+        {
+            if (!string.IsNullOrWhiteSpace(Error))
+            {
+                return Localizer["AccountLoginFailed"].Value;
+            }
+
+            if (LoggedOut)
+            {
+                return Localizer["AccountLoggedOut"].Value;
+            }
+
+            return Reset ? Localizer["AccountPasswordResetComplete"].Value : null;
+        }
+    }
+}

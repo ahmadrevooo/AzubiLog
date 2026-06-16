@@ -1,0 +1,51 @@
+@page "/account/register"
+@attribute [AllowAnonymous]
+@inject IStringLocalizer<SharedResource> Localizer
+
+<PageTitle>@Localizer["AccountRegisterTitle"]</PageTitle>
+
+<section class="account-page">
+    <div class="account-card">
+        <p class="account-eyebrow">@Localizer["AppName"]</p>
+        <h1>@Localizer["AccountRegisterTitle"]</h1>
+        <p>@Localizer["AccountRegisterIntro"]</p>
+
+        @if (!string.IsNullOrWhiteSpace(Error))
+        {
+            <div class="account-status account-status-error">@Localizer["AccountRegistrationFailed"]</div>
+        }
+
+        <form method="post" action="/account/register/submit" class="account-form">
+            <label>
+                <span>@Localizer["AccountFirstName"]</span>
+                <input class="form-control" type="text" name="firstName" autocomplete="given-name" required />
+            </label>
+            <label>
+                <span>@Localizer["AccountLastName"]</span>
+                <input class="form-control" type="text" name="lastName" autocomplete="family-name" required />
+            </label>
+            <label>
+                <span>@Localizer["AccountEmail"]</span>
+                <input class="form-control" type="email" name="email" autocomplete="email" required />
+            </label>
+            <label>
+                <span>@Localizer["AccountPassword"]</span>
+                <input class="form-control" type="password" name="password" autocomplete="new-password" required />
+            </label>
+            <label>
+                <span>@Localizer["AccountConfirmPassword"]</span>
+                <input class="form-control" type="password" name="confirmPassword" autocomplete="new-password" required />
+            </label>
+            <button class="btn btn-primary" type="submit">@Localizer["AccountRegisterAction"]</button>
+        </form>
+
+        <div class="account-links">
+            <a href="/account/login">@Localizer["AccountAlreadyRegistered"]</a>
+        </div>
+    </div>
+</section>
+
+@code {
+    [SupplyParameterFromQuery(Name = "error")]
+    private string? Error { get; set; }
+}
