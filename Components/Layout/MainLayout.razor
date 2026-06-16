@@ -1,5 +1,8 @@
+@using System.Globalization
 @inherits LayoutComponentBase
 @inject IStringLocalizer<SharedResource> Localizer
+@inject IJSRuntime JsRuntime
+@inject NavigationManager Navigation
 
 <div class="page">
     <div class="sidebar">
@@ -10,8 +13,20 @@
         <div class="top-row px-4">
             <span class="app-shell-status">@Localizer["TopBarStatus"]</span>
             <span class="app-shell-divider" aria-hidden="true"></span>
-            <span>@Localizer["LanguageGerman"]</span>
-            <span>@Localizer["ThemeLight"]</span>
+            <label class="app-shell-control">
+                <span>@Localizer["LanguageLabel"]</span>
+                <select class="form-select form-select-sm" value="@CurrentCulture" @onchange="HandleCultureChangedAsync">
+                    <option value="de-DE">@Localizer["LanguageGerman"]</option>
+                    <option value="en-US">@Localizer["LanguageEnglish"]</option>
+                </select>
+            </label>
+            <label class="app-shell-control">
+                <span>@Localizer["ThemeLabel"]</span>
+                <select class="form-select form-select-sm" value="@CurrentTheme" @onchange="HandleThemeChangedAsync">
+                    <option value="light">@Localizer["ThemeLight"]</option>
+                    <option value="dark">@Localizer["ThemeDark"]</option>
+                </select>
+            </label>
         </div>
 
         <article class="content px-4">
@@ -25,3 +40,32 @@
     <a href="." class="reload">@Localizer["Reload"]</a>
     <span class="dismiss">x</span>
 </div>
+
+@code {
+    private string CurrentTheme { get; set; } = "light";
+    private string CurrentCulture => CultureInfo.CurrentUICulture.Name;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+
+        CurrentTheme = await JsRuntime.InvokeAsync<string>("azubiLogPreferences.getTheme");
+        StateHasChanged();
+    }
+
+    private async Task HandleThemeChangedAsync(ChangeEventArgs args)
+    {
+        CurrentTheme = args.Value?.ToString() == "dark" ? "dark" : "light";
+        await JsRuntime.InvokeVoidAsync("azubiLogPreferences.setTheme", CurrentTheme);
+    }
+
+    private async Task HandleCultureChangedAsync(ChangeEventArgs args)
+    {
+        var culture = args.Value?.ToString() == "en-US" ? "en-US" : "de-DE";
+        await JsRuntime.InvokeVoidAsync("azubiLogPreferences.setCulture", culture);
+        Navigation.NavigateTo(Navigation.Uri, forceLoad: true);
+    }
+}

@@ -84,12 +84,6 @@
   <data name="DashboardRemainingHoursDetail" xml:space="preserve">
     <value>Noch offen</value>
   </data>
-  <data name="DashboardProgress" xml:space="preserve">
-    <value>Fortschritt</value>
-  </data>
-  <data name="DashboardProgressDetail" xml:space="preserve">
-    <value>Vom Wochenziel</value>
-  </data>
   <data name="DashboardOpenTodos" xml:space="preserve">
     <value>Offene Aufgaben</value>
   </data>
@@ -110,9 +104,6 @@
   </data>
   <data name="DashboardExportPdf" xml:space="preserve">
     <value>Wochenbericht PDF exportieren</value>
-  </data>
-  <data name="DashboardExportPdfDescription" xml:space="preserve">
-    <value>Aktuelle Woche als PDF herunterladen.</value>
   </data>
   <data name="DashboardRecentEntries" xml:space="preserve">
     <value>Letzte Berichtseintraege</value>
@@ -371,5 +362,17 @@
   </data>
   <data name="TodoDeleteConfirm" xml:space="preserve">
     <value>Diese Aufgabe wirklich loeschen?</value>
+  </data>
+  <data name="ReportEntryAddCategory" xml:space="preserve">
+    <value>Kategorie hinzufuegen</value>
+  </data>
+  <data name="ThemeLabel" xml:space="preserve">
+    <value>Design</value>
+  </data>
+  <data name="LanguageLabel" xml:space="preserve">
+    <value>Sprache</value>
+  </data>
+  <data name="ReportEntryNewCategory" xml:space="preserve">
+    <value>Neue Kategorie</value>
   </data>
 </root>

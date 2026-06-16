@@ -18,7 +18,6 @@
     border-radius: 8px;
     display: flex;
     gap: 1.5rem;
-    justify-content: space-between;
     min-height: 8rem;
     padding: 1.45rem;
 }
@@ -43,35 +42,6 @@
 .dashboard-hero p:not(.dashboard-eyebrow) {
     color: var(--app-text-muted);
     margin: 0.45rem 0 0;
-}
-
-.dashboard-hero-progress {
-    min-width: 12rem;
-    text-align: right;
-}
-
-.dashboard-hero-progress span {
-    color: var(--app-text-muted);
-    display: block;
-    font-size: 0.8rem;
-}
-
-.dashboard-hero-progress strong {
-    color: var(--app-text);
-    display: block;
-    font-size: 2rem;
-    line-height: 1;
-    margin: 0.45rem 0 0.7rem;
-}
-
-.dashboard-hero-progress .progress {
-    background: var(--app-surface-muted);
-    border-radius: 999px;
-    height: 0.28rem;
-}
-
-.dashboard-hero-progress .progress-bar {
-    background: var(--app-primary);
 }
 
 .dashboard-metrics,
@@ -102,11 +72,6 @@
     .dashboard-hero {
         align-items: stretch;
         flex-direction: column;
-    }
-
-    .dashboard-hero-progress {
-        min-width: 0;
-        text-align: left;
     }
 
     .dashboard-metrics {

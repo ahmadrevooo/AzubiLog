@@ -1,6 +1,6 @@
 @inject IStringLocalizer<SharedResource> Localizer
 
-<EditForm Model="Model" OnValidSubmit="OnSave">
+<EditForm Model="Model" FormName="report-entry-form" OnValidSubmit="HandleSaveRequestedAsync">
     <DataAnnotationsValidator />
 
     <div class="report-entry-form-card">
@@ -40,6 +40,16 @@
             </label>
         </div>
 
+        <div class="report-entry-category-create">
+            <label>
+                <span>@Localizer["ReportEntryNewCategory"]</span>
+                <InputText class="form-control" @bind-Value="NewCategoryName" />
+            </label>
+            <button class="btn btn-outline-secondary" type="button" @onclick="CreateCategoryAsync">
+                @Localizer["ReportEntryAddCategory"]
+            </button>
+        </div>
+
         <label>
             <span>@Localizer["ReportEntryTitle"] *</span>
             <InputText class="form-control" @bind-Value="Model.Title" @bind-Value:after="FieldChangedAsync" />
@@ -55,12 +65,12 @@
         <div class="report-entry-grid">
             <label>
                 <span>@Localizer["ReportEntryStartTime"]</span>
-                <input class="form-control" type="time" value="@Model.StartTime" @onchange="HandleStartTimeChangedAsync" />
+                <InputText class="form-control" type="time" @bind-Value="Model.StartTime" @bind-Value:after="FieldChangedAsync" />
             </label>
 
             <label>
                 <span>@Localizer["ReportEntryEndTime"]</span>
-                <input class="form-control" type="time" value="@Model.EndTime" @onchange="HandleEndTimeChangedAsync" />
+                <InputText class="form-control" type="time" @bind-Value="Model.EndTime" @bind-Value:after="FieldChangedAsync" />
             </label>
         </div>
 
@@ -109,7 +119,7 @@
             {
                 <button class="btn btn-outline-danger" type="button" @onclick="OnDelete">@Localizer["ReportEntryDelete"]</button>
             }
-            <button class="btn btn-outline-secondary" type="button" @onclick="OnDraft">@Localizer["ReportEntrySaveDraft"]</button>
+            <button class="btn btn-outline-secondary" type="button" @onclick="HandleDraftRequestedAsync">@Localizer["ReportEntrySaveDraft"]</button>
             <button class="btn btn-primary" type="submit">@Localizer["ReportEntrySave"]</button>
         </div>
     </div>
@@ -132,31 +142,45 @@
     public bool RestoredDraft { get; set; }
 
     [Parameter]
-    public EventCallback OnFieldChanged { get; set; }
+    public EventCallback<ReportEntryFormModel> OnFieldChanged { get; set; }
 
     [Parameter]
-    public EventCallback OnDraft { get; set; }
+    public EventCallback<ReportEntryFormModel> OnDraft { get; set; }
 
     [Parameter]
-    public EventCallback OnSave { get; set; }
+    public EventCallback<ReportEntryFormModel> OnSave { get; set; }
 
     [Parameter]
     public EventCallback OnDelete { get; set; }
 
+    [Parameter]
+    public EventCallback<string> OnCreateCategory { get; set; }
+
+    private string NewCategoryName { get; set; } = string.Empty;
+
     private Task FieldChangedAsync()
     {
-        return OnFieldChanged.InvokeAsync();
+        return OnFieldChanged.InvokeAsync(Model);
     }
 
-    private async Task HandleStartTimeChangedAsync(ChangeEventArgs args)
+    private Task HandleDraftRequestedAsync()
     {
-        Model.StartTime = args.Value?.ToString() ?? string.Empty;
-        await FieldChangedAsync();
+        return OnDraft.InvokeAsync(Model);
     }
 
-    private async Task HandleEndTimeChangedAsync(ChangeEventArgs args)
+    private Task HandleSaveRequestedAsync()
     {
-        Model.EndTime = args.Value?.ToString() ?? string.Empty;
-        await FieldChangedAsync();
+        return OnSave.InvokeAsync(Model);
+    }
+
+    private async Task CreateCategoryAsync()
+    {
+        if (string.IsNullOrWhiteSpace(NewCategoryName))
+        {
+            return;
+        }
+
+        await OnCreateCategory.InvokeAsync(NewCategoryName);
+        NewCategoryName = string.Empty;
     }
 }

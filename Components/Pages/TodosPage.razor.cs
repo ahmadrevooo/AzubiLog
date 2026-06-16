@@ -14,6 +14,11 @@ public partial class TodosPage : ComponentBase
 
     protected TodoPageViewModel? ViewModel { get; private set; }
 
+    [SupplyParameterFromForm(FormName = "todo-create-form", Name = "TodoForm")]
+    protected TodoFormModel? NewTodo { get; set; }
+
+    protected TodoFormModel TodoForm => NewTodo ??= new TodoFormModel();
+
     protected override async Task OnInitializedAsync()
     {
         await ReloadAsync();
@@ -26,7 +31,7 @@ public partial class TodosPage : ComponentBase
             return;
         }
 
-        await TodoService.CreateTodoAsync(ViewModel.NewTodo);
+        await TodoService.CreateTodoAsync(TodoForm);
         await ReloadAsync();
     }
 
@@ -53,5 +58,6 @@ public partial class TodosPage : ComponentBase
     private async Task ReloadAsync()
     {
         ViewModel = await TodoService.GetTodoPageAsync();
+        NewTodo = new TodoFormModel();
     }
 }

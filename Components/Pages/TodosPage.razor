@@ -19,25 +19,25 @@ else
         </header>
 
         <section class="todos-grid">
-            <EditForm Model="ViewModel.NewTodo" OnValidSubmit="HandleCreateAsync" class="todo-create-panel">
+            <EditForm Model="TodoForm" FormName="todo-create-form" OnValidSubmit="HandleCreateAsync" class="todo-create-panel">
                 <DataAnnotationsValidator />
                 <h2>@Localizer["TodoCreateTitle"]</h2>
 
                 <div class="todo-field">
                     <label for="todo-title">@Localizer["TodoTitle"]</label>
-                    <InputText id="todo-title" class="form-control" @bind-Value="ViewModel.NewTodo.Title" />
-                    <ValidationMessage For="() => ViewModel.NewTodo.Title" />
+                    <InputText id="todo-title" class="form-control" @bind-Value="TodoForm.Title" />
+                    <ValidationMessage For="() => TodoForm.Title" />
                 </div>
 
                 <div class="todo-field">
                     <label for="todo-description">@Localizer["TodoDescription"]</label>
-                    <InputTextArea id="todo-description" class="form-control" rows="5" @bind-Value="ViewModel.NewTodo.Description" />
-                    <ValidationMessage For="() => ViewModel.NewTodo.Description" />
+                    <InputTextArea id="todo-description" class="form-control" rows="5" @bind-Value="TodoForm.Description" />
+                    <ValidationMessage For="() => TodoForm.Description" />
                 </div>
 
                 <div class="todo-field">
                     <label for="todo-due-date">@Localizer["TodoDueDate"]</label>
-                    <InputDate id="todo-due-date" class="form-control" @bind-Value="ViewModel.NewTodo.DueDate" />
+                    <InputDate id="todo-due-date" class="form-control" @bind-Value="TodoForm.DueDate" />
                 </div>
 
                 <button class="btn btn-primary" type="submit">@Localizer["TodoAdd"]</button>

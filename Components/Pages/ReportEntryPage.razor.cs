@@ -21,43 +21,52 @@ public partial class ReportEntryPage : ComponentBase
     [SupplyParameterFromQuery(Name = "date")]
     public DateTime? Date { get; set; }
 
+    [SupplyParameterFromForm(FormName = "report-entry-form", Name = "Model")]
+    private ReportEntryFormModel? SubmittedEntry { get; set; }
+
     protected ReportEntryEditorViewModel? ViewModel { get; private set; }
 
     protected override async Task OnParametersSetAsync()
     {
+        if (SubmittedEntry is not null)
+        {
+            ViewModel = await ReportEntryService.RefreshEditorAsync(SubmittedEntry);
+            return;
+        }
+
         ViewModel = await ReportEntryService.GetEditorAsync(EntryId, Date);
     }
 
-    protected async Task HandleFieldChangedAsync()
+    protected async Task HandleFieldChangedAsync(ReportEntryFormModel form)
     {
         if (ViewModel is null)
         {
             return;
         }
 
-        var draft = await ReportEntryService.SaveDraftAsync(ViewModel.Entry);
+        var draft = await ReportEntryService.SaveDraftAsync(form);
         ViewModel = await ReportEntryService.RefreshEditorAsync(draft);
     }
 
-    protected async Task HandleDraftAsync()
+    protected async Task HandleDraftAsync(ReportEntryFormModel form)
     {
         if (ViewModel is null)
         {
             return;
         }
 
-        var draft = await ReportEntryService.SaveDraftAsync(ViewModel.Entry);
+        var draft = await ReportEntryService.SaveDraftAsync(form);
         ViewModel = await ReportEntryService.RefreshEditorAsync(draft);
     }
 
-    protected async Task HandleSaveAsync()
+    protected async Task HandleSaveAsync(ReportEntryFormModel form)
     {
         if (ViewModel is null)
         {
             return;
         }
 
-        var entryId = await ReportEntryService.SaveEntryAsync(ViewModel.Entry);
+        var entryId = await ReportEntryService.SaveEntryAsync(form);
         ViewModel = await ReportEntryService.GetEditorAsync(entryId, null);
     }
 
@@ -78,5 +87,17 @@ public partial class ReportEntryPage : ComponentBase
 
         await ReportEntryService.DeleteEntryAsync(ViewModel.Entry.Id.Value);
         Navigation.NavigateTo("report-entries/new");
+    }
+
+    protected async Task HandleCreateCategoryAsync(string name)
+    {
+        if (ViewModel is null || string.IsNullOrWhiteSpace(name))
+        {
+            return;
+        }
+
+        var categoryId = await ReportEntryService.CreateCategoryAsync(name);
+        ViewModel.Entry.CategoryId = categoryId;
+        ViewModel = await ReportEntryService.RefreshEditorAsync(ViewModel.Entry);
     }
 }

@@ -91,6 +91,43 @@ public class ReportEntryService(
         await UpdateWeeklyReportTotalAsync(weeklyReportId, cancellationToken);
     }
 
+    public async Task<int> CreateCategoryAsync(string name, CancellationToken cancellationToken = default)
+    {
+        var trimmedName = name.Trim();
+        if (string.IsNullOrWhiteSpace(trimmedName))
+        {
+            throw new ValidationException("Category name is required.");
+        }
+
+        var user = await GetSingleUserAsync(cancellationToken);
+        var existingCategory = await dbContext.Categories
+            .FirstOrDefaultAsync(
+                category => category.UserId == user.Id && category.Name.ToLower() == trimmedName.ToLower(),
+                cancellationToken);
+        if (existingCategory is not null)
+        {
+            return existingCategory.Id;
+        }
+
+        var nextSortOrder = await dbContext.Categories
+            .Where(category => category.UserId == user.Id)
+            .Select(category => (int?)category.SortOrder)
+            .MaxAsync(cancellationToken) ?? 0;
+
+        var category = new Category
+        {
+            UserId = user.Id,
+            Name = trimmedName,
+            ColorHex = "#2563eb",
+            SortOrder = nextSortOrder + 1
+        };
+
+        dbContext.Categories.Add(category);
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        return category.Id;
+    }
+
     public async Task<WeeklyOverviewViewModel> GetWeeklyOverviewAsync(
         DateTime date,
         CancellationToken cancellationToken = default)

@@ -7,6 +7,7 @@ public interface IReportEntryService
     Task<ReportEntryFormModel> SaveDraftAsync(ReportEntryFormModel form, CancellationToken cancellationToken = default);
     Task<int> SaveEntryAsync(ReportEntryFormModel form, CancellationToken cancellationToken = default);
     Task DeleteEntryAsync(int entryId, CancellationToken cancellationToken = default);
+    Task<int> CreateCategoryAsync(string name, CancellationToken cancellationToken = default);
     Task<WeeklyOverviewViewModel> GetWeeklyOverviewAsync(DateTime date, CancellationToken cancellationToken = default);
     decimal CalculateHours(string startTime, string endTime);
 }

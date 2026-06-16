@@ -16,13 +16,6 @@ else
                 <h1>@Localizer["DashboardWelcome"]</h1>
                 <p>@Localizer["DashboardIntro"]</p>
             </div>
-            <div class="dashboard-hero-progress">
-                <span>@Localizer["DashboardProgress"]</span>
-                <strong>@ViewModel.ProgressPercentage%</strong>
-                <div class="progress" role="progressbar" aria-valuenow="@ViewModel.ProgressPercentage" aria-valuemin="0" aria-valuemax="100">
-                    <div class="progress-bar" style="width: @ViewModel.ProgressPercentage%"></div>
-                </div>
-            </div>
         </section>
 
         <section class="dashboard-metrics" aria-label="@Localizer["DashboardMetricsLabel"]">
