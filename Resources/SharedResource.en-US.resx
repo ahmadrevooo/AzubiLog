@@ -166,7 +166,7 @@
     <value>End Time</value>
   </data>
   <data name="ReportEntryCalculatedHours" xml:space="preserve">
-    <value>Calculated Hours</value>
+    <value>Working Time</value>
   </data>
   <data name="ReportEntryVocationalSchoolDay" xml:space="preserve">
     <value>Vocational School Day</value>

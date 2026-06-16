@@ -18,17 +18,21 @@ else
         </header>
 
         <section class="report-entry-main">
-            <ReportEntryForm
+            <ReportEntrySideRail
                 Model="ViewModel.Entry"
                 Categories="ViewModel.Categories"
                 Trainers="ViewModel.Trainers"
+                OnFieldChanged="HandleFieldChangedAsync"
+                OnCreateCategory="HandleCreateCategoryAsync" />
+
+            <ReportEntryForm
+                Model="ViewModel.Entry"
                 CalculatedHours="ViewModel.CalculatedHours"
                 RestoredDraft="ViewModel.RestoredDraft"
                 OnFieldChanged="HandleFieldChangedAsync"
                 OnDraft="HandleDraftAsync"
                 OnSave="HandleSaveAsync"
-                OnDelete="HandleDeleteAsync"
-                OnCreateCategory="HandleCreateCategoryAsync" />
+                OnDelete="HandleDeleteAsync" />
 
             <DailySummaryPanel Summary="ViewModel.DailySummary" />
         </section>

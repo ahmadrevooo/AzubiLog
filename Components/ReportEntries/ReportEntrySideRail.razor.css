@@ -1,0 +1,74 @@
+.report-entry-side-rail {
+    align-content: start;
+    background: var(--app-surface);
+    border: 1px solid color-mix(in srgb, var(--app-border) 56%, transparent);
+    border-radius: 12px;
+    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.045);
+    display: grid;
+    gap: 0.9rem;
+    padding: 1rem;
+}
+
+.report-entry-side-field {
+    display: grid;
+    min-width: 0;
+}
+
+.report-entry-side-field > span {
+    color: var(--app-text-muted);
+    font-size: 0.82rem;
+    font-weight: 650;
+    margin: 0 0 0.35rem;
+}
+
+.report-entry-side-rail .form-control,
+.report-entry-side-rail .form-select {
+    background-color: var(--app-bg);
+    border-color: color-mix(in srgb, var(--app-border) 70%, transparent);
+    border-radius: 10px;
+    color: var(--app-text);
+    min-height: 2.55rem;
+}
+
+.report-entry-side-rail .form-control:focus,
+.report-entry-side-rail .form-select:focus {
+    border-color: color-mix(in srgb, var(--app-primary) 54%, var(--app-border));
+    box-shadow: 0 0 0 0.18rem color-mix(in srgb, var(--app-primary) 16%, transparent);
+}
+
+.report-entry-category-control {
+    display: grid;
+    gap: 0.45rem;
+    grid-template-columns: minmax(0, 1fr) 2.55rem;
+}
+
+.report-entry-icon-button {
+    align-items: center;
+    background: var(--app-surface-muted);
+    border: 1px solid color-mix(in srgb, var(--app-border) 70%, transparent);
+    border-radius: 10px;
+    color: var(--app-text);
+    display: inline-flex;
+    font-size: 1.2rem;
+    font-weight: 500;
+    justify-content: center;
+    min-height: 2.55rem;
+}
+
+.report-entry-icon-button:hover {
+    background: color-mix(in srgb, var(--app-primary) 10%, var(--app-surface-muted));
+}
+
+.report-entry-category-popover {
+    background: color-mix(in srgb, var(--app-surface-muted) 48%, transparent);
+    border-radius: 12px;
+    display: grid;
+    gap: 0.55rem;
+    padding: 0.65rem;
+}
+
+.validation-message {
+    color: var(--app-danger);
+    font-size: 0.84rem;
+    margin-top: 0.35rem;
+}

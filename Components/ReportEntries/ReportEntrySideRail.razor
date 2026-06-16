@@ -1,0 +1,82 @@
+@inject IStringLocalizer<SharedResource> Localizer
+
+<aside class="report-entry-side-rail">
+    <label class="report-entry-side-field">
+        <span>@Localizer["ReportEntryCategory"] *</span>
+        <div class="report-entry-category-control">
+            <InputSelect class="form-select" TValue="int?" @bind-Value="Model.CategoryId" @bind-Value:after="FieldChangedAsync">
+                <option value="">@Localizer["ReportEntrySelectCategory"]</option>
+                @foreach (var category in Categories)
+                {
+                    <option value="@category.Id">@category.Name</option>
+                }
+            </InputSelect>
+            <button class="report-entry-icon-button" type="button" title="@Localizer["ReportEntryAddCategory"]" @onclick="ToggleCategoryCreator">
+                +
+            </button>
+        </div>
+    </label>
+
+    @if (IsCategoryCreatorOpen)
+    {
+        <div class="report-entry-category-popover">
+            <InputText class="form-control" @bind-Value="NewCategoryName" placeholder="@Localizer["ReportEntryNewCategory"]" />
+            <button class="btn btn-primary btn-sm" type="button" @onclick="CreateCategoryAsync">
+                @Localizer["ReportEntryAddCategory"]
+            </button>
+        </div>
+    }
+
+    <label class="report-entry-side-field">
+        <span>@Localizer["ReportEntryTrainer"]</span>
+        <InputSelect class="form-select" TValue="int?" @bind-Value="Model.TrainerId" @bind-Value:after="FieldChangedAsync">
+            <option value="">@Localizer["ReportEntryNoTrainer"]</option>
+            @foreach (var trainer in Trainers)
+            {
+                <option value="@trainer.Id">@trainer.Name</option>
+            }
+        </InputSelect>
+    </label>
+</aside>
+
+@code {
+    [Parameter, EditorRequired]
+    public ReportEntryFormModel Model { get; set; } = null!;
+
+    [Parameter]
+    public IReadOnlyList<ReportEntryOption> Categories { get; set; } = [];
+
+    [Parameter]
+    public IReadOnlyList<ReportEntryOption> Trainers { get; set; } = [];
+
+    [Parameter]
+    public EventCallback<ReportEntryFormModel> OnFieldChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnCreateCategory { get; set; }
+
+    private string NewCategoryName { get; set; } = string.Empty;
+    private bool IsCategoryCreatorOpen { get; set; }
+
+    private Task FieldChangedAsync()
+    {
+        return OnFieldChanged.InvokeAsync(Model);
+    }
+
+    private void ToggleCategoryCreator()
+    {
+        IsCategoryCreatorOpen = !IsCategoryCreatorOpen;
+    }
+
+    private async Task CreateCategoryAsync()
+    {
+        if (string.IsNullOrWhiteSpace(NewCategoryName))
+        {
+            return;
+        }
+
+        await OnCreateCategory.InvokeAsync(NewCategoryName);
+        NewCategoryName = string.Empty;
+        IsCategoryCreatorOpen = false;
+    }
+}
