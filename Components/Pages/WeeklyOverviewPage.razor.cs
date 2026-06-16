@@ -12,6 +12,7 @@ public partial class WeeklyOverviewPage : ComponentBase
     public DateTime? Date { get; set; }
 
     protected WeeklyOverviewViewModel? Overview { get; private set; }
+    protected string ExportHref => $"weekly-reports/export?date={(Date ?? DateTime.Today):yyyy-MM-dd}";
 
     protected override async Task OnParametersSetAsync()
     {

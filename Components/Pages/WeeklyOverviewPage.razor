@@ -11,9 +11,12 @@ else
 {
     <div class="weekly-overview-page">
         <header class="weekly-overview-page-header">
-            <p>@Localizer["WeeklyOverviewEyebrow"]</p>
-            <h1>@Localizer["WeeklyOverviewPageTitle"]</h1>
-            <span>@Localizer["WeeklyOverviewPageIntro"]</span>
+            <div>
+                <p>@Localizer["WeeklyOverviewEyebrow"]</p>
+                <h1>@Localizer["WeeklyOverviewPageTitle"]</h1>
+                <span>@Localizer["WeeklyOverviewPageIntro"]</span>
+            </div>
+            <a class="btn btn-primary" href="@ExportHref">@Localizer["DashboardExportPdf"]</a>
         </header>
 
         <WeeklyOverview Overview="Overview" />

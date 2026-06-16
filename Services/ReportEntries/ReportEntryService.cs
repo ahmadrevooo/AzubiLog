@@ -142,7 +142,7 @@ public class ReportEntryService(
             return user;
         }
 
-        await dbContext.Database.EnsureCreatedAsync(cancellationToken);
+        await dbContext.Database.MigrateAsync(cancellationToken);
         var initializerUser = new ApplicationUser
         {
             UserName = ApplicationDataInitializer.SingleUserEmail,

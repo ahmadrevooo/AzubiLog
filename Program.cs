@@ -4,10 +4,12 @@ using AzubiLog.Data;
 using AzubiLog.Models;
 using AzubiLog.Services;
 using AzubiLog.Services.Dashboard;
+using AzubiLog.Services.Pdf;
 using AzubiLog.Services.ReportEntries;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
+using QuestPDF.Infrastructure;
 
 namespace AzubiLog
 {
@@ -27,6 +29,7 @@ namespace AzubiLog
             builder.Services.AddScoped<ApplicationDataInitializer>();
             builder.Services.AddScoped<IDashboardService, DashboardService>();
             builder.Services.AddScoped<IReportEntryService, ReportEntryService>();
+            builder.Services.AddScoped<IWeeklyReportPdfService, WeeklyReportPdfService>();
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -60,6 +63,7 @@ namespace AzubiLog
             });
 
             var app = builder.Build();
+            QuestPDF.Settings.License = LicenseType.Community;
 
             using (var scope = app.Services.CreateScope())
             {
@@ -86,6 +90,15 @@ namespace AzubiLog
             app.UseAntiforgery();
 
             app.MapStaticAssets();
+            app.MapGet("/weekly-reports/export", async (
+                DateTime? date,
+                IWeeklyReportPdfService pdfService,
+                CancellationToken cancellationToken) =>
+            {
+                var exportDate = date ?? DateTime.Today;
+                var pdfBytes = await pdfService.GenerateWeeklyReportPdfAsync(exportDate, cancellationToken);
+                return Results.File(pdfBytes, "application/pdf", pdfService.GetFileName(exportDate));
+            });
             app.MapRazorComponents<App>()
                 .AddInteractiveServerRenderMode();
 

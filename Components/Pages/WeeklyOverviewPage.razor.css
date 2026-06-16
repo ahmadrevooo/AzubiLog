@@ -20,6 +20,13 @@
     text-transform: uppercase;
 }
 
+.weekly-overview-page-header {
+    align-items: center;
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+}
+
 .weekly-overview-page-header h1 {
     color: var(--app-text);
     font-size: 2rem;
@@ -32,4 +39,11 @@
     color: var(--app-text-muted);
     display: block;
     margin-top: 0.5rem;
+}
+
+@media (max-width: 700px) {
+    .weekly-overview-page-header {
+        align-items: stretch;
+        flex-direction: column;
+    }
 }

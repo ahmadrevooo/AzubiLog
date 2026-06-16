@@ -37,7 +37,7 @@ public class DashboardService : IDashboardService
             [
                 new("DashboardCreateEntry", "DashboardCreateEntryDescription", "report-entries/new", "+", "action-green", true),
                 new("DashboardOpenWeeklyOverview", "DashboardOpenWeeklyOverviewDescription", "weekly-reports", "W", "action-blue", true),
-                new("DashboardExportPdf", "DashboardExportPdfDescription", "weekly-reports/export", "PDF", "action-purple", false)
+                new("DashboardExportPdf", "DashboardExportPdfDescription", "weekly-reports/export", "PDF", "action-purple", true)
             ]
         };
 
