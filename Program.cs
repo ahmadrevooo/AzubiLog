@@ -7,6 +7,7 @@ using AzubiLog.Services.Dashboard;
 using AzubiLog.Services.Pdf;
 using AzubiLog.Services.ReportEntries;
 using AzubiLog.Services.Todos;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
@@ -19,12 +20,24 @@ namespace AzubiLog
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            builder.Logging.ClearProviders();
+            builder.Logging.AddConsole();
+            builder.Logging.AddDebug();
 
             // Add services to the container.
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
             builder.Services.AddCascadingAuthenticationState();
             builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+            var dataProtectionKeysPath = Path.Combine(
+                builder.Environment.ContentRootPath,
+                "App_Data",
+                "DataProtectionKeys");
+            Directory.CreateDirectory(dataProtectionKeysPath);
+            builder.Services.AddDataProtection()
+                .PersistKeysToFileSystem(new DirectoryInfo(dataProtectionKeysPath))
+                .SetApplicationName("AzubiLog");
+
             builder.Services.AddSingleton<IApplicationNavigationService, ApplicationNavigationService>();
             builder.Services.AddSingleton<IThemePreferenceService, ThemePreferenceService>();
             builder.Services.AddScoped<ApplicationDataInitializer>();

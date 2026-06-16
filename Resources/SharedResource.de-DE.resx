@@ -15,15 +15,6 @@
   <data name="AppName" xml:space="preserve">
     <value>AzubiLog</value>
   </data>
-  <data name="HomeTitle" xml:space="preserve">
-    <value>Start</value>
-  </data>
-  <data name="HomeIntro" xml:space="preserve">
-    <value>Die Anwendungsgrundlage ist bereit. Dashboard und Berichtserfassung folgen im nächsten Schritt.</value>
-  </data>
-  <data name="NavHome" xml:space="preserve">
-    <value>Start</value>
-  </data>
   <data name="NavDashboard" xml:space="preserve">
     <value>Dashboard</value>
   </data>
@@ -121,13 +112,10 @@
     <value>Wochenbericht PDF exportieren</value>
   </data>
   <data name="DashboardExportPdfDescription" xml:space="preserve">
-    <value>PDF-Export ist fuer einen spaeteren Schritt vorgesehen.</value>
+    <value>Aktuelle Woche als PDF herunterladen.</value>
   </data>
   <data name="DashboardRecentEntries" xml:space="preserve">
     <value>Letzte Berichtseintraege</value>
-  </data>
-  <data name="DashboardPlaceholder" xml:space="preserve">
-    <value>Platzhalter</value>
   </data>
   <data name="DashboardNoRecentEntries" xml:space="preserve">
     <value>Noch keine Berichtseintraege vorhanden.</value>
@@ -371,5 +359,17 @@
   </data>
   <data name="Resume" xml:space="preserve">
     <value>Fortsetzen</value>
+  </data>
+  <data name="DashboardRecentEntriesSubtitle" xml:space="preserve">
+    <value>Aktuell</value>
+  </data>
+  <data name="DashboardOpenTodosSubtitle" xml:space="preserve">
+    <value>Aufgabenliste</value>
+  </data>
+  <data name="ReportEntryDeleteConfirm" xml:space="preserve">
+    <value>Diesen Berichtseintrag wirklich loeschen?</value>
+  </data>
+  <data name="TodoDeleteConfirm" xml:space="preserve">
+    <value>Diese Aufgabe wirklich loeschen?</value>
   </data>
 </root>

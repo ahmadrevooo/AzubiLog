@@ -1,5 +1,6 @@
 using AzubiLog.Services.ReportEntries;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 
 namespace AzubiLog.Components.Pages;
 
@@ -10,6 +11,9 @@ public partial class ReportEntryPage : ComponentBase
 
     [Inject]
     private NavigationManager Navigation { get; set; } = null!;
+
+    [Inject]
+    private IJSRuntime JsRuntime { get; set; } = null!;
 
     [Parameter]
     public int? EntryId { get; set; }
@@ -60,6 +64,14 @@ public partial class ReportEntryPage : ComponentBase
     protected async Task HandleDeleteAsync()
     {
         if (ViewModel?.Entry.Id is null)
+        {
+            return;
+        }
+
+        var confirmed = await JsRuntime.InvokeAsync<bool>(
+            "confirm",
+            Localizer["ReportEntryDeleteConfirm"].Value);
+        if (!confirmed)
         {
             return;
         }

@@ -15,15 +15,6 @@
   <data name="AppName" xml:space="preserve">
     <value>AzubiLog</value>
   </data>
-  <data name="HomeTitle" xml:space="preserve">
-    <value>Home</value>
-  </data>
-  <data name="HomeIntro" xml:space="preserve">
-    <value>The application foundation is ready. Dashboard and report entry screens come next.</value>
-  </data>
-  <data name="NavHome" xml:space="preserve">
-    <value>Home</value>
-  </data>
   <data name="NavDashboard" xml:space="preserve">
     <value>Dashboard</value>
   </data>
@@ -121,13 +112,10 @@
     <value>Export Weekly Report PDF</value>
   </data>
   <data name="DashboardExportPdfDescription" xml:space="preserve">
-    <value>PDF export is reserved for a later step.</value>
+    <value>Download the current week as a PDF.</value>
   </data>
   <data name="DashboardRecentEntries" xml:space="preserve">
     <value>Recent Report Entries</value>
-  </data>
-  <data name="DashboardPlaceholder" xml:space="preserve">
-    <value>Placeholder</value>
   </data>
   <data name="DashboardNoRecentEntries" xml:space="preserve">
     <value>No report entries yet.</value>
@@ -371,5 +359,17 @@
   </data>
   <data name="Resume" xml:space="preserve">
     <value>Resume</value>
+  </data>
+  <data name="ReportEntryDeleteConfirm" xml:space="preserve">
+    <value>Delete this report entry?</value>
+  </data>
+  <data name="DashboardOpenTodosSubtitle" xml:space="preserve">
+    <value>Task list</value>
+  </data>
+  <data name="TodoDeleteConfirm" xml:space="preserve">
+    <value>Delete this todo?</value>
+  </data>
+  <data name="DashboardRecentEntriesSubtitle" xml:space="preserve">
+    <value>Current</value>
   </data>
 </root>
