@@ -63,6 +63,8 @@ namespace AzubiLog
 
             using (var scope = app.Services.CreateScope())
             {
+                // Database initialization happens once at startup:
+                // apply EF Core migrations, then seed the single apprentice defaults.
                 var initializer = scope.ServiceProvider.GetRequiredService<ApplicationDataInitializer>();
                 initializer.InitializeAsync().GetAwaiter().GetResult();
             }
