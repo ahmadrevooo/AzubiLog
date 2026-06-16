@@ -1,0 +1,17 @@
+using Microsoft.AspNetCore.Identity;
+
+namespace AzubiLog.Models;
+
+public class ApplicationUser : IdentityUser
+{
+    public string FirstName { get; set; } = string.Empty;
+    public string LastName { get; set; } = string.Empty;
+    public string School { get; set; } = string.Empty;
+    public string ClassName { get; set; } = string.Empty;
+    public string TrainingOccupation { get; set; } = string.Empty;
+    public bool IsActive { get; set; } = true;
+
+    public List<WeeklyReport> WeeklyReports { get; set; } = new();
+    public List<ReportEntry> ReportEntries { get; set; } = new();
+    public List<Category> Categories { get; set; } = new();
+}
