@@ -1,8 +1,8 @@
 .weekly-overview-page {
     display: grid;
-    gap: 1.35rem;
+    gap: 1.2rem;
     margin-inline: auto;
-    max-width: 70rem;
+    max-width: 94rem;
     padding: 1.4rem 0 2.5rem;
 }
 
@@ -13,11 +13,11 @@
 
 .weekly-overview-page-header p {
     color: var(--app-primary);
-    font-size: 0.78rem;
-    font-weight: 850;
+    font-size: 0.82rem;
+    font-weight: 680;
     letter-spacing: 0;
     margin: 0 0 0.35rem;
-    text-transform: uppercase;
+    text-transform: none;
 }
 
 .weekly-overview-page-header {
@@ -41,9 +41,65 @@
     margin-top: 0.5rem;
 }
 
+.weekly-overview-page-actions {
+    align-self: start;
+}
+
+.weekly-overview-navigation {
+    align-items: end;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: space-between;
+}
+
+.weekly-overview-date-picker {
+    display: grid;
+    gap: 0.35rem;
+    margin: 0;
+    min-width: 12rem;
+}
+
+.weekly-overview-date-picker span {
+    color: var(--app-text-muted);
+    font-size: 0.82rem;
+    font-weight: 650;
+}
+
+.weekly-overview-date-picker .form-control {
+    background-color: var(--app-surface);
+    border-color: color-mix(in srgb, var(--app-border) 70%, transparent);
+    border-radius: 10px;
+    color: var(--app-text);
+    min-height: 2.45rem;
+}
+
+.weekly-overview-nav-button {
+    background: var(--app-surface);
+    border: 1px solid color-mix(in srgb, var(--app-border) 64%, transparent);
+    border-radius: 10px;
+    color: var(--app-text);
+    min-height: 2.45rem;
+    padding: 0.45rem 0.75rem;
+}
+
+.weekly-overview-nav-button:hover {
+    background: color-mix(in srgb, var(--app-primary) 8%, var(--app-surface));
+}
+
 @media (max-width: 700px) {
     .weekly-overview-page-header {
         align-items: stretch;
         flex-direction: column;
+    }
+
+    .weekly-overview-navigation {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .weekly-overview-nav-button,
+    .weekly-overview-date-picker {
+        width: 100%;
     }
 }

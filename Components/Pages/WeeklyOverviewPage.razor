@@ -16,8 +16,23 @@ else
                 <h1>@Localizer["WeeklyOverviewPageTitle"]</h1>
                 <span>@Localizer["WeeklyOverviewPageIntro"]</span>
             </div>
-            <a class="btn btn-primary" href="@ExportHref" download data-enhance-nav="false">@Localizer["DashboardExportPdf"]</a>
+            <div class="weekly-overview-page-actions">
+                <a class="btn btn-outline-secondary" href="@ExportHref" download data-enhance-nav="false">@Localizer["DashboardExportPdf"]</a>
+            </div>
         </header>
+
+        <section class="weekly-overview-navigation" aria-label="@Localizer["WeeklyOverviewNavigation"]">
+            <button class="weekly-overview-nav-button" type="button" @onclick="GoToPreviousWeek">
+                &lt; @Localizer["WeeklyOverviewPreviousWeek"]
+            </button>
+            <label class="weekly-overview-date-picker">
+                <span>@Localizer["WeeklyOverviewJumpToWeek"]</span>
+                <input class="form-control" type="date" value="@SelectedDateString" @onchange="HandleDateChangedAsync" />
+            </label>
+            <button class="weekly-overview-nav-button" type="button" @onclick="GoToNextWeek">
+                @Localizer["WeeklyOverviewNextWeek"] &gt;
+            </button>
+        </section>
 
         <WeeklyOverview Overview="Overview" />
     </div>

@@ -225,6 +225,21 @@
   <data name="WeeklyOverviewEntries" xml:space="preserve">
     <value>entries</value>
   </data>
+  <data name="WeeklyOverviewNoEntries" xml:space="preserve">
+    <value>No entries</value>
+  </data>
+  <data name="WeeklyOverviewNavigation" xml:space="preserve">
+    <value>Week navigation</value>
+  </data>
+  <data name="WeeklyOverviewPreviousWeek" xml:space="preserve">
+    <value>Previous week</value>
+  </data>
+  <data name="WeeklyOverviewNextWeek" xml:space="preserve">
+    <value>Next week</value>
+  </data>
+  <data name="WeeklyOverviewJumpToWeek" xml:space="preserve">
+    <value>Select date</value>
+  </data>
   <data name="Weekday1" xml:space="preserve">
     <value>Monday</value>
   </data>
