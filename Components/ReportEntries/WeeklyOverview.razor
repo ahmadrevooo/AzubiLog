@@ -1,0 +1,58 @@
+@inject IStringLocalizer<SharedResource> Localizer
+
+<section class="weekly-overview-card">
+    <div class="weekly-overview-header">
+        <div>
+            <p>@Localizer["WeeklyOverviewEyebrow"]</p>
+            <h2>@Localizer["WeeklyOverviewTitle"] @Overview.CalendarWeek</h2>
+        </div>
+        <div class="weekly-overview-totals">
+            <span>@Localizer["WeeklyOverviewRecorded"]</span>
+            <strong>@Overview.RecordedHours.ToString("0.##") h</strong>
+        </div>
+    </div>
+
+    <div class="weekly-overview-summary">
+        <span>@Localizer["DashboardTargetHours"]: <strong>@Overview.WeeklyTargetHours.ToString("0.##") h</strong></span>
+        <span>@Localizer["DashboardRemainingHours"]: <strong>@Overview.RemainingHours.ToString("0.##") h</strong></span>
+    </div>
+
+    <div class="weekly-overview-days">
+        @foreach (var day in Overview.Days)
+        {
+            <article class="weekly-overview-day">
+                <a class="weekly-overview-day-link" href="@($"report-entries/new?date={day.Date:yyyy-MM-dd}")">
+                    <span>@Localizer[day.DayKey]</span>
+                    <strong>@day.Date.ToString("dd.MM.")</strong>
+                </a>
+                <div class="weekly-overview-day-meta">
+                    <span>@day.EntryCount @Localizer["WeeklyOverviewEntries"]</span>
+                    <strong>@day.TotalHours.ToString("0.##") h</strong>
+                </div>
+                @if (day.Categories.Count > 0)
+                {
+                    <div class="weekly-overview-categories">
+                        @foreach (var category in day.Categories)
+                        {
+                            <span>@category</span>
+                        }
+                    </div>
+                }
+                @if (day.Entries.Count > 0)
+                {
+                    <div class="weekly-overview-entry-links">
+                        @foreach (var entry in day.Entries)
+                        {
+                            <a href="@($"report-entries/{entry.Id}")">@entry.Title</a>
+                        }
+                    </div>
+                }
+            </article>
+        }
+    </div>
+</section>
+
+@code {
+    [Parameter, EditorRequired]
+    public WeeklyOverviewViewModel Overview { get; set; } = null!;
+}

@@ -132,6 +132,132 @@
   <data name="DashboardNoOpenTodos" xml:space="preserve">
     <value>Keine offenen Aufgaben vorhanden.</value>
   </data>
+  <data name="ReportEntryPageTitle" xml:space="preserve">
+    <value>Berichtseintrag</value>
+  </data>
+  <data name="ReportEntryLoading" xml:space="preserve">
+    <value>Berichtseintrag wird geladen...</value>
+  </data>
+  <data name="ReportEntryPageEyebrow" xml:space="preserve">
+    <value>Tagesberichte</value>
+  </data>
+  <data name="ReportEntryPageHeading" xml:space="preserve">
+    <value>Deine Tagesberichte</value>
+  </data>
+  <data name="ReportEntryPageIntro" xml:space="preserve">
+    <value>Erfasse und verwalte deine Ausbildungsnachweise.</value>
+  </data>
+  <data name="ReportEntryFormEyebrow" xml:space="preserve">
+    <value>Eintrag</value>
+  </data>
+  <data name="ReportEntryCreateTitle" xml:space="preserve">
+    <value>Eintrag erstellen</value>
+  </data>
+  <data name="ReportEntryEditTitle" xml:space="preserve">
+    <value>Eintrag bearbeiten</value>
+  </data>
+  <data name="ReportEntryDraftRestored" xml:space="preserve">
+    <value>Entwurf wiederhergestellt</value>
+  </data>
+  <data name="ReportEntryDraft" xml:space="preserve">
+    <value>Entwurf</value>
+  </data>
+  <data name="ReportEntryDate" xml:space="preserve">
+    <value>Datum</value>
+  </data>
+  <data name="ReportEntryCategory" xml:space="preserve">
+    <value>Kategorie</value>
+  </data>
+  <data name="ReportEntrySelectCategory" xml:space="preserve">
+    <value>Kategorie auswaehlen</value>
+  </data>
+  <data name="ReportEntryTitle" xml:space="preserve">
+    <value>Titel</value>
+  </data>
+  <data name="ReportEntryDescription" xml:space="preserve">
+    <value>Taetigkeitsbeschreibung</value>
+  </data>
+  <data name="ReportEntryStartTime" xml:space="preserve">
+    <value>Startzeit</value>
+  </data>
+  <data name="ReportEntryEndTime" xml:space="preserve">
+    <value>Endzeit</value>
+  </data>
+  <data name="ReportEntryCalculatedHours" xml:space="preserve">
+    <value>Berechnete Arbeitszeit</value>
+  </data>
+  <data name="ReportEntryVocationalSchoolDay" xml:space="preserve">
+    <value>Berufsschultag</value>
+  </data>
+  <data name="ReportEntrySubject" xml:space="preserve">
+    <value>Fach</value>
+  </data>
+  <data name="ReportEntryTrainer" xml:space="preserve">
+    <value>Ausbilder</value>
+  </data>
+  <data name="ReportEntryNoTrainer" xml:space="preserve">
+    <value>Kein Ausbilder</value>
+  </data>
+  <data name="ReportEntryNotes" xml:space="preserve">
+    <value>Notizen</value>
+  </data>
+  <data name="ReportEntryDelete" xml:space="preserve">
+    <value>Loeschen</value>
+  </data>
+  <data name="ReportEntrySaveDraft" xml:space="preserve">
+    <value>Entwurf speichern</value>
+  </data>
+  <data name="ReportEntrySave" xml:space="preserve">
+    <value>Eintrag speichern</value>
+  </data>
+  <data name="DailySummaryEyebrow" xml:space="preserve">
+    <value>Tagesuebersicht</value>
+  </data>
+  <data name="DailySummaryEmptyTitle" xml:space="preserve">
+    <value>Keine Eintraege vorhanden</value>
+  </data>
+  <data name="DailySummaryEmptyText" xml:space="preserve">
+    <value>Fuer dieses Datum wurden noch keine Arbeiten erfasst.</value>
+  </data>
+  <data name="DailySummaryTotal" xml:space="preserve">
+    <value>Gesamte Arbeitszeit</value>
+  </data>
+  <data name="WeeklyOverviewPageTitle" xml:space="preserve">
+    <value>Wochenuebersicht</value>
+  </data>
+  <data name="WeeklyOverviewLoading" xml:space="preserve">
+    <value>Wochenuebersicht wird geladen...</value>
+  </data>
+  <data name="WeeklyOverviewPageIntro" xml:space="preserve">
+    <value>Eine einfache Uebersicht deiner aktuellen Ausbildungswoche.</value>
+  </data>
+  <data name="WeeklyOverviewEyebrow" xml:space="preserve">
+    <value>Wochenuebersicht</value>
+  </data>
+  <data name="WeeklyOverviewTitle" xml:space="preserve">
+    <value>Kalenderwoche</value>
+  </data>
+  <data name="WeeklyOverviewRecorded" xml:space="preserve">
+    <value>Erfasst</value>
+  </data>
+  <data name="WeeklyOverviewEntries" xml:space="preserve">
+    <value>Eintraege</value>
+  </data>
+  <data name="Weekday1" xml:space="preserve">
+    <value>Montag</value>
+  </data>
+  <data name="Weekday2" xml:space="preserve">
+    <value>Dienstag</value>
+  </data>
+  <data name="Weekday3" xml:space="preserve">
+    <value>Mittwoch</value>
+  </data>
+  <data name="Weekday4" xml:space="preserve">
+    <value>Donnerstag</value>
+  </data>
+  <data name="Weekday5" xml:space="preserve">
+    <value>Freitag</value>
+  </data>
   <data name="ComingSoon" xml:space="preserve">
     <value>Demnaechst</value>
   </data>

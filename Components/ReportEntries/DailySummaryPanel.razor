@@ -1,0 +1,44 @@
+@inject IStringLocalizer<SharedResource> Localizer
+
+<aside class="daily-summary-card">
+    <div class="daily-summary-header">
+        <div>
+            <p>@Localizer["DailySummaryEyebrow"]</p>
+            <h2>@Summary.Date.ToString("D")</h2>
+        </div>
+        <strong>@Summary.EntryCount</strong>
+    </div>
+
+    @if (Summary.Entries.Count == 0)
+    {
+        <div class="daily-summary-empty">
+            <strong>@Localizer["DailySummaryEmptyTitle"]</strong>
+            <span>@Localizer["DailySummaryEmptyText"]</span>
+        </div>
+    }
+    else
+    {
+        <div class="daily-summary-list">
+            @foreach (var entry in Summary.Entries)
+            {
+                <a class="daily-summary-entry" href="@($"report-entries/{entry.Id}")">
+                    <div>
+                        <strong>@entry.Title</strong>
+                        <span>@entry.CategoryName</span>
+                    </div>
+                    <span>@entry.Hours.ToString("0.##") h</span>
+                </a>
+            }
+        </div>
+    }
+
+    <div class="daily-summary-total">
+        <span>@Localizer["DailySummaryTotal"]</span>
+        <strong>@Summary.TotalHours.ToString("0.##") h</strong>
+    </div>
+</aside>
+
+@code {
+    [Parameter, EditorRequired]
+    public DailySummaryViewModel Summary { get; set; } = null!;
+}

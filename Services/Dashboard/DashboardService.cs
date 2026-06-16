@@ -35,8 +35,8 @@ public class DashboardService : IDashboardService
             ],
             QuickActions =
             [
-                new("DashboardCreateEntry", "DashboardCreateEntryDescription", "report-entries/new", "+", "action-green", false),
-                new("DashboardOpenWeeklyOverview", "DashboardOpenWeeklyOverviewDescription", "weekly-reports", "W", "action-blue", false),
+                new("DashboardCreateEntry", "DashboardCreateEntryDescription", "report-entries/new", "+", "action-green", true),
+                new("DashboardOpenWeeklyOverview", "DashboardOpenWeeklyOverviewDescription", "weekly-reports", "W", "action-blue", true),
                 new("DashboardExportPdf", "DashboardExportPdfDescription", "weekly-reports/export", "PDF", "action-purple", false)
             ]
         };

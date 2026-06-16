@@ -1,0 +1,148 @@
+.weekly-overview-card {
+    background: var(--app-surface);
+    border: 1px solid var(--app-border);
+    border-radius: 8px;
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
+    display: grid;
+    gap: 1rem;
+    padding: 1.25rem;
+}
+
+.weekly-overview-header,
+.weekly-overview-summary {
+    align-items: center;
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+}
+
+.weekly-overview-header p {
+    color: var(--app-text-muted);
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0;
+    margin: 0 0 0.35rem;
+    text-transform: uppercase;
+}
+
+.weekly-overview-header h2 {
+    color: var(--app-text);
+    font-size: 1.1rem;
+    font-weight: 850;
+    margin: 0;
+}
+
+.weekly-overview-totals {
+    text-align: right;
+}
+
+.weekly-overview-totals span,
+.weekly-overview-summary span,
+.weekly-overview-day-meta span {
+    color: var(--app-text-muted);
+    font-size: 0.86rem;
+}
+
+.weekly-overview-totals strong {
+    color: var(--app-text);
+    display: block;
+    font-size: 1.55rem;
+}
+
+.weekly-overview-summary {
+    background: var(--app-bg);
+    border: 1px solid var(--app-border);
+    border-radius: 8px;
+    padding: 0.8rem 0.95rem;
+}
+
+.weekly-overview-summary strong,
+.weekly-overview-day strong,
+.weekly-overview-entry-links a {
+    color: var(--app-text);
+}
+
+.weekly-overview-days {
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.weekly-overview-day {
+    background: var(--app-bg);
+    border: 1px solid var(--app-border);
+    border-radius: 8px;
+    display: grid;
+    gap: 0.65rem;
+    min-height: 9rem;
+    padding: 0.85rem;
+}
+
+.weekly-overview-day-link {
+    display: grid;
+    gap: 0.25rem;
+    text-decoration: none;
+}
+
+.weekly-overview-day-link span {
+    color: var(--app-text-muted);
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.weekly-overview-day-link strong {
+    font-size: 1rem;
+}
+
+.weekly-overview-day-meta {
+    display: grid;
+    gap: 0.25rem;
+}
+
+.weekly-overview-categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+}
+
+.weekly-overview-categories span {
+    background: var(--app-surface);
+    border: 1px solid var(--app-border);
+    border-radius: 999px;
+    color: var(--app-text-muted);
+    font-size: 0.75rem;
+    padding: 0.2rem 0.45rem;
+}
+
+.weekly-overview-entry-links {
+    display: grid;
+    gap: 0.25rem;
+}
+
+.weekly-overview-entry-links a {
+    font-size: 0.82rem;
+    text-decoration: none;
+}
+
+@media (max-width: 1200px) {
+    .weekly-overview-days {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 700px) {
+    .weekly-overview-header,
+    .weekly-overview-summary {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .weekly-overview-totals {
+        text-align: left;
+    }
+
+    .weekly-overview-days {
+        grid-template-columns: 1fr;
+    }
+}

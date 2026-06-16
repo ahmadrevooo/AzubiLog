@@ -1,0 +1,122 @@
+.report-entry-form-card {
+    background: var(--app-surface);
+    border: 1px solid var(--app-border);
+    border-radius: 8px;
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
+    display: grid;
+    gap: 1.05rem;
+    padding: 1.45rem;
+}
+
+.report-entry-form-header,
+.report-entry-actions {
+    align-items: center;
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+}
+
+.report-entry-form-header p,
+.report-entry-form-card label > span,
+.report-entry-hours span {
+    color: var(--app-text-muted);
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0;
+    margin: 0 0 0.35rem;
+    text-transform: uppercase;
+}
+
+.report-entry-form-header h1 {
+    color: var(--app-text);
+    font-size: 1.35rem;
+    font-weight: 850;
+    margin: 0;
+}
+
+.report-entry-draft-state span {
+    background: var(--app-surface-muted);
+    border: 1px solid var(--app-border);
+    border-radius: 999px;
+    color: var(--app-text-muted);
+    display: inline-block;
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 0.35rem 0.7rem;
+}
+
+.report-entry-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.report-entry-form-card label {
+    display: grid;
+}
+
+.report-entry-form-card .form-control,
+.report-entry-form-card .form-select {
+    background-color: var(--app-bg);
+    border-color: var(--app-border);
+    color: var(--app-text);
+}
+
+.report-entry-description {
+    min-height: 13rem;
+    resize: vertical;
+}
+
+.report-entry-hours {
+    align-items: center;
+    background: var(--app-surface-muted);
+    border: 1px solid var(--app-border);
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    padding: 0.9rem 1rem;
+}
+
+.report-entry-hours strong {
+    color: var(--app-text);
+    font-size: 1.3rem;
+}
+
+.report-entry-check {
+    align-items: center;
+    display: flex !important;
+    gap: 0.65rem;
+}
+
+.report-entry-check span {
+    margin: 0 !important;
+}
+
+.report-entry-actions {
+    border-top: 1px solid var(--app-border);
+    justify-content: flex-end;
+    padding-top: 1.1rem;
+}
+
+.validation-message,
+.validation-errors {
+    color: var(--app-danger);
+    font-size: 0.84rem;
+    margin-top: 0.35rem;
+}
+
+@media (max-width: 760px) {
+    .report-entry-form-header,
+    .report-entry-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .report-entry-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .report-entry-actions .btn {
+        width: 100%;
+    }
+}

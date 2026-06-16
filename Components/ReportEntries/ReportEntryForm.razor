@@ -1,0 +1,162 @@
+@inject IStringLocalizer<SharedResource> Localizer
+
+<EditForm Model="Model" OnValidSubmit="OnSave">
+    <DataAnnotationsValidator />
+
+    <div class="report-entry-form-card">
+        <div class="report-entry-form-header">
+            <div>
+                <p>@Localizer["ReportEntryFormEyebrow"]</p>
+                <h1>@Localizer[Model.Id.HasValue ? "ReportEntryEditTitle" : "ReportEntryCreateTitle"]</h1>
+            </div>
+            <div class="report-entry-draft-state">
+                @if (RestoredDraft)
+                {
+                    <span>@Localizer["ReportEntryDraftRestored"]</span>
+                }
+                else if (Model.IsDraft)
+                {
+                    <span>@Localizer["ReportEntryDraft"]</span>
+                }
+            </div>
+        </div>
+
+        <div class="report-entry-grid">
+            <label>
+                <span>@Localizer["ReportEntryDate"] *</span>
+                <InputDate class="form-control" @bind-Value="Model.Date" @bind-Value:after="FieldChangedAsync" />
+            </label>
+
+            <label>
+                <span>@Localizer["ReportEntryCategory"] *</span>
+                <InputSelect class="form-select" TValue="int?" @bind-Value="Model.CategoryId" @bind-Value:after="FieldChangedAsync">
+                    <option value="">@Localizer["ReportEntrySelectCategory"]</option>
+                    @foreach (var category in Categories)
+                    {
+                        <option value="@category.Id">@category.Name</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="() => Model.CategoryId" />
+            </label>
+        </div>
+
+        <label>
+            <span>@Localizer["ReportEntryTitle"] *</span>
+            <InputText class="form-control" @bind-Value="Model.Title" @bind-Value:after="FieldChangedAsync" />
+            <ValidationMessage For="() => Model.Title" />
+        </label>
+
+        <label>
+            <span>@Localizer["ReportEntryDescription"]</span>
+            <InputTextArea class="form-control report-entry-description" @bind-Value="Model.Description" @bind-Value:after="FieldChangedAsync" />
+            <ValidationMessage For="() => Model.Description" />
+        </label>
+
+        <div class="report-entry-grid">
+            <label>
+                <span>@Localizer["ReportEntryStartTime"]</span>
+                <input class="form-control" type="time" value="@Model.StartTime" @onchange="HandleStartTimeChangedAsync" />
+            </label>
+
+            <label>
+                <span>@Localizer["ReportEntryEndTime"]</span>
+                <input class="form-control" type="time" value="@Model.EndTime" @onchange="HandleEndTimeChangedAsync" />
+            </label>
+        </div>
+
+        <div class="report-entry-hours">
+            <span>@Localizer["ReportEntryCalculatedHours"]</span>
+            <strong>@CalculatedHours.ToString("0.##") h</strong>
+        </div>
+
+        <label class="report-entry-check">
+            <InputCheckbox @bind-Value="Model.IsVocationalSchoolDay" @bind-Value:after="FieldChangedAsync" />
+            <span>@Localizer["ReportEntryVocationalSchoolDay"]</span>
+        </label>
+
+        @if (Model.IsVocationalSchoolDay)
+        {
+            <label>
+                <span>@Localizer["ReportEntrySubject"]</span>
+                <InputText class="form-control" @bind-Value="Model.Subject" @bind-Value:after="FieldChangedAsync" />
+                <ValidationMessage For="() => Model.Subject" />
+            </label>
+        }
+
+        <div class="report-entry-grid">
+            <label>
+                <span>@Localizer["ReportEntryTrainer"]</span>
+                <InputSelect class="form-select" TValue="int?" @bind-Value="Model.TrainerId" @bind-Value:after="FieldChangedAsync">
+                    <option value="">@Localizer["ReportEntryNoTrainer"]</option>
+                    @foreach (var trainer in Trainers)
+                    {
+                        <option value="@trainer.Id">@trainer.Name</option>
+                    }
+                </InputSelect>
+            </label>
+
+            <label>
+                <span>@Localizer["ReportEntryNotes"]</span>
+                <InputText class="form-control" @bind-Value="Model.Notes" @bind-Value:after="FieldChangedAsync" />
+                <ValidationMessage For="() => Model.Notes" />
+            </label>
+        </div>
+
+        <ValidationSummary />
+
+        <div class="report-entry-actions">
+            @if (Model.Id.HasValue)
+            {
+                <button class="btn btn-outline-danger" type="button" @onclick="OnDelete">@Localizer["ReportEntryDelete"]</button>
+            }
+            <button class="btn btn-outline-secondary" type="button" @onclick="OnDraft">@Localizer["ReportEntrySaveDraft"]</button>
+            <button class="btn btn-primary" type="submit">@Localizer["ReportEntrySave"]</button>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter, EditorRequired]
+    public ReportEntryFormModel Model { get; set; } = null!;
+
+    [Parameter]
+    public IReadOnlyList<ReportEntryOption> Categories { get; set; } = [];
+
+    [Parameter]
+    public IReadOnlyList<ReportEntryOption> Trainers { get; set; } = [];
+
+    [Parameter]
+    public decimal CalculatedHours { get; set; }
+
+    [Parameter]
+    public bool RestoredDraft { get; set; }
+
+    [Parameter]
+    public EventCallback OnFieldChanged { get; set; }
+
+    [Parameter]
+    public EventCallback OnDraft { get; set; }
+
+    [Parameter]
+    public EventCallback OnSave { get; set; }
+
+    [Parameter]
+    public EventCallback OnDelete { get; set; }
+
+    private Task FieldChangedAsync()
+    {
+        return OnFieldChanged.InvokeAsync();
+    }
+
+    private async Task HandleStartTimeChangedAsync(ChangeEventArgs args)
+    {
+        Model.StartTime = args.Value?.ToString() ?? string.Empty;
+        await FieldChangedAsync();
+    }
+
+    private async Task HandleEndTimeChangedAsync(ChangeEventArgs args)
+    {
+        Model.EndTime = args.Value?.ToString() ?? string.Empty;
+        await FieldChangedAsync();
+    }
+}

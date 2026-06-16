@@ -4,6 +4,7 @@ using AzubiLog.Data;
 using AzubiLog.Models;
 using AzubiLog.Services;
 using AzubiLog.Services.Dashboard;
+using AzubiLog.Services.ReportEntries;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +24,9 @@ namespace AzubiLog
             builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
             builder.Services.AddSingleton<IApplicationNavigationService, ApplicationNavigationService>();
             builder.Services.AddSingleton<IThemePreferenceService, ThemePreferenceService>();
+            builder.Services.AddScoped<ApplicationDataInitializer>();
             builder.Services.AddScoped<IDashboardService, DashboardService>();
+            builder.Services.AddScoped<IReportEntryService, ReportEntryService>();
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -57,6 +60,12 @@ namespace AzubiLog
             });
 
             var app = builder.Build();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var initializer = scope.ServiceProvider.GetRequiredService<ApplicationDataInitializer>();
+                initializer.InitializeAsync().GetAwaiter().GetResult();
+            }
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())

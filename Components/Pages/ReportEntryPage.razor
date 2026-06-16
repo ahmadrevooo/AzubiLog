@@ -1,0 +1,37 @@
+@page "/report-entries/new"
+@page "/report-entries/{EntryId:int}"
+@inject IStringLocalizer<SharedResource> Localizer
+
+<PageTitle>@Localizer["ReportEntryPageTitle"]</PageTitle>
+
+@if (ViewModel is null)
+{
+    <div class="report-entry-loading">@Localizer["ReportEntryLoading"]</div>
+}
+else
+{
+    <div class="report-entry-page">
+        <header class="report-entry-page-header">
+            <p>@Localizer["ReportEntryPageEyebrow"]</p>
+            <h1>@Localizer["ReportEntryPageHeading"]</h1>
+            <span>@Localizer["ReportEntryPageIntro"]</span>
+        </header>
+
+        <section class="report-entry-main">
+            <ReportEntryForm
+                Model="ViewModel.Entry"
+                Categories="ViewModel.Categories"
+                Trainers="ViewModel.Trainers"
+                CalculatedHours="ViewModel.CalculatedHours"
+                RestoredDraft="ViewModel.RestoredDraft"
+                OnFieldChanged="HandleFieldChangedAsync"
+                OnDraft="HandleDraftAsync"
+                OnSave="HandleSaveAsync"
+                OnDelete="HandleDeleteAsync" />
+
+            <DailySummaryPanel Summary="ViewModel.DailySummary" />
+        </section>
+
+        <WeeklyOverview Overview="ViewModel.WeeklyOverview" />
+    </div>
+}

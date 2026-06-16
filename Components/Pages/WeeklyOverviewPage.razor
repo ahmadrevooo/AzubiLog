@@ -1,0 +1,21 @@
+@page "/weekly-reports"
+@inject IStringLocalizer<SharedResource> Localizer
+
+<PageTitle>@Localizer["WeeklyOverviewPageTitle"]</PageTitle>
+
+@if (Overview is null)
+{
+    <div class="weekly-overview-page-loading">@Localizer["WeeklyOverviewLoading"]</div>
+}
+else
+{
+    <div class="weekly-overview-page">
+        <header class="weekly-overview-page-header">
+            <p>@Localizer["WeeklyOverviewEyebrow"]</p>
+            <h1>@Localizer["WeeklyOverviewPageTitle"]</h1>
+            <span>@Localizer["WeeklyOverviewPageIntro"]</span>
+        </header>
+
+        <WeeklyOverview Overview="Overview" />
+    </div>
+}

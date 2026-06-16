@@ -1,0 +1,35 @@
+.weekly-overview-page {
+    display: grid;
+    gap: 1.35rem;
+    margin-inline: auto;
+    max-width: 70rem;
+    padding: 1.4rem 0 2.5rem;
+}
+
+.weekly-overview-page-loading {
+    color: var(--app-text-muted);
+    padding: 2rem 0;
+}
+
+.weekly-overview-page-header p {
+    color: var(--app-primary);
+    font-size: 0.78rem;
+    font-weight: 850;
+    letter-spacing: 0;
+    margin: 0 0 0.35rem;
+    text-transform: uppercase;
+}
+
+.weekly-overview-page-header h1 {
+    color: var(--app-text);
+    font-size: 2rem;
+    font-weight: 850;
+    line-height: 1.1;
+    margin: 0;
+}
+
+.weekly-overview-page-header span {
+    color: var(--app-text-muted);
+    display: block;
+    margin-top: 0.5rem;
+}
