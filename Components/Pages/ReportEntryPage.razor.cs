@@ -68,6 +68,12 @@ public partial class ReportEntryPage : ComponentBase
 
         var entryId = await ReportEntryService.SaveEntryAsync(form);
         ViewModel = await ReportEntryService.GetEditorAsync(entryId, null);
+        SubmittedEntry = null;
+
+        if (EntryId != entryId)
+        {
+            Navigation.NavigateTo($"report-entries/{entryId}", replace: true);
+        }
     }
 
     protected async Task HandleDeleteAsync()

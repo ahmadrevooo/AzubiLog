@@ -204,12 +204,16 @@ public class ReportEntryService(
         string userId,
         CancellationToken cancellationToken)
     {
-        return await dbContext.Categories
+        var categories = await dbContext.Categories
             .Where(category => category.UserId == userId)
             .OrderBy(category => category.SortOrder)
             .ThenBy(category => category.Name)
             .Select(category => new ReportEntryOption(category.Id, category.Name))
             .ToListAsync(cancellationToken);
+
+        return categories
+            .Select(category => category with { Name = GetCategoryDisplayName(category.Name) })
+            .ToList();
     }
 
     private async Task<IReadOnlyList<ReportEntryOption>> GetTrainerOptionsAsync(CancellationToken cancellationToken)
@@ -368,7 +372,7 @@ public class ReportEntryService(
             .Select(entry => new ReportEntryListItem(
                 entry.Id,
                 string.IsNullOrWhiteSpace(entry.Title) ? "(Draft)" : entry.Title,
-                entry.Category == null ? "-" : entry.Category.Name,
+                entry.Category == null ? "-" : GetCategoryDisplayName(entry.Category.Name),
                 entry.Duration ?? 0m,
                 entry.Status))
             .ToListAsync(cancellationToken);
@@ -415,6 +419,7 @@ public class ReportEntryService(
                     Categories = dayEntries
                         .Select(entry => entry.Category?.Name)
                         .Where(name => !string.IsNullOrWhiteSpace(name))
+                        .Select(name => GetCategoryDisplayName(name!))
                         .Distinct(StringComparer.OrdinalIgnoreCase)
                         .Cast<string>()
                         .ToList(),
@@ -422,7 +427,7 @@ public class ReportEntryService(
                         .Select(entry => new ReportEntryListItem(
                             entry.Id,
                             string.IsNullOrWhiteSpace(entry.Title) ? "(Draft)" : entry.Title,
-                            entry.Category?.Name ?? "-",
+                            entry.Category is null ? "-" : GetCategoryDisplayName(entry.Category.Name),
                             entry.Duration ?? 0m,
                             entry.Status))
                         .ToList()
@@ -487,6 +492,24 @@ public class ReportEntryService(
     {
         var offset = ((int)date.DayOfWeek + 6) % 7;
         return date.Date.AddDays(-offset);
+    }
+
+    private static string GetCategoryDisplayName(string categoryName)
+    {
+        if (!CultureInfo.CurrentUICulture.Name.Equals("de-DE", StringComparison.OrdinalIgnoreCase))
+        {
+            return categoryName;
+        }
+
+        return categoryName switch
+        {
+            "Internal Activities" => "Interne Tätigkeiten",
+            "Vocational School" => "Berufsschule",
+            "Vacation" => "Urlaub",
+            "Sick Leave" => "Krankheit",
+            "Overtime" => "Überstunden",
+            _ => categoryName
+        };
     }
 
     private static void ValidateForSave(ReportEntryFormModel form)

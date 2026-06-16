@@ -11,96 +11,106 @@
             </div>
         </div>
 
-        <div class="report-entry-compact-grid">
-            <label>
-                <span>@Localizer["ReportEntryDate"] *</span>
-                <InputDate class="form-control" @bind-Value="Model.Date" @bind-Value:after="FieldChangedAsync" />
-            </label>
-
-            <label class="report-entry-category-field">
-                <span>@Localizer["ReportEntryCategory"] *</span>
-                <div class="report-entry-category-control">
-                    <InputSelect class="form-select" TValue="int?" @bind-Value="Model.CategoryId" @bind-Value:after="FieldChangedAsync">
-                        <option value="">@Localizer["ReportEntrySelectCategory"]</option>
-                        @foreach (var category in Categories)
-                        {
-                            <option value="@category.Id">@category.Name</option>
-                        }
-                    </InputSelect>
-                    <button class="report-entry-icon-button" type="button" title="@Localizer["ReportEntryAddCategory"]" @onclick="ToggleCategoryCreator">
-                        +
-                    </button>
-                </div>
-                <ValidationMessage For="() => Model.CategoryId" />
-                @if (IsCategoryCreatorOpen)
-                {
-                    <div class="report-entry-category-popover">
-                        <InputText class="form-control" @bind-Value="NewCategoryName" placeholder="@Localizer["ReportEntryNewCategory"]" />
-                        <button class="btn btn-primary btn-sm" type="button" @onclick="CreateCategoryAsync">
-                            @Localizer["ReportEntryAddCategory"]
+        <div class="report-entry-editor-layout">
+            <aside class="report-entry-side-controls">
+                <label class="report-entry-category-field">
+                    <span>@Localizer["ReportEntryCategory"] *</span>
+                    <div class="report-entry-category-control">
+                        <InputSelect class="form-select" TValue="int?" @bind-Value="Model.CategoryId" @bind-Value:after="FieldChangedAsync">
+                            <option value="">@Localizer["ReportEntrySelectCategory"]</option>
+                            @foreach (var category in Categories)
+                            {
+                                <option value="@category.Id">@category.Name</option>
+                            }
+                        </InputSelect>
+                        <button class="report-entry-icon-button" type="button" title="@Localizer["ReportEntryAddCategory"]" @onclick="ToggleCategoryCreator">
+                            +
                         </button>
                     </div>
-                }
-            </label>
-
-            <label>
-                <span>@Localizer["ReportEntryStartTime"]</span>
-                <InputText class="form-control report-entry-time-input" type="time" @bind-Value="Model.StartTime" @bind-Value:after="TimeChanged" />
-            </label>
-
-            <label>
-                <span>@Localizer["ReportEntryEndTime"]</span>
-                <InputText class="form-control report-entry-time-input" type="time" @bind-Value="Model.EndTime" @bind-Value:after="TimeChanged" />
-            </label>
-
-            <label>
-                <span>@Localizer["ReportEntryTrainer"]</span>
-                <InputSelect class="form-select" TValue="int?" @bind-Value="Model.TrainerId" @bind-Value:after="FieldChangedAsync">
-                    <option value="">@Localizer["ReportEntryNoTrainer"]</option>
-                    @foreach (var trainer in Trainers)
+                    <ValidationMessage For="() => Model.CategoryId" />
+                    @if (IsCategoryCreatorOpen)
                     {
-                        <option value="@trainer.Id">@trainer.Name</option>
+                        <div class="report-entry-category-popover">
+                            <InputText class="form-control" @bind-Value="NewCategoryName" placeholder="@Localizer["ReportEntryNewCategory"]" />
+                            <button class="btn btn-primary btn-sm" type="button" @onclick="CreateCategoryAsync">
+                                @Localizer["ReportEntryAddCategory"]
+                            </button>
+                        </div>
                     }
-                </InputSelect>
-            </label>
+                </label>
+
+                <label>
+                    <span>@Localizer["ReportEntryTrainer"]</span>
+                    <InputSelect class="form-select" TValue="int?" @bind-Value="Model.TrainerId" @bind-Value:after="FieldChangedAsync">
+                        <option value="">@Localizer["ReportEntryNoTrainer"]</option>
+                        @foreach (var trainer in Trainers)
+                        {
+                            <option value="@trainer.Id">@trainer.Name</option>
+                        }
+                    </InputSelect>
+                </label>
+            </aside>
+
+            <div class="report-entry-main-fields">
+                <div class="report-entry-compact-grid">
+                    <label>
+                        <span>@Localizer["ReportEntryDate"] *</span>
+                        <div class="report-entry-date-control">
+                            <button class="report-entry-day-button" type="button" title="@Localizer["ReportEntryPreviousDay"]" @onclick="MoveToPreviousDay">&lt;</button>
+                            <InputDate class="form-control" @bind-Value="Model.Date" @bind-Value:after="FieldChangedAsync" />
+                            <button class="report-entry-day-button" type="button" title="@Localizer["ReportEntryNextDay"]" @onclick="MoveToNextDay">&gt;</button>
+                        </div>
+                    </label>
+
+                    <label>
+                        <span>@Localizer["ReportEntryStartTime"]</span>
+                        <InputText class="form-control report-entry-time-input" type="text" inputmode="numeric" pattern="([01][0-9]|2[0-3]):[0-5][0-9]" placeholder="08:00" @bind-Value="Model.StartTime" @bind-Value:after="TimeChanged" />
+                    </label>
+
+                    <label>
+                        <span>@Localizer["ReportEntryEndTime"]</span>
+                        <InputText class="form-control report-entry-time-input" type="text" inputmode="numeric" pattern="([01][0-9]|2[0-3]):[0-5][0-9]" placeholder="16:00" @bind-Value="Model.EndTime" @bind-Value:after="TimeChanged" />
+                    </label>
+                </div>
+
+                <div class="report-entry-hours">
+                    <span>@Localizer["ReportEntryCalculatedHours"]</span>
+                    <strong>@LocalCalculatedHours.ToString("0.##") h</strong>
+                </div>
+
+                <label>
+                    <span>@Localizer["ReportEntryTitle"] *</span>
+                    <InputText class="form-control" @bind-Value="Model.Title" @bind-Value:after="FieldChangedAsync" />
+                    <ValidationMessage For="() => Model.Title" />
+                </label>
+
+                <label>
+                    <span>@Localizer["ReportEntryDescription"]</span>
+                    <InputTextArea class="form-control report-entry-description" @bind-Value="Model.Description" @bind-Value:after="FieldChangedAsync" />
+                    <ValidationMessage For="() => Model.Description" />
+                </label>
+
+                <label class="report-entry-check">
+                    <InputCheckbox @bind-Value="Model.IsVocationalSchoolDay" @bind-Value:after="FieldChangedAsync" />
+                    <span>@Localizer["ReportEntryVocationalSchoolDay"]</span>
+                </label>
+
+                @if (Model.IsVocationalSchoolDay)
+                {
+                    <label>
+                        <span>@Localizer["ReportEntrySubject"]</span>
+                        <InputText class="form-control" @bind-Value="Model.Subject" @bind-Value:after="FieldChangedAsync" />
+                        <ValidationMessage For="() => Model.Subject" />
+                    </label>
+                }
+
+                <label>
+                    <span>@Localizer["ReportEntryNotes"]</span>
+                    <InputText class="form-control" @bind-Value="Model.Notes" @bind-Value:after="FieldChangedAsync" />
+                    <ValidationMessage For="() => Model.Notes" />
+                </label>
+            </div>
         </div>
-
-        <div class="report-entry-hours">
-            <span>@Localizer["ReportEntryCalculatedHours"]</span>
-            <strong>@LocalCalculatedHours.ToString("0.##") h</strong>
-        </div>
-
-        <label>
-            <span>@Localizer["ReportEntryTitle"] *</span>
-            <InputText class="form-control" @bind-Value="Model.Title" @bind-Value:after="FieldChangedAsync" />
-            <ValidationMessage For="() => Model.Title" />
-        </label>
-
-        <label>
-            <span>@Localizer["ReportEntryDescription"]</span>
-            <InputTextArea class="form-control report-entry-description" @bind-Value="Model.Description" @bind-Value:after="FieldChangedAsync" />
-            <ValidationMessage For="() => Model.Description" />
-        </label>
-
-        <label class="report-entry-check">
-            <InputCheckbox @bind-Value="Model.IsVocationalSchoolDay" @bind-Value:after="FieldChangedAsync" />
-            <span>@Localizer["ReportEntryVocationalSchoolDay"]</span>
-        </label>
-
-        @if (Model.IsVocationalSchoolDay)
-        {
-            <label>
-                <span>@Localizer["ReportEntrySubject"]</span>
-                <InputText class="form-control" @bind-Value="Model.Subject" @bind-Value:after="FieldChangedAsync" />
-                <ValidationMessage For="() => Model.Subject" />
-            </label>
-        }
-
-        <label>
-            <span>@Localizer["ReportEntryNotes"]</span>
-            <InputText class="form-control" @bind-Value="Model.Notes" @bind-Value:after="FieldChangedAsync" />
-            <ValidationMessage For="() => Model.Notes" />
-        </label>
 
         <ValidationSummary />
 
@@ -178,6 +188,18 @@
     private void ToggleCategoryCreator()
     {
         IsCategoryCreatorOpen = !IsCategoryCreatorOpen;
+    }
+
+    private Task MoveToPreviousDay()
+    {
+        Model.Date = Model.Date.AddDays(-1);
+        return FieldChangedAsync();
+    }
+
+    private Task MoveToNextDay()
+    {
+        Model.Date = Model.Date.AddDays(1);
+        return FieldChangedAsync();
     }
 
     private async Task CreateCategoryAsync()

@@ -111,17 +111,6 @@ main {
     }
 }
 
-.app-shell-status {
-    color: var(--app-text);
-    font-weight: 600;
-}
-
-.app-shell-divider {
-    width: 1px;
-    height: 1.35rem;
-    background: var(--app-border);
-}
-
 #blazor-error-ui {
     background: var(--app-surface);
     border-top: 1px solid var(--app-border);

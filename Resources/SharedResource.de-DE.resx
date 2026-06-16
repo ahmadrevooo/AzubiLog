@@ -375,4 +375,10 @@
   <data name="ReportEntryNewCategory" xml:space="preserve">
     <value>Neue Kategorie</value>
   </data>
+  <data name="ReportEntryPreviousDay" xml:space="preserve">
+    <value>Vorheriger Tag</value>
+  </data>
+  <data name="ReportEntryNextDay" xml:space="preserve">
+    <value>Naechster Tag</value>
+  </data>
 </root>
