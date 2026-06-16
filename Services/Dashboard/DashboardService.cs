@@ -1,12 +1,13 @@
 using System.Globalization;
+using AzubiLog.Services.Todos;
 
 namespace AzubiLog.Services.Dashboard;
 
-public class DashboardService : IDashboardService
+public class DashboardService(ITodoService todoService) : IDashboardService
 {
     private const decimal DefaultWeeklyTargetHours = 40m;
 
-    public Task<DashboardViewModel> GetDashboardAsync(CancellationToken cancellationToken = default)
+    public async Task<DashboardViewModel> GetDashboardAsync(CancellationToken cancellationToken = default)
     {
         var recordedHours = 0m;
         var remainingHours = Math.Max(DefaultWeeklyTargetHours - recordedHours, 0m);
@@ -14,7 +15,8 @@ public class DashboardService : IDashboardService
             ? 0
             : (int)Math.Round(recordedHours / DefaultWeeklyTargetHours * 100m, MidpointRounding.AwayFromZero);
         var calendarWeek = ISOWeek.GetWeekOfYear(DateTime.Today);
-        var openTodoCount = 0;
+        var openTodoCount = await todoService.GetOpenTodoCountAsync(cancellationToken);
+        var openTodos = await todoService.GetOpenTodosAsync(5, cancellationToken);
 
         var model = new DashboardViewModel
         {
@@ -38,10 +40,16 @@ public class DashboardService : IDashboardService
                 new("DashboardCreateEntry", "DashboardCreateEntryDescription", "report-entries/new", "+", "action-green", true),
                 new("DashboardOpenWeeklyOverview", "DashboardOpenWeeklyOverviewDescription", "weekly-reports", "W", "action-blue", true),
                 new("DashboardExportPdf", "DashboardExportPdfDescription", "weekly-reports/export", "PDF", "action-purple", true)
-            ]
+            ],
+            OpenTodos = openTodos
+                .Select(todo => new DashboardWidgetItem(
+                    todo.Title,
+                    string.IsNullOrWhiteSpace(todo.Description) ? "-" : todo.Description,
+                    todo.DueDate.HasValue ? todo.DueDate.Value.ToString("d", CultureInfo.CurrentCulture) : "-"))
+                .ToList()
         };
 
-        return Task.FromResult(model);
+        return model;
     }
 
     private static string FormatHours(decimal hours)

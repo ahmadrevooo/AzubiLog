@@ -9,6 +9,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 {
     public DbSet<Category> Categories => Set<Category>();
     public DbSet<ReportEntry> ReportEntries => Set<ReportEntry>();
+    public DbSet<TodoItem> Todos => Set<TodoItem>();
     public DbSet<Trainer> Trainers => Set<Trainer>();
     public DbSet<WeeklyReport> WeeklyReports => Set<WeeklyReport>();
 
@@ -21,6 +22,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         ConfigureTrainer(builder);
         ConfigureWeeklyReport(builder);
         ConfigureReportEntry(builder);
+        ConfigureTodoItem(builder);
     }
 
     private static void ConfigureApplicationUser(ModelBuilder builder)
@@ -167,6 +169,28 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                 .WithMany(category => category.ReportEntries)
                 .HasForeignKey(entry => entry.CategoryId)
                 .OnDelete(DeleteBehavior.SetNull);
+        });
+    }
+
+    private static void ConfigureTodoItem(ModelBuilder builder)
+    {
+        builder.Entity<TodoItem>(entity =>
+        {
+            entity.ToTable("Todos");
+
+            entity.Property(todo => todo.Title)
+                .HasMaxLength(200)
+                .IsRequired();
+
+            entity.Property(todo => todo.Description)
+                .HasMaxLength(2_000);
+
+            entity.HasIndex(todo => new { todo.UserId, todo.IsCompleted, todo.DueDate });
+
+            entity.HasOne(todo => todo.User)
+                .WithMany(user => user.Todos)
+                .HasForeignKey(todo => todo.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
     }
 }

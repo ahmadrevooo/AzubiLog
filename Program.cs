@@ -6,6 +6,7 @@ using AzubiLog.Services;
 using AzubiLog.Services.Dashboard;
 using AzubiLog.Services.Pdf;
 using AzubiLog.Services.ReportEntries;
+using AzubiLog.Services.Todos;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +30,7 @@ namespace AzubiLog
             builder.Services.AddScoped<ApplicationDataInitializer>();
             builder.Services.AddScoped<IDashboardService, DashboardService>();
             builder.Services.AddScoped<IReportEntryService, ReportEntryService>();
+            builder.Services.AddScoped<ITodoService, TodoService>();
             builder.Services.AddScoped<IWeeklyReportPdfService, WeeklyReportPdfService>();
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>

@@ -1,0 +1,71 @@
+@inject IStringLocalizer<SharedResource> Localizer
+
+<section class="todo-list-panel">
+    <header>
+        <h2>@Localizer[TitleKey]</h2>
+        <span>@Items.Count</span>
+    </header>
+
+    @if (Items.Count == 0)
+    {
+        <p class="todo-list-empty">@Localizer[EmptyTextKey]</p>
+    }
+    else
+    {
+        <div class="todo-list">
+            @foreach (var todo in Items)
+            {
+                <article class="todo-list-item @(todo.IsCompleted ? "is-completed" : null)">
+                    <div>
+                        <strong>@todo.Title</strong>
+                        @if (!string.IsNullOrWhiteSpace(todo.Description))
+                        {
+                            <p>@todo.Description</p>
+                        }
+                        <span>
+                            @if (todo.DueDate.HasValue)
+                            {
+                                @Localizer["TodoDue", todo.DueDate.Value.ToString("d")]
+                            }
+                            else
+                            {
+                                @Localizer["TodoNoDueDate"]
+                            }
+                        </span>
+                    </div>
+                    <div class="todo-list-actions">
+                        @if (ShowCompleteAction && !todo.IsCompleted)
+                        {
+                            <button class="btn btn-sm btn-success" type="button" @onclick="() => Complete.InvokeAsync(todo.Id)">
+                                @Localizer["TodoComplete"]
+                            </button>
+                        }
+                        <button class="btn btn-sm btn-outline-danger" type="button" @onclick="() => Delete.InvokeAsync(todo.Id)">
+                            @Localizer["TodoDelete"]
+                        </button>
+                    </div>
+                </article>
+            }
+        </div>
+    }
+</section>
+
+@code {
+    [Parameter, EditorRequired]
+    public string TitleKey { get; set; } = string.Empty;
+
+    [Parameter, EditorRequired]
+    public string EmptyTextKey { get; set; } = string.Empty;
+
+    [Parameter]
+    public IReadOnlyList<TodoItemViewModel> Items { get; set; } = [];
+
+    [Parameter]
+    public bool ShowCompleteAction { get; set; }
+
+    [Parameter]
+    public EventCallback<int> Complete { get; set; }
+
+    [Parameter]
+    public EventCallback<int> Delete { get; set; }
+}

@@ -30,6 +30,9 @@
   <data name="NavWeeklyReports" xml:space="preserve">
     <value>Weekly Reports</value>
   </data>
+  <data name="NavTodos" xml:space="preserve">
+    <value>Todos</value>
+  </data>
   <data name="NavNewEntry" xml:space="preserve">
     <value>New Entry</value>
   </data>
@@ -257,6 +260,57 @@
   </data>
   <data name="Weekday5" xml:space="preserve">
     <value>Friday</value>
+  </data>
+  <data name="TodoPageTitle" xml:space="preserve">
+    <value>Todos</value>
+  </data>
+  <data name="TodoLoading" xml:space="preserve">
+    <value>Loading todos...</value>
+  </data>
+  <data name="TodoEyebrow" xml:space="preserve">
+    <value>Daily Tasks</value>
+  </data>
+  <data name="TodoPageIntro" xml:space="preserve">
+    <value>Plan simple tasks for your training day.</value>
+  </data>
+  <data name="TodoCreateTitle" xml:space="preserve">
+    <value>Create Todo</value>
+  </data>
+  <data name="TodoTitle" xml:space="preserve">
+    <value>Title</value>
+  </data>
+  <data name="TodoDescription" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="TodoDueDate" xml:space="preserve">
+    <value>Due Date</value>
+  </data>
+  <data name="TodoAdd" xml:space="preserve">
+    <value>Add Todo</value>
+  </data>
+  <data name="TodoOpenTitle" xml:space="preserve">
+    <value>Open Todos</value>
+  </data>
+  <data name="TodoCompletedTitle" xml:space="preserve">
+    <value>Completed Todos</value>
+  </data>
+  <data name="TodoNoOpen" xml:space="preserve">
+    <value>No open todos.</value>
+  </data>
+  <data name="TodoNoCompleted" xml:space="preserve">
+    <value>No completed todos yet.</value>
+  </data>
+  <data name="TodoComplete" xml:space="preserve">
+    <value>Complete</value>
+  </data>
+  <data name="TodoDelete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="TodoDue" xml:space="preserve">
+    <value>Due: {0}</value>
+  </data>
+  <data name="TodoNoDueDate" xml:space="preserve">
+    <value>No due date</value>
   </data>
   <data name="ComingSoon" xml:space="preserve">
     <value>Coming soon</value>

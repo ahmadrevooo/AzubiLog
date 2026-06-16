@@ -88,6 +88,22 @@ namespace AzubiLog.Data.Migrations
                     b.ToTable("ReportEntries", (string)null);
                 });
 
+            modelBuilder.Entity("AzubiLog.Models.TodoItem", b =>
+                {
+                    b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("INTEGER");
+                    b.Property<DateTime?>("CompletedAt").HasColumnType("TEXT");
+                    b.Property<DateTime>("CreatedAt").HasColumnType("TEXT");
+                    b.Property<string>("Description").IsRequired().HasMaxLength(2000).HasColumnType("TEXT");
+                    b.Property<DateTime?>("DueDate").HasColumnType("TEXT");
+                    b.Property<bool>("IsCompleted").HasColumnType("INTEGER");
+                    b.Property<string>("Title").IsRequired().HasMaxLength(200).HasColumnType("TEXT");
+                    b.Property<string>("UserId").IsRequired().HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+                    b.HasIndex("UserId", "IsCompleted", "DueDate");
+                    b.ToTable("Todos", (string)null);
+                });
+
             modelBuilder.Entity("AzubiLog.Models.Trainer", b =>
                 {
                     b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("INTEGER");
@@ -192,6 +208,17 @@ namespace AzubiLog.Data.Migrations
                     b.Navigation("WeeklyReport");
                 });
 
+            modelBuilder.Entity("AzubiLog.Models.TodoItem", b =>
+                {
+                    b.HasOne("AzubiLog.Models.ApplicationUser", "User")
+                        .WithMany("Todos")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("AzubiLog.Models.WeeklyReport", b =>
                 {
                     b.HasOne("AzubiLog.Models.ApplicationUser", "User")
@@ -234,6 +261,7 @@ namespace AzubiLog.Data.Migrations
                 {
                     b.Navigation("Categories");
                     b.Navigation("ReportEntries");
+                    b.Navigation("Todos");
                     b.Navigation("WeeklyReports");
                 });
 

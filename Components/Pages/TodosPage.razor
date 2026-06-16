@@ -1,0 +1,61 @@
+@page "/todos"
+@inject IStringLocalizer<SharedResource> Localizer
+
+<PageTitle>@Localizer["TodoPageTitle"]</PageTitle>
+
+@if (ViewModel is null)
+{
+    <div class="todos-page-loading">@Localizer["TodoLoading"]</div>
+}
+else
+{
+    <div class="todos-page">
+        <header class="todos-page-header">
+            <div>
+                <p>@Localizer["TodoEyebrow"]</p>
+                <h1>@Localizer["TodoPageTitle"]</h1>
+                <span>@Localizer["TodoPageIntro"]</span>
+            </div>
+        </header>
+
+        <section class="todos-grid">
+            <EditForm Model="ViewModel.NewTodo" OnValidSubmit="HandleCreateAsync" class="todo-create-panel">
+                <DataAnnotationsValidator />
+                <h2>@Localizer["TodoCreateTitle"]</h2>
+
+                <div class="todo-field">
+                    <label for="todo-title">@Localizer["TodoTitle"]</label>
+                    <InputText id="todo-title" class="form-control" @bind-Value="ViewModel.NewTodo.Title" />
+                    <ValidationMessage For="() => ViewModel.NewTodo.Title" />
+                </div>
+
+                <div class="todo-field">
+                    <label for="todo-description">@Localizer["TodoDescription"]</label>
+                    <InputTextArea id="todo-description" class="form-control" rows="5" @bind-Value="ViewModel.NewTodo.Description" />
+                    <ValidationMessage For="() => ViewModel.NewTodo.Description" />
+                </div>
+
+                <div class="todo-field">
+                    <label for="todo-due-date">@Localizer["TodoDueDate"]</label>
+                    <InputDate id="todo-due-date" class="form-control" @bind-Value="ViewModel.NewTodo.DueDate" />
+                </div>
+
+                <button class="btn btn-primary" type="submit">@Localizer["TodoAdd"]</button>
+            </EditForm>
+
+            <TodoList
+                TitleKey="TodoOpenTitle"
+                EmptyTextKey="TodoNoOpen"
+                Items="ViewModel.OpenTodos"
+                ShowCompleteAction="true"
+                Complete="HandleCompleteAsync"
+                Delete="HandleDeleteAsync" />
+
+            <TodoList
+                TitleKey="TodoCompletedTitle"
+                EmptyTextKey="TodoNoCompleted"
+                Items="ViewModel.CompletedTodos"
+                Delete="HandleDeleteAsync" />
+        </section>
+    </div>
+}

@@ -30,6 +30,9 @@
   <data name="NavWeeklyReports" xml:space="preserve">
     <value>Wochenberichte</value>
   </data>
+  <data name="NavTodos" xml:space="preserve">
+    <value>Aufgaben</value>
+  </data>
   <data name="NavNewEntry" xml:space="preserve">
     <value>Neuer Eintrag</value>
   </data>
@@ -257,6 +260,57 @@
   </data>
   <data name="Weekday5" xml:space="preserve">
     <value>Freitag</value>
+  </data>
+  <data name="TodoPageTitle" xml:space="preserve">
+    <value>Aufgaben</value>
+  </data>
+  <data name="TodoLoading" xml:space="preserve">
+    <value>Aufgaben werden geladen...</value>
+  </data>
+  <data name="TodoEyebrow" xml:space="preserve">
+    <value>Tagesaufgaben</value>
+  </data>
+  <data name="TodoPageIntro" xml:space="preserve">
+    <value>Plane einfache Aufgaben fuer deinen Ausbildungstag.</value>
+  </data>
+  <data name="TodoCreateTitle" xml:space="preserve">
+    <value>Aufgabe erstellen</value>
+  </data>
+  <data name="TodoTitle" xml:space="preserve">
+    <value>Titel</value>
+  </data>
+  <data name="TodoDescription" xml:space="preserve">
+    <value>Beschreibung</value>
+  </data>
+  <data name="TodoDueDate" xml:space="preserve">
+    <value>Faellig am</value>
+  </data>
+  <data name="TodoAdd" xml:space="preserve">
+    <value>Aufgabe hinzufuegen</value>
+  </data>
+  <data name="TodoOpenTitle" xml:space="preserve">
+    <value>Offene Aufgaben</value>
+  </data>
+  <data name="TodoCompletedTitle" xml:space="preserve">
+    <value>Erledigte Aufgaben</value>
+  </data>
+  <data name="TodoNoOpen" xml:space="preserve">
+    <value>Keine offenen Aufgaben vorhanden.</value>
+  </data>
+  <data name="TodoNoCompleted" xml:space="preserve">
+    <value>Noch keine erledigten Aufgaben.</value>
+  </data>
+  <data name="TodoComplete" xml:space="preserve">
+    <value>Erledigt</value>
+  </data>
+  <data name="TodoDelete" xml:space="preserve">
+    <value>Loeschen</value>
+  </data>
+  <data name="TodoDue" xml:space="preserve">
+    <value>Faellig: {0}</value>
+  </data>
+  <data name="TodoNoDueDate" xml:space="preserve">
+    <value>Kein Faelligkeitsdatum</value>
   </data>
   <data name="ComingSoon" xml:space="preserve">
     <value>Demnaechst</value>
