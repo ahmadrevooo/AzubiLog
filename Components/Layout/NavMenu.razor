@@ -1,6 +1,9 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+@inject IApplicationNavigationService Navigation
+@inject IStringLocalizer<SharedResource> Localizer
+
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">AzubiLog</a>
+        <a class="navbar-brand" href="">@Localizer["AppName"]</a>
     </div>
 </div>
 
@@ -8,23 +11,33 @@
 
 <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
     <nav class="nav flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
+        @foreach (var item in Navigation.GetMainNavigation())
+        {
+            <div class="nav-item px-3">
+                @if (item.IsEnabled)
+                {
+                    <NavLink class="nav-link" href="@item.Href" Match="@GetMatch(item)">
+                        <span class="bi @item.IconCssClass" aria-hidden="true"></span>
+                        <span>@Localizer[item.ResourceKey]</span>
+                    </NavLink>
+                }
+                else
+                {
+                    <span class="nav-link nav-link-disabled" title="@Localizer["ComingSoon"]">
+                        <span class="bi @item.IconCssClass" aria-hidden="true"></span>
+                        <span>@Localizer[item.ResourceKey]</span>
+                    </span>
+                }
+            </div>
+        }
     </nav>
 </div>
 
+@code {
+    private static NavLinkMatch GetMatch(NavigationItem item)
+    {
+        return string.IsNullOrWhiteSpace(item.Href)
+            ? NavLinkMatch.All
+            : NavLinkMatch.Prefix;
+    }
+}

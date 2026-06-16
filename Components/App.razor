@@ -1,5 +1,8 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+@using System.Globalization
+@inject IThemePreferenceService ThemePreferences
+
+<!DOCTYPE html>
+<html lang="@CultureInfo.CurrentUICulture.Name" data-theme="@CurrentTheme" data-bs-theme="@CurrentTheme">
 
 <head>
     <meta charset="utf-8" />
@@ -21,3 +24,7 @@
 </body>
 
 </html>
+
+@code {
+    private string CurrentTheme => ThemePreferences.DefaultTheme.ToString().ToLowerInvariant();
+}

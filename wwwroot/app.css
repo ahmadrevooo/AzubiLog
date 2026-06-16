@@ -1,15 +1,48 @@
+:root,
+[data-theme="light"] {
+    color-scheme: light;
+    --app-bg: #f5f7fb;
+    --app-surface: #ffffff;
+    --app-surface-muted: #eef2f7;
+    --app-text: #172033;
+    --app-text-muted: #64748b;
+    --app-border: #d8e0ec;
+    --app-primary: #2563eb;
+    --app-primary-contrast: #ffffff;
+    --app-danger: #b42318;
+    --app-sidebar-start: #12213b;
+    --app-sidebar-end: #172554;
+}
+
+[data-theme="dark"] {
+    color-scheme: dark;
+    --app-bg: #101624;
+    --app-surface: #172033;
+    --app-surface-muted: #202b3f;
+    --app-text: #e5edf7;
+    --app-text-muted: #9caec6;
+    --app-border: #334155;
+    --app-primary: #60a5fa;
+    --app-primary-contrast: #08111f;
+    --app-danger: #f87171;
+    --app-sidebar-start: #0b1120;
+    --app-sidebar-end: #111827;
+}
+
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background: var(--app-bg);
+    color: var(--app-text);
 }
 
 a, .btn-link {
-    color: #006bb7;
+    color: var(--app-primary);
 }
 
 .btn-primary {
-    color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
+    color: var(--app-primary-contrast);
+    background-color: var(--app-primary);
+    border-color: var(--app-primary);
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
@@ -33,7 +66,7 @@ h1:focus {
 }
 
 .validation-message {
-    color: #e50000;
+    color: var(--app-danger);
 }
 
 .blazor-error-boundary {

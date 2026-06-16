@@ -2,6 +2,7 @@ using System.Globalization;
 using AzubiLog.Components;
 using AzubiLog.Data;
 using AzubiLog.Models;
+using AzubiLog.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +20,8 @@ namespace AzubiLog
                 .AddInteractiveServerComponents();
             builder.Services.AddCascadingAuthenticationState();
             builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+            builder.Services.AddSingleton<IApplicationNavigationService, ApplicationNavigationService>();
+            builder.Services.AddSingleton<IThemePreferenceService, ThemePreferenceService>();
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));

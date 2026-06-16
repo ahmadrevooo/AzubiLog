@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppName" xml:space="preserve">
+    <value>AzubiLog</value>
+  </data>
+  <data name="HomeTitle" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="HomeIntro" xml:space="preserve">
+    <value>Die Anwendungsgrundlage ist bereit. Dashboard und Berichtserfassung folgen im nächsten Schritt.</value>
+  </data>
+  <data name="NavHome" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="NavDashboard" xml:space="preserve">
+    <value>Dashboard</value>
+  </data>
+  <data name="NavWeeklyReports" xml:space="preserve">
+    <value>Wochenberichte</value>
+  </data>
+  <data name="NavNewEntry" xml:space="preserve">
+    <value>Neuer Eintrag</value>
+  </data>
+  <data name="NavCategories" xml:space="preserve">
+    <value>Kategorien</value>
+  </data>
+  <data name="NavTrainers" xml:space="preserve">
+    <value>Ausbilder</value>
+  </data>
+  <data name="NavSettings" xml:space="preserve">
+    <value>Einstellungen</value>
+  </data>
+  <data name="ComingSoon" xml:space="preserve">
+    <value>Demnaechst</value>
+  </data>
+  <data name="TopBarStatus" xml:space="preserve">
+    <value>Grundlage</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Hell</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Dunkel</value>
+  </data>
+  <data name="LanguageGerman" xml:space="preserve">
+    <value>Deutsch</value>
+  </data>
+  <data name="LanguageEnglish" xml:space="preserve">
+    <value>Englisch</value>
+  </data>
+  <data name="NotFoundTitle" xml:space="preserve">
+    <value>Nicht gefunden</value>
+  </data>
+  <data name="NotFoundMessage" xml:space="preserve">
+    <value>Der gesuchte Inhalt existiert nicht.</value>
+  </data>
+  <data name="ErrorTitle" xml:space="preserve">
+    <value>Fehler</value>
+  </data>
+  <data name="ErrorMessage" xml:space="preserve">
+    <value>Bei der Verarbeitung der Anfrage ist ein Fehler aufgetreten.</value>
+  </data>
+  <data name="Reload" xml:space="preserve">
+    <value>Neu laden</value>
+  </data>
+  <data name="ReconnectRejoining" xml:space="preserve">
+    <value>Verbindung wird wiederhergestellt...</value>
+  </data>
+  <data name="ReconnectFailedRetry" xml:space="preserve">
+    <value>Wiederverbindung fehlgeschlagen. Bitte erneut versuchen oder die Seite neu laden.</value>
+  </data>
+  <data name="ReconnectRetryingPrefix" xml:space="preserve">
+    <value>Wiederverbindung fehlgeschlagen. Neuer Versuch in</value>
+  </data>
+  <data name="ReconnectRetryingSuffix" xml:space="preserve">
+    <value>Sekunden.</value>
+  </data>
+  <data name="ResumeFailed" xml:space="preserve">
+    <value>Die Sitzung konnte nicht fortgesetzt werden. Bitte erneut versuchen oder die Seite neu laden.</value>
+  </data>
+  <data name="RequestId" xml:space="preserve">
+    <value>Anfrage-ID</value>
+  </data>
+  <data name="Retry" xml:space="preserve">
+    <value>Erneut versuchen</value>
+  </data>
+  <data name="SessionPaused" xml:space="preserve">
+    <value>Die Sitzung wurde vom Server pausiert.</value>
+  </data>
+  <data name="Resume" xml:space="preserve">
+    <value>Fortsetzen</value>
+  </data>
+</root>
