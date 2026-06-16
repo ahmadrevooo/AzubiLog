@@ -3,6 +3,7 @@ using AzubiLog.Components;
 using AzubiLog.Data;
 using AzubiLog.Models;
 using AzubiLog.Services;
+using AzubiLog.Services.Dashboard;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
@@ -22,11 +23,16 @@ namespace AzubiLog
             builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
             builder.Services.AddSingleton<IApplicationNavigationService, ApplicationNavigationService>();
             builder.Services.AddSingleton<IThemePreferenceService, ThemePreferenceService>();
+            builder.Services.AddScoped<IDashboardService, DashboardService>();
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme)
+                .AddIdentityCookies();
+            builder.Services.AddAuthorization();
+
+            builder.Services.AddIdentityCore<ApplicationUser>(options =>
                 {
                     options.SignIn.RequireConfirmedAccount = false;
                     options.User.RequireUniqueEmail = true;
@@ -34,6 +40,7 @@ namespace AzubiLog
                     options.Password.RequireNonAlphanumeric = false;
                 })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddSignInManager()
                 .AddDefaultTokenProviders();
 
             builder.Services.Configure<RequestLocalizationOptions>(options =>

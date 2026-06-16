@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace AzubiLog.Data;
 
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-    : IdentityDbContext<ApplicationUser>(options)
+    : IdentityUserContext<ApplicationUser>(options)
 {
     public DbSet<Category> Categories => Set<Category>();
     public DbSet<ReportEntry> ReportEntries => Set<ReportEntry>();

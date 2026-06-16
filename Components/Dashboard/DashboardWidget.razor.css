@@ -1,0 +1,58 @@
+.dashboard-widget {
+    background: var(--app-surface);
+    border: 1px solid var(--app-border);
+    border-radius: 8px;
+    min-height: 10rem;
+    padding: 1.1rem;
+}
+
+.dashboard-widget-header {
+    align-items: flex-start;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.dashboard-widget-header h2 {
+    color: var(--app-text);
+    font-size: 1rem;
+    font-weight: 800;
+    margin: 0;
+}
+
+.dashboard-widget-header span,
+.dashboard-widget-empty {
+    color: var(--app-text-muted);
+    font-size: 0.86rem;
+}
+
+.dashboard-widget-empty {
+    margin: 1.35rem 0 0;
+}
+
+.dashboard-widget-list {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.dashboard-widget-item {
+    align-items: center;
+    background: var(--app-surface-muted);
+    border-radius: 8px;
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+    padding: 0.85rem;
+}
+
+.dashboard-widget-item strong {
+    color: var(--app-text);
+}
+
+.dashboard-widget-item p,
+.dashboard-widget-item span {
+    color: var(--app-text-muted);
+    font-size: 0.84rem;
+    margin: 0;
+}

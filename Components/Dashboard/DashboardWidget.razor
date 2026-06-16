@@ -1,0 +1,42 @@
+@inject IStringLocalizer<SharedResource> Localizer
+
+<section class="dashboard-widget">
+    <div class="dashboard-widget-header">
+        <h2>@Localizer[TitleKey]</h2>
+        <span>@Localizer[SubtitleKey]</span>
+    </div>
+
+    @if (Items.Count == 0)
+    {
+        <p class="dashboard-widget-empty">@Localizer[EmptyTextKey]</p>
+    }
+    else
+    {
+        <div class="dashboard-widget-list">
+            @foreach (var item in Items)
+            {
+                <article class="dashboard-widget-item">
+                    <div>
+                        <strong>@item.Title</strong>
+                        <p>@item.Description</p>
+                    </div>
+                    <span>@item.Meta</span>
+                </article>
+            }
+        </div>
+    }
+</section>
+
+@code {
+    [Parameter, EditorRequired]
+    public string TitleKey { get; set; } = string.Empty;
+
+    [Parameter, EditorRequired]
+    public string SubtitleKey { get; set; } = string.Empty;
+
+    [Parameter, EditorRequired]
+    public string EmptyTextKey { get; set; } = string.Empty;
+
+    [Parameter]
+    public IReadOnlyList<DashboardWidgetItem> Items { get; set; } = [];
+}

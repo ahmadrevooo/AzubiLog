@@ -1,0 +1,12 @@
+@inject IStringLocalizer<SharedResource> Localizer
+
+<section class="dashboard-card metric-card @Metric.AccentCssClass">
+    <div class="metric-card-label">@Localizer[Metric.LabelKey]</div>
+    <div class="metric-card-value">@Metric.Value</div>
+    <div class="metric-card-detail">@Localizer[Metric.Detail]</div>
+</section>
+
+@code {
+    [Parameter, EditorRequired]
+    public DashboardMetric Metric { get; set; } = null!;
+}

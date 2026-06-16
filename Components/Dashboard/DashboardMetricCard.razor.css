@@ -1,0 +1,65 @@
+.dashboard-card {
+    background: var(--app-surface);
+    border: 1px solid var(--app-border);
+    border-radius: 8px;
+    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.06);
+}
+
+.metric-card {
+    min-height: 8.25rem;
+    padding: 1.1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.metric-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 0.25rem;
+    background: var(--metric-accent, var(--app-primary));
+}
+
+.metric-card-label {
+    color: var(--app-text-muted);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.metric-card-value {
+    color: var(--app-text);
+    font-size: 2rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-top: 0.55rem;
+}
+
+.metric-card-detail {
+    color: var(--app-text-muted);
+    font-size: 0.82rem;
+    margin-top: 0.4rem;
+}
+
+.metric-accent-blue {
+    --metric-accent: #3b82f6;
+}
+
+.metric-accent-green {
+    --metric-accent: #10b981;
+}
+
+.metric-accent-cyan {
+    --metric-accent: #06b6d4;
+}
+
+.metric-accent-orange {
+    --metric-accent: #f59e0b;
+}
+
+.metric-accent-purple {
+    --metric-accent: #8b5cf6;
+}
+
+.metric-accent-red {
+    --metric-accent: #ef4444;
+}

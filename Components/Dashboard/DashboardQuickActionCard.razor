@@ -1,0 +1,24 @@
+@inject IStringLocalizer<SharedResource> Localizer
+
+<section class="quick-action-card @Action.AccentCssClass">
+    <div>
+        <h2>@Localizer[Action.LabelKey]</h2>
+        <p>@Localizer[Action.DescriptionKey]</p>
+    </div>
+
+    @if (Action.IsEnabled)
+    {
+        <a class="btn btn-sm quick-action-button" href="@Action.Href">@Localizer[Action.LabelKey]</a>
+    }
+    else
+    {
+        <button class="btn btn-sm quick-action-button" type="button" disabled>@Localizer[Action.LabelKey]</button>
+    }
+
+    <span class="quick-action-icon" aria-hidden="true">@Action.Icon</span>
+</section>
+
+@code {
+    [Parameter, EditorRequired]
+    public DashboardQuickAction Action { get; set; } = null!;
+}

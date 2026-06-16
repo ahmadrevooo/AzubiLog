@@ -1,4 +1,4 @@
-namespace AzubiLog.Localization;
+namespace AzubiLog;
 
 public class SharedResource
 {

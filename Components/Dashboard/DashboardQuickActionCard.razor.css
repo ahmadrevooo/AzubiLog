@@ -1,0 +1,59 @@
+.quick-action-card {
+    border-radius: 8px;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 8.25rem;
+    overflow: hidden;
+    padding: 1.15rem;
+    position: relative;
+}
+
+.quick-action-card h2 {
+    font-size: 1rem;
+    font-weight: 800;
+    margin: 0;
+}
+
+.quick-action-card p {
+    color: rgba(255, 255, 255, 0.76);
+    font-size: 0.86rem;
+    margin: 0.45rem 0 0;
+    max-width: 24rem;
+}
+
+.quick-action-button {
+    align-self: flex-start;
+    background: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+    font-weight: 700;
+    margin-top: 1rem;
+}
+
+.quick-action-button:disabled {
+    color: rgba(255, 255, 255, 0.78);
+    opacity: 1;
+}
+
+.quick-action-icon {
+    bottom: 1rem;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 2rem;
+    font-weight: 800;
+    position: absolute;
+    right: 1.1rem;
+}
+
+.action-green {
+    background: linear-gradient(135deg, #047857, #059669);
+}
+
+.action-blue {
+    background: linear-gradient(135deg, #0f3b68, #2563eb);
+}
+
+.action-purple {
+    background: linear-gradient(135deg, #581c87, #7e22ce);
+}

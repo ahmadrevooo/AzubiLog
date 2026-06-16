@@ -1,0 +1,55 @@
+@page "/"
+@inject IStringLocalizer<SharedResource> Localizer
+
+<PageTitle>@Localizer["DashboardPageTitle"]</PageTitle>
+
+@if (ViewModel is null)
+{
+    <div class="dashboard-loading">@Localizer["DashboardLoading"]</div>
+}
+else
+{
+    <div class="dashboard-page">
+        <section class="dashboard-hero">
+            <div>
+                <p class="dashboard-eyebrow">@Localizer["DashboardEyebrow"]</p>
+                <h1>@Localizer["DashboardWelcome"]</h1>
+                <p>@Localizer["DashboardIntro"]</p>
+            </div>
+            <div class="dashboard-hero-progress">
+                <span>@Localizer["DashboardProgress"]</span>
+                <strong>@ViewModel.ProgressPercentage%</strong>
+                <div class="progress" role="progressbar" aria-valuenow="@ViewModel.ProgressPercentage" aria-valuemin="0" aria-valuemax="100">
+                    <div class="progress-bar" style="width: @ViewModel.ProgressPercentage%"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="dashboard-metrics" aria-label="@Localizer["DashboardMetricsLabel"]">
+            @foreach (var metric in ViewModel.Metrics)
+            {
+                <DashboardMetricCard Metric="metric" />
+            }
+        </section>
+
+        <section class="dashboard-actions" aria-label="@Localizer["DashboardQuickActions"]">
+            @foreach (var action in ViewModel.QuickActions)
+            {
+                <DashboardQuickActionCard Action="action" />
+            }
+        </section>
+
+        <section class="dashboard-widgets">
+            <DashboardWidget
+                TitleKey="DashboardRecentEntries"
+                SubtitleKey="DashboardPlaceholder"
+                EmptyTextKey="DashboardNoRecentEntries"
+                Items="ViewModel.RecentReportEntries" />
+            <DashboardWidget
+                TitleKey="DashboardOpenTodos"
+                SubtitleKey="DashboardPlaceholder"
+                EmptyTextKey="DashboardNoOpenTodos"
+                Items="ViewModel.OpenTodos" />
+        </section>
+    </div>
+}

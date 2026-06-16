@@ -42,6 +42,96 @@
   <data name="NavSettings" xml:space="preserve">
     <value>Einstellungen</value>
   </data>
+  <data name="NavHistory" xml:space="preserve">
+    <value>Verlauf</value>
+  </data>
+  <data name="DashboardPageTitle" xml:space="preserve">
+    <value>Dashboard</value>
+  </data>
+  <data name="DashboardLoading" xml:space="preserve">
+    <value>Dashboard wird geladen...</value>
+  </data>
+  <data name="DashboardEyebrow" xml:space="preserve">
+    <value>Kalenderwoche</value>
+  </data>
+  <data name="DashboardWelcome" xml:space="preserve">
+    <value>Willkommen bei AzubiLog</value>
+  </data>
+  <data name="DashboardIntro" xml:space="preserve">
+    <value>Deine Uebersicht fuer die aktuelle Ausbildungswoche.</value>
+  </data>
+  <data name="DashboardMetricsLabel" xml:space="preserve">
+    <value>Kennzahlen</value>
+  </data>
+  <data name="DashboardQuickActions" xml:space="preserve">
+    <value>Schnellaktionen</value>
+  </data>
+  <data name="DashboardCurrentWeek" xml:space="preserve">
+    <value>Aktuelle Kalenderwoche</value>
+  </data>
+  <data name="DashboardCurrentWeekDetail" xml:space="preserve">
+    <value>Diese Woche</value>
+  </data>
+  <data name="DashboardTargetHours" xml:space="preserve">
+    <value>Wochenziel</value>
+  </data>
+  <data name="DashboardTargetHoursDetail" xml:space="preserve">
+    <value>Sollstunden</value>
+  </data>
+  <data name="DashboardRecordedHours" xml:space="preserve">
+    <value>Erfasste Stunden</value>
+  </data>
+  <data name="DashboardRecordedHoursDetail" xml:space="preserve">
+    <value>Bereits dokumentiert</value>
+  </data>
+  <data name="DashboardRemainingHours" xml:space="preserve">
+    <value>Reststunden</value>
+  </data>
+  <data name="DashboardRemainingHoursDetail" xml:space="preserve">
+    <value>Noch offen</value>
+  </data>
+  <data name="DashboardProgress" xml:space="preserve">
+    <value>Fortschritt</value>
+  </data>
+  <data name="DashboardProgressDetail" xml:space="preserve">
+    <value>Vom Wochenziel</value>
+  </data>
+  <data name="DashboardOpenTodos" xml:space="preserve">
+    <value>Offene Aufgaben</value>
+  </data>
+  <data name="DashboardOpenTodosDetail" xml:space="preserve">
+    <value>Aktuell offen</value>
+  </data>
+  <data name="DashboardCreateEntry" xml:space="preserve">
+    <value>Berichtseintrag erstellen</value>
+  </data>
+  <data name="DashboardCreateEntryDescription" xml:space="preserve">
+    <value>Neuen Tages- oder Schulbericht vorbereiten.</value>
+  </data>
+  <data name="DashboardOpenWeeklyOverview" xml:space="preserve">
+    <value>Wochenuebersicht oeffnen</value>
+  </data>
+  <data name="DashboardOpenWeeklyOverviewDescription" xml:space="preserve">
+    <value>Eintraege und Wochenstatus ansehen.</value>
+  </data>
+  <data name="DashboardExportPdf" xml:space="preserve">
+    <value>Wochenbericht PDF exportieren</value>
+  </data>
+  <data name="DashboardExportPdfDescription" xml:space="preserve">
+    <value>PDF-Export ist fuer einen spaeteren Schritt vorgesehen.</value>
+  </data>
+  <data name="DashboardRecentEntries" xml:space="preserve">
+    <value>Letzte Berichtseintraege</value>
+  </data>
+  <data name="DashboardPlaceholder" xml:space="preserve">
+    <value>Platzhalter</value>
+  </data>
+  <data name="DashboardNoRecentEntries" xml:space="preserve">
+    <value>Noch keine Berichtseintraege vorhanden.</value>
+  </data>
+  <data name="DashboardNoOpenTodos" xml:space="preserve">
+    <value>Keine offenen Aufgaben vorhanden.</value>
+  </data>
   <data name="ComingSoon" xml:space="preserve">
     <value>Demnaechst</value>
   </data>
