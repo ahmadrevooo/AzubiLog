@@ -98,7 +98,7 @@
         <ValidationSummary />
 
         <div class="report-entry-actions">
-            <a class="report-entry-email-button" href="@DailyReportEmailHref">@Localizer["ReportEntryPrepareDailyEmail"]</a>
+            <a class="report-entry-email-button" href="@DailyReportEmailHref" data-enhance-nav="false">@Localizer["ReportEntryPrepareDailyEmail"]</a>
             <button class="btn btn-outline-secondary" type="button" @onclick="HandleDraftRequestedAsync">@Localizer["ReportEntrySaveDraft"]</button>
             <button class="btn btn-primary" type="submit">@Localizer["ReportEntrySave"]</button>
             @if (Model.Id.HasValue)
