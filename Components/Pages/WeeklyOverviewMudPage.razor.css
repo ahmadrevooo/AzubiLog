@@ -1,9 +1,10 @@
 .weekly-mud-page {
-    padding: 1rem 0 2.5rem;
+    max-width: 1520px;
+    padding: 0.25rem 0 2.5rem;
 }
 
-.weekly-mud-controls,
-.weekly-mud-total,
+.weekly-mud-hero,
+.weekly-mud-metric,
 .weekly-mud-day-card {
     background: var(--app-surface);
     border-color: color-mix(in srgb, var(--app-border) 68%, transparent);
@@ -11,17 +12,53 @@
     color: var(--app-text);
 }
 
+.weekly-mud-hero {
+    padding: 1.1rem 1.25rem;
+}
+
+.weekly-mud-hero-stack,
 .weekly-mud-controls,
-.weekly-mud-total {
+.weekly-mud-entry-meta {
+    gap: 0.75rem;
+    min-width: 0;
+}
+
+.weekly-mud-controls {
+    justify-content: flex-end;
+}
+
+.weekly-mud-date-picker {
+    max-width: 11rem;
+}
+
+.weekly-mud-metrics {
+    margin-top: 1rem;
+}
+
+.weekly-mud-metric {
     padding: 0.9rem 1rem;
 }
 
-.weekly-mud-day-card {
-    min-height: 24rem;
+.weekly-mud-days {
+    margin-top: 0.5rem;
 }
 
-.weekly-mud-entry-list,
-.weekly-mud-entry-meta {
+.weekly-mud-day-card {
+    height: 100%;
+    min-height: 26rem;
+}
+
+.weekly-mud-day-title,
+.weekly-mud-entry-title,
+.weekly-mud-entry .mud-typography,
+.weekly-mud-entry a {
+    max-width: 100%;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.weekly-mud-entry-list {
+    margin-top: 0.75rem;
     min-width: 0;
 }
 
@@ -32,22 +69,32 @@
     display: grid;
     gap: 0.35rem;
     min-width: 0;
-    padding: 0.65rem;
+    padding: 0.7rem;
 }
 
-.weekly-mud-entry .mud-typography,
-.weekly-mud-entry a {
-    overflow-wrap: anywhere;
+.weekly-mud-entry-meta {
+    flex-wrap: wrap;
 }
 
 .weekly-mud-empty {
-    margin-top: 1rem;
+    background: color-mix(in srgb, var(--app-bg) 72%, transparent);
+    border: 1px dashed color-mix(in srgb, var(--app-border) 80%, transparent);
+    border-radius: 8px;
+    margin-top: 0.85rem;
+    padding: 1rem;
+    text-align: center;
 }
 
-@media (max-width: 760px) {
-    .weekly-mud-control-stack,
-    .weekly-mud-nav {
+@media (max-width: 960px) {
+    .weekly-mud-hero-stack,
+    .weekly-mud-controls {
         align-items: stretch !important;
         flex-direction: column !important;
+    }
+
+    .weekly-mud-controls .mud-button-root,
+    .weekly-mud-date-picker {
+        max-width: none;
+        width: 100%;
     }
 }

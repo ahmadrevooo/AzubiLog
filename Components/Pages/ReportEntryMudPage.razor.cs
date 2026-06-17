@@ -22,6 +22,19 @@ public partial class ReportEntryMudPage : ComponentBase
 
     protected TimeSpan? StartTimeValue => ParseTime(ViewModel?.Entry.StartTime);
     protected TimeSpan? EndTimeValue => ParseTime(ViewModel?.Entry.EndTime);
+    protected double WeeklyProgressPercentage
+    {
+        get
+        {
+            if (ViewModel?.WeeklyOverview.WeeklyTargetHours is null or <= 0)
+            {
+                return 0;
+            }
+
+            var percentage = ViewModel.WeeklyOverview.RecordedHours / ViewModel.WeeklyOverview.WeeklyTargetHours * 100m;
+            return (double)Math.Clamp(percentage, 0m, 100m);
+        }
+    }
 
     protected override async Task OnParametersSetAsync()
     {

@@ -2,6 +2,11 @@
 @inject IStringLocalizer<SharedResource> Localizer
 @inject IJSRuntime JsRuntime
 
+<MudThemeProvider Theme="@AzubiLogMudTheme" IsDarkMode="@IsDarkMode" />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
 <div class="page">
     <div class="sidebar">
         <NavMenu />
@@ -40,6 +45,55 @@
 
 @code {
     private string CurrentTheme { get; set; } = "light";
+    private bool IsDarkMode => CurrentTheme == "dark";
+
+    private static readonly MudTheme AzubiLogMudTheme = new()
+    {
+        PaletteLight = new PaletteLight
+        {
+            Primary = "#2f6f4e",
+            Secondary = "#516b5f",
+            Tertiary = "#d9eadf",
+            Background = "#f6f8f5",
+            Surface = "#ffffff",
+            AppbarBackground = "#ffffff",
+            DrawerBackground = "#ffffff",
+            TextPrimary = "#17231c",
+            TextSecondary = "#526159",
+            LinesDefault = "#d8e0d8",
+            Divider = "#d8e0d8",
+            ActionDefault = "#2f6f4e",
+            ActionDisabled = "#94a39b",
+            Info = "#3d6f8f",
+            Success = "#2f6f4e",
+            Warning = "#a66a1f",
+            Error = "#b04242"
+        },
+        PaletteDark = new PaletteDark
+        {
+            Primary = "#7bc99a",
+            Secondary = "#a8c4b5",
+            Tertiary = "#1f3a2c",
+            Background = "#111712",
+            Surface = "#182019",
+            AppbarBackground = "#182019",
+            DrawerBackground = "#182019",
+            TextPrimary = "#edf4ee",
+            TextSecondary = "#b7c7bc",
+            LinesDefault = "#334037",
+            Divider = "#334037",
+            ActionDefault = "#7bc99a",
+            ActionDisabled = "#69786f",
+            Info = "#8bbbd2",
+            Success = "#7bc99a",
+            Warning = "#d5a25f",
+            Error = "#e08d8d"
+        },
+        LayoutProperties = new LayoutProperties
+        {
+            DefaultBorderRadius = "8px"
+        }
+    };
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
