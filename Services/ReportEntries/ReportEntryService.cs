@@ -414,7 +414,10 @@ public class ReportEntryService(
                             string.IsNullOrWhiteSpace(entry.Title) ? "(Draft)" : entry.Title,
                             entry.Category is null ? "-" : GetCategoryDisplayName(entry.Category.Name),
                             entry.Duration ?? 0m,
-                            entry.Status))
+                            entry.Status,
+                            FormatTimeRange(entry),
+                            entry.OrderNumber ?? string.Empty,
+                            CreateDescriptionPreview(entry.Description)))
                         .ToList()
                 };
             })
@@ -623,6 +626,27 @@ public class ReportEntryService(
     private static string NormalizeCategoryName(string? categoryName)
     {
         return (categoryName ?? string.Empty).Trim().ToLowerInvariant();
+    }
+
+    private static string FormatTimeRange(ReportEntry entry)
+    {
+        if (entry.StartTime == default || entry.EndTime == default)
+        {
+            return string.Empty;
+        }
+
+        return $"{entry.StartTime:HH:mm} - {entry.EndTime:HH:mm}";
+    }
+
+    private static string CreateDescriptionPreview(string description)
+    {
+        var normalizedDescription = description.Trim();
+        if (normalizedDescription.Length <= 180)
+        {
+            return normalizedDescription;
+        }
+
+        return normalizedDescription[..177] + "...";
     }
 
     private static void ValidateForSave(ReportEntryFormModel form)

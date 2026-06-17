@@ -1,0 +1,84 @@
+@page "/weekly-reports/grid"
+@attribute [Authorize(Policy = "ConfirmedEmail")]
+@inject IStringLocalizer<SharedResource> Localizer
+
+<PageTitle>@Localizer["WeeklyOverviewGridPageTitle"]</PageTitle>
+
+@if (Overview is null)
+{
+    <div class="weekly-grid-loading">@Localizer["WeeklyOverviewLoading"]</div>
+}
+else
+{
+    <div class="weekly-grid-page">
+        <header class="weekly-grid-header">
+            <div>
+                <p>@Localizer["WeeklyOverviewEyebrow"]</p>
+                <h1>@Localizer["WeeklyOverviewGridPageTitle"]</h1>
+                <span>@Localizer["WeeklyOverviewPageIntro"]</span>
+            </div>
+            <div class="weekly-grid-actions">
+                <section class="weekly-grid-navigation" aria-label="@Localizer["WeeklyOverviewNavigation"]">
+                    <button class="weekly-grid-nav-button" type="button" title="@Localizer["WeeklyOverviewPreviousWeek"]" aria-label="@Localizer["WeeklyOverviewPreviousWeek"]" @onclick="GoToPreviousWeek">
+                        &lt;
+                    </button>
+                    <label class="weekly-grid-date-picker">
+                        <span class="visually-hidden">@Localizer["WeeklyOverviewJumpToWeek"]</span>
+                        <input class="form-control" type="date" value="@SelectedDateString" @onchange="HandleDateChangedAsync" />
+                    </label>
+                    <button class="weekly-grid-nav-button" type="button" title="@Localizer["WeeklyOverviewNextWeek"]" aria-label="@Localizer["WeeklyOverviewNextWeek"]" @onclick="GoToNextWeek">
+                        &gt;
+                    </button>
+                </section>
+                <a class="btn btn-outline-secondary btn-sm" href="@ExportHref" download data-enhance-nav="false">@Localizer["DashboardExportPdf"]</a>
+            </div>
+        </header>
+
+        <section class="weekly-grid-summary">
+            <span>@Localizer["WeeklyOverviewTitle"] @Overview.CalendarWeek</span>
+            <strong>@Overview.RecordedHours.ToString("0.##") h</strong>
+        </section>
+
+        <section class="weekly-grid-days">
+            @foreach (var day in Overview.Days)
+            {
+                <article class="weekly-grid-day">
+                    <header class="weekly-grid-day-header">
+                        <a href="@($"report-entries/new?date={day.Date:yyyy-MM-dd}")">
+                            <span>@Localizer[day.DayKey]</span>
+                            <strong>@day.Date.ToString("dd.MM.yyyy")</strong>
+                        </a>
+                        <div>
+                            <strong>@day.TotalHours.ToString("0.##") h</strong>
+                            <span>@day.EntryCount @Localizer["WeeklyOverviewEntries"]</span>
+                        </div>
+                    </header>
+
+                    @if (day.Entries.Count == 0)
+                    {
+                        <p class="weekly-grid-empty">@Localizer["WeeklyOverviewNoEntries"]</p>
+                    }
+                    else
+                    {
+                        <div class="weekly-grid-entry-list">
+                            @foreach (var entry in day.Entries)
+                            {
+                                <a class="weekly-grid-entry" href="@($"report-entries/{entry.Id}")">
+                                    <span class="weekly-grid-entry-time">@entry.TimeRange</span>
+                                    <strong>@entry.Title</strong>
+                                    <span class="weekly-grid-entry-meta">
+                                        <span>@entry.CategoryName</span>
+                                        @if (!string.IsNullOrWhiteSpace(entry.OrderNumber))
+                                        {
+                                            <span>@entry.OrderNumber</span>
+                                        }
+                                    </span>
+                                </a>
+                            }
+                        </div>
+                    }
+                </article>
+            }
+        </section>
+    </div>
+}

@@ -5,4 +5,7 @@ public sealed record ReportEntryListItem(
     string Title,
     string CategoryName,
     decimal Hours,
-    string Status);
+    string Status,
+    string TimeRange = "",
+    string OrderNumber = "",
+    string DescriptionPreview = "");
