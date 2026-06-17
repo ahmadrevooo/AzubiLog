@@ -498,6 +498,9 @@
   <data name="ReportEntryNextDay" xml:space="preserve">
     <value>Nächster Tag</value>
   </data>
+  <data name="ReportEntryToday" xml:space="preserve">
+    <value>Heute</value>
+  </data>
   <data name="ProfilePageTitle" xml:space="preserve">
     <value>Profil und Stammdaten</value>
   </data>
