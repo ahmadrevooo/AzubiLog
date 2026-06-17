@@ -8,6 +8,7 @@ public sealed class ReportEntryEditorViewModel
     public DailySummaryViewModel DailySummary { get; init; } = new();
     public WeeklyOverviewViewModel WeeklyOverview { get; init; } = new();
     public SchoolDaySuggestionViewModel? SchoolDaySuggestion { get; init; }
+    public string DailyReportEmailHref { get; init; } = string.Empty;
     public decimal CalculatedHours { get; init; }
     public bool RestoredDraft { get; init; }
 }

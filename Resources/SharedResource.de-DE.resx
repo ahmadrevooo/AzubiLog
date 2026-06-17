@@ -612,4 +612,7 @@
   <data name="ProfileTrainerRemove" xml:space="preserve">
     <value>Entfernen</value>
   </data>
+  <data name="ReportEntryPrepareDailyEmail" xml:space="preserve">
+    <value>Tagesbericht per E-Mail vorbereiten</value>
+  </data>
 </root>

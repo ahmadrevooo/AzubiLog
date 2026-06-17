@@ -98,6 +98,7 @@
         <ValidationSummary />
 
         <div class="report-entry-actions">
+            <a class="report-entry-email-button" href="@DailyReportEmailHref">@Localizer["ReportEntryPrepareDailyEmail"]</a>
             <button class="btn btn-outline-secondary" type="button" @onclick="HandleDraftRequestedAsync">@Localizer["ReportEntrySaveDraft"]</button>
             <button class="btn btn-primary" type="submit">@Localizer["ReportEntrySave"]</button>
             @if (Model.Id.HasValue)
@@ -120,6 +121,9 @@
 
     [Parameter]
     public SchoolDaySuggestionViewModel? SchoolDaySuggestion { get; set; }
+
+    [Parameter]
+    public string DailyReportEmailHref { get; set; } = string.Empty;
 
     [Parameter]
     public EventCallback<ReportEntryFormModel> OnFieldChanged { get; set; }

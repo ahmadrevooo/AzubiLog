@@ -194,6 +194,21 @@
     outline-offset: 2px;
 }
 
+.report-entry-email-button {
+    background: color-mix(in srgb, var(--app-primary) 10%, var(--app-surface-muted));
+    border: 1px solid color-mix(in srgb, var(--app-primary) 24%, var(--app-border));
+    border-radius: 8px;
+    color: var(--app-text);
+    font-size: 0.9rem;
+    font-weight: 700;
+    padding: 0.38rem 0.65rem;
+    text-decoration: none;
+}
+
+.report-entry-email-button:focus-visible {
+    box-shadow: 0 0 0 0.18rem color-mix(in srgb, var(--app-primary) 22%, transparent);
+}
+
 @media (hover: hover) and (pointer: fine) {
     .report-entry-day-button:hover {
         background: color-mix(in srgb, var(--app-primary) 10%, var(--app-surface));
@@ -206,6 +221,10 @@
 
     .report-entry-delete-link:hover {
         text-decoration: underline;
+    }
+
+    .report-entry-email-button:hover {
+        background: color-mix(in srgb, var(--app-primary) 16%, var(--app-surface-muted));
     }
 }
 
@@ -234,7 +253,8 @@
         flex-direction: column;
     }
 
-    .report-entry-actions .btn {
+    .report-entry-actions .btn,
+    .report-entry-email-button {
         width: 100%;
     }
 }

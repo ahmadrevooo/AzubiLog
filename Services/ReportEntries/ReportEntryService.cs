@@ -183,6 +183,7 @@ public class ReportEntryService(
             DailySummary = summary,
             WeeklyOverview = weeklyOverview,
             SchoolDaySuggestion = schoolDaySuggestion,
+            DailyReportEmailHref = BuildDailyReportEmailHref(form, trainers, CalculateHours(form.StartTime, form.EndTime)),
             CalculatedHours = CalculateHours(form.StartTime, form.EndTime),
             RestoredDraft = restoredDraft
         };
@@ -702,6 +703,30 @@ public class ReportEntryService(
         }
 
         return normalizedDescription[..177] + "...";
+    }
+
+    private static string BuildDailyReportEmailHref(
+        ReportEntryFormModel form,
+        IReadOnlyList<ReportEntryOption> trainers,
+        decimal calculatedHours)
+    {
+        var trainerEmail = trainers.FirstOrDefault(trainer => trainer.Id == form.TrainerId)?.Email ?? string.Empty;
+        var subject = $"Tagesbericht vom {form.Date:dd.MM.yyyy}";
+        var body = string.Join(
+            Environment.NewLine,
+            [
+                $"Datum: {form.Date:dddd, dd.MM.yyyy}",
+                $"Startzeit: {form.StartTime}",
+                $"Endzeit: {form.EndTime}",
+                $"Arbeitszeit: {calculatedHours:0.##} h",
+                string.Empty,
+                $"Titel: {form.Title}",
+                string.Empty,
+                "Beschreibung:",
+                form.Description
+            ]);
+
+        return $"mailto:{Uri.EscapeDataString(trainerEmail)}?subject={Uri.EscapeDataString(subject)}&body={Uri.EscapeDataString(body)}";
     }
 
     private static void ValidateForSave(ReportEntryFormModel form)
