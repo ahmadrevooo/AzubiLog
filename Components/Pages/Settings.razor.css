@@ -126,6 +126,18 @@
     gap: 0.85rem;
 }
 
+.profile-trainer-section {
+    display: grid;
+    gap: 0.85rem;
+}
+
+.profile-trainer-heading {
+    align-items: center;
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+}
+
 .profile-schedule-grid {
     display: grid;
     gap: 0.75rem;
@@ -176,6 +188,47 @@
     opacity: 0.62;
 }
 
+.profile-trainer-empty {
+    color: var(--app-text-muted);
+    margin: 0;
+}
+
+.profile-trainer-list {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.profile-trainer-row {
+    align-items: end;
+    background: var(--app-bg);
+    border: 1px solid color-mix(in srgb, var(--app-border) 60%, transparent);
+    border-radius: 8px;
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: minmax(10rem, 1.1fr) minmax(12rem, 1.1fr) minmax(9rem, 0.9fr) auto;
+    padding: 0.8rem;
+}
+
+.profile-trainer-row label {
+    display: grid;
+    min-width: 0;
+}
+
+.profile-trainer-remove {
+    background: transparent;
+    border: 0;
+    color: var(--app-danger);
+    font-size: 0.88rem;
+    min-height: 2.5rem;
+    padding: 0.2rem 0.35rem;
+}
+
+.profile-trainer-remove:focus-visible {
+    border-radius: 6px;
+    outline: 2px solid color-mix(in srgb, var(--app-danger) 45%, transparent);
+    outline-offset: 2px;
+}
+
 .profile-actions {
     border-top: 1px solid color-mix(in srgb, var(--app-border) 58%, transparent);
     display: flex;
@@ -194,6 +247,16 @@
     }
 
     .profile-schedule-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-trainer-heading {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .profile-trainer-row {
+        align-items: stretch;
         grid-template-columns: 1fr;
     }
 

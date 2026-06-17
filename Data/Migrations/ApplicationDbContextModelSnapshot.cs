@@ -128,9 +128,11 @@ namespace AzubiLog.Data.Migrations
                     b.Property<string>("Department").IsRequired().HasMaxLength(120).HasColumnType("TEXT");
                     b.Property<string>("Email").IsRequired().HasMaxLength(256).HasColumnType("TEXT");
                     b.Property<string>("Name").IsRequired().HasMaxLength(150).HasColumnType("TEXT");
+                    b.Property<string>("UserId").IsRequired().HasColumnType("TEXT");
 
                     b.HasKey("Id");
                     b.HasIndex("Email");
+                    b.HasIndex("UserId", "Name");
                     b.ToTable("Trainers", (string)null);
                 });
 
@@ -248,6 +250,17 @@ namespace AzubiLog.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("AzubiLog.Models.Trainer", b =>
+                {
+                    b.HasOne("AzubiLog.Models.ApplicationUser", "User")
+                        .WithMany("Trainers")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("AzubiLog.Models.WeeklyReport", b =>
                 {
                     b.HasOne("AzubiLog.Models.ApplicationUser", "User")
@@ -292,6 +305,7 @@ namespace AzubiLog.Data.Migrations
                     b.Navigation("ReportEntries");
                     b.Navigation("SchoolScheduleDays");
                     b.Navigation("Todos");
+                    b.Navigation("Trainers");
                     b.Navigation("WeeklyReports");
                 });
 

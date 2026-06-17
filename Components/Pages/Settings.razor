@@ -122,6 +122,48 @@ else
                     </div>
                 </section>
 
+                <section class="profile-trainer-section">
+                    <div class="profile-section-heading profile-trainer-heading">
+                        <div>
+                            <p>@Localizer["ProfileTrainerManagementEyebrow"]</p>
+                            <h3>@Localizer["ProfileTrainerManagementTitle"]</h3>
+                        </div>
+                        <button class="btn btn-outline-secondary btn-sm" type="button" @onclick="AddTrainer">
+                            @Localizer["ProfileTrainerAdd"]
+                        </button>
+                    </div>
+
+                    @if (Profile.Trainers.Count == 0)
+                    {
+                        <p class="profile-trainer-empty">@Localizer["ProfileTrainerEmpty"]</p>
+                    }
+                    else
+                    {
+                        <div class="profile-trainer-list">
+                            @foreach (var trainer in Profile.Trainers)
+                            {
+                                <div class="profile-trainer-row" @key="trainer">
+                                    <label>
+                                        <span>@Localizer["ProfileTrainerFormName"]</span>
+                                        <InputText class="form-control" @bind-Value="trainer.Name" />
+                                    </label>
+                                    <label>
+                                        <span>@Localizer["ProfileTrainerFormEmail"]</span>
+                                        <InputText class="form-control" type="email" @bind-Value="trainer.Email" />
+                                    </label>
+                                    <label>
+                                        <span>@Localizer["ProfileTrainerFormDepartment"]</span>
+                                        <InputText class="form-control" @bind-Value="trainer.Department" />
+                                    </label>
+                                    <button class="profile-trainer-remove" type="button" @onclick="() => RemoveTrainer(trainer)">
+                                        @Localizer["ProfileTrainerRemove"]
+                                    </button>
+                                </div>
+                            }
+                        </div>
+                    }
+                </section>
+
                 <ValidationSummary />
 
                 <div class="profile-actions">

@@ -43,6 +43,7 @@ public sealed class ApprenticeProfileFormModel
     public int AnnualVacationDays { get; set; } = 30;
 
     public List<SchoolScheduleDayFormModel> SchoolScheduleDays { get; set; } = [];
+    public List<TrainerFormModel> Trainers { get; set; } = [];
 }
 
 public sealed class SchoolScheduleDayFormModel
@@ -53,4 +54,19 @@ public sealed class SchoolScheduleDayFormModel
 
     [StringLength(1_000, ErrorMessage = "Die Fächer dürfen maximal 1000 Zeichen lang sein.")]
     public string SubjectsText { get; set; } = string.Empty;
+}
+
+public sealed class TrainerFormModel
+{
+    public int? Id { get; set; }
+
+    [StringLength(150, ErrorMessage = "Der Name darf maximal 150 Zeichen lang sein.")]
+    public string Name { get; set; } = string.Empty;
+
+    [EmailAddress(ErrorMessage = "Bitte gib eine gültige E-Mail-Adresse ein.")]
+    [StringLength(256, ErrorMessage = "Die E-Mail-Adresse darf maximal 256 Zeichen lang sein.")]
+    public string Email { get; set; } = string.Empty;
+
+    [StringLength(120, ErrorMessage = "Die Abteilung darf maximal 120 Zeichen lang sein.")]
+    public string Department { get; set; } = string.Empty;
 }

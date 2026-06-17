@@ -106,7 +106,13 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             entity.Property(trainer => trainer.Department)
                 .HasMaxLength(120);
 
+            entity.HasIndex(trainer => new { trainer.UserId, trainer.Name });
             entity.HasIndex(trainer => trainer.Email);
+
+            entity.HasOne(trainer => trainer.User)
+                .WithMany(user => user.Trainers)
+                .HasForeignKey(trainer => trainer.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
     }
 

@@ -588,4 +588,28 @@
   <data name="ReportEntryApplySchoolDay" xml:space="preserve">
     <value>Schultag übernehmen</value>
   </data>
+  <data name="ProfileTrainerManagementEyebrow" xml:space="preserve">
+    <value>Ausbilder</value>
+  </data>
+  <data name="ProfileTrainerManagementTitle" xml:space="preserve">
+    <value>Ausbilder verwalten</value>
+  </data>
+  <data name="ProfileTrainerAdd" xml:space="preserve">
+    <value>Ausbilder hinzufügen</value>
+  </data>
+  <data name="ProfileTrainerEmpty" xml:space="preserve">
+    <value>Noch keine Ausbilder angelegt.</value>
+  </data>
+  <data name="ProfileTrainerFormName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="ProfileTrainerFormEmail" xml:space="preserve">
+    <value>E-Mail</value>
+  </data>
+  <data name="ProfileTrainerFormDepartment" xml:space="preserve">
+    <value>Abteilung</value>
+  </data>
+  <data name="ProfileTrainerRemove" xml:space="preserve">
+    <value>Entfernen</value>
+  </data>
 </root>

@@ -27,6 +27,10 @@ public sealed class ApprenticeProfileService(
         var scheduleDays = await dbContext.SchoolScheduleDays
             .Where(scheduleDay => scheduleDay.UserId == user.Id)
             .ToListAsync(cancellationToken);
+        var trainers = await dbContext.Trainers
+            .Where(trainer => trainer.UserId == user.Id)
+            .OrderBy(trainer => trainer.Name)
+            .ToListAsync(cancellationToken);
 
         return new ApprenticeProfileViewModel
         {
@@ -44,7 +48,8 @@ public sealed class ApprenticeProfileService(
                 Subjects = user.Subjects,
                 WeeklyTargetHours = user.WeeklyTargetHours <= 0 ? 40 : user.WeeklyTargetHours,
                 AnnualVacationDays = user.AnnualVacationDays <= 0 ? 30 : user.AnnualVacationDays,
-                SchoolScheduleDays = BuildScheduleForm(scheduleDays)
+                SchoolScheduleDays = BuildScheduleForm(scheduleDays),
+                Trainers = BuildTrainerForm(user.TrainerName, trainers)
             }
         };
     }
@@ -59,6 +64,13 @@ public sealed class ApprenticeProfileService(
             Validator.ValidateObject(
                 scheduleDay,
                 new ValidationContext(scheduleDay),
+                validateAllProperties: true);
+        }
+        foreach (var trainer in profile.Trainers)
+        {
+            Validator.ValidateObject(
+                trainer,
+                new ValidationContext(trainer),
                 validateAllProperties: true);
         }
 
@@ -83,6 +95,7 @@ public sealed class ApprenticeProfileService(
         }
 
         await SaveSchoolScheduleAsync(user.Id, profile.SchoolScheduleDays, cancellationToken);
+        await SaveTrainersAsync(user.Id, profile.TrainerName, profile.Trainers, cancellationToken);
     }
 
     private async Task SaveSchoolScheduleAsync(
@@ -128,5 +141,77 @@ public sealed class ApprenticeProfileService(
                 };
             })
             .ToList();
+    }
+
+    private async Task SaveTrainersAsync(
+        string userId,
+        string profileTrainerName,
+        IReadOnlyList<TrainerFormModel> trainers,
+        CancellationToken cancellationToken)
+    {
+        var existingTrainers = await dbContext.Trainers
+            .Where(trainer => trainer.UserId == userId)
+            .ToListAsync(cancellationToken);
+        var submittedTrainers = trainers
+            .Where(trainer => !string.IsNullOrWhiteSpace(trainer.Name))
+            .ToList();
+        var submittedIds = submittedTrainers
+            .Where(trainer => trainer.Id.HasValue)
+            .Select(trainer => trainer.Id!.Value)
+            .ToHashSet();
+
+        dbContext.Trainers.RemoveRange(existingTrainers.Where(trainer => !submittedIds.Contains(trainer.Id)));
+
+        foreach (var submittedTrainer in submittedTrainers)
+        {
+            var trainer = submittedTrainer.Id.HasValue
+                ? existingTrainers.FirstOrDefault(item => item.Id == submittedTrainer.Id.Value)
+                : null;
+
+            if (trainer is null)
+            {
+                trainer = new Trainer { UserId = userId };
+                dbContext.Trainers.Add(trainer);
+            }
+
+            trainer.Name = submittedTrainer.Name.Trim();
+            trainer.Email = submittedTrainer.Email.Trim();
+            trainer.Department = submittedTrainer.Department.Trim();
+        }
+
+        if (!string.IsNullOrWhiteSpace(profileTrainerName)
+            && !submittedTrainers.Any(trainer => trainer.Name.Trim().Equals(profileTrainerName.Trim(), StringComparison.OrdinalIgnoreCase)))
+        {
+            dbContext.Trainers.Add(new Trainer
+            {
+                UserId = userId,
+                Name = profileTrainerName.Trim()
+            });
+        }
+
+        await dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    private static List<TrainerFormModel> BuildTrainerForm(
+        string profileTrainerName,
+        IReadOnlyList<Trainer> trainers)
+    {
+        var trainerForms = trainers
+            .Select(trainer => new TrainerFormModel
+            {
+                Id = trainer.Id,
+                Name = trainer.Name,
+                Email = trainer.Email,
+                Department = trainer.Department
+            })
+            .ToList();
+
+        if (!string.IsNullOrWhiteSpace(profileTrainerName)
+            && !trainerForms.Any(trainer => trainer.Name.Equals(profileTrainerName, StringComparison.OrdinalIgnoreCase)))
+        {
+            trainerForms.Insert(0, new TrainerFormModel { Name = profileTrainerName });
+        }
+
+        return trainerForms;
     }
 }

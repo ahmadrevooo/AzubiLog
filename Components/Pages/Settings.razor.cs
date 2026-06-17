@@ -45,4 +45,14 @@ public partial class Settings : ComponentBase
             IsSaving = false;
         }
     }
+
+    protected void AddTrainer()
+    {
+        Profile.Trainers.Add(new TrainerFormModel());
+    }
+
+    protected void RemoveTrainer(TrainerFormModel trainer)
+    {
+        Profile.Trainers.Remove(trainer);
+    }
 }

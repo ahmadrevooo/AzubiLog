@@ -19,7 +19,7 @@ public class ReportEntryService(
     {
         var user = await currentUserService.GetRequiredUserAsync(cancellationToken);
         var categories = await GetCategoryOptionsAsync(user.Id, cancellationToken);
-        var trainers = await GetTrainerOptionsAsync(cancellationToken);
+        var trainers = await GetTrainerOptionsAsync(user.Id, user.TrainerName, cancellationToken);
         var restoredDraft = false;
 
         ReportEntryFormModel form;
@@ -46,7 +46,7 @@ public class ReportEntryService(
     {
         var user = await currentUserService.GetRequiredUserAsync(cancellationToken);
         var categories = await GetCategoryOptionsAsync(user.Id, cancellationToken);
-        var trainers = await GetTrainerOptionsAsync(cancellationToken);
+        var trainers = await GetTrainerOptionsAsync(user.Id, user.TrainerName, cancellationToken);
 
         return await BuildEditorAsync(form, categories, trainers, false, cancellationToken);
     }
@@ -204,11 +204,17 @@ public class ReportEntryService(
             .ToList();
     }
 
-    private async Task<IReadOnlyList<ReportEntryOption>> GetTrainerOptionsAsync(CancellationToken cancellationToken)
+    private async Task<IReadOnlyList<ReportEntryOption>> GetTrainerOptionsAsync(
+        string userId,
+        string profileTrainerName,
+        CancellationToken cancellationToken)
     {
+        await EnsureProfileTrainerAsync(userId, profileTrainerName, cancellationToken);
+
         return await dbContext.Trainers
+            .Where(trainer => trainer.UserId == userId)
             .OrderBy(trainer => trainer.Name)
-            .Select(trainer => new ReportEntryOption(trainer.Id, trainer.Name))
+            .Select(trainer => new ReportEntryOption(trainer.Id, trainer.Name, trainer.Email, trainer.Department))
             .ToListAsync(cancellationToken);
     }
 
@@ -279,7 +285,7 @@ public class ReportEntryService(
         entry.WeeklyReportId = weeklyReport.Id;
         entry.Date = form.Date.Date;
         entry.CategoryId = form.CategoryId;
-        entry.TrainerId = form.TrainerId;
+        entry.TrainerId = await GetOwnedTrainerIdAsync(userId, form.TrainerId, cancellationToken);
         entry.Title = form.Title.Trim();
         entry.Description = form.Description.Trim();
         entry.Note = form.Notes.Trim();
@@ -631,6 +637,50 @@ public class ReportEntryService(
     private static string NormalizeCategoryName(string? categoryName)
     {
         return (categoryName ?? string.Empty).Trim().ToLowerInvariant();
+    }
+
+    private async Task EnsureProfileTrainerAsync(
+        string userId,
+        string profileTrainerName,
+        CancellationToken cancellationToken)
+    {
+        var trimmedName = profileTrainerName.Trim();
+        if (string.IsNullOrWhiteSpace(trimmedName))
+        {
+            return;
+        }
+
+        var exists = await dbContext.Trainers
+            .AnyAsync(
+                trainer => trainer.UserId == userId && trainer.Name.ToLower() == trimmedName.ToLower(),
+                cancellationToken);
+        if (exists)
+        {
+            return;
+        }
+
+        dbContext.Trainers.Add(new Trainer
+        {
+            UserId = userId,
+            Name = trimmedName
+        });
+        await dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    private async Task<int?> GetOwnedTrainerIdAsync(
+        string userId,
+        int? trainerId,
+        CancellationToken cancellationToken)
+    {
+        if (!trainerId.HasValue)
+        {
+            return null;
+        }
+
+        return await dbContext.Trainers
+            .Where(trainer => trainer.UserId == userId && trainer.Id == trainerId.Value)
+            .Select(trainer => (int?)trainer.Id)
+            .FirstOrDefaultAsync(cancellationToken);
     }
 
     private static string FormatTimeRange(ReportEntry entry)
