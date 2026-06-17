@@ -1,0 +1,133 @@
+@page "/report-entries/mud"
+@page "/report-entries/mud/{EntryId:int}"
+@attribute [Authorize(Policy = "ConfirmedEmail")]
+@inject IStringLocalizer<SharedResource> Localizer
+
+<PageTitle>@Localizer["ReportEntryMudPageTitle"]</PageTitle>
+
+@if (ViewModel is null)
+{
+    <MudProgressLinear Color="Color.Primary" Indeterminate="true" />
+}
+else
+{
+    <MudContainer MaxWidth="MaxWidth.False" Class="report-entry-mud-page">
+        <MudStack Spacing="2">
+            <MudText Typo="Typo.overline" Color="Color.Primary">@Localizer["ReportEntryPageEyebrow"]</MudText>
+            <MudText Typo="Typo.h4">@Localizer["ReportEntryMudPageTitle"]</MudText>
+            <MudText Typo="Typo.body2" Color="Color.Secondary">@Localizer["ReportEntryPageIntro"]</MudText>
+        </MudStack>
+
+        <MudGrid Spacing="3" Class="mt-4">
+            <MudItem xs="12" lg="3">
+                <MudPaper Elevation="0" Outlined="true" Class="report-entry-mud-panel">
+                    <MudStack Spacing="3">
+                        <MudSelect T="int?" Label="@Localizer["ReportEntryCategory"]" Value="ViewModel.Entry.CategoryId" ValueChanged="HandleCategoryChangedAsync" Dense="true" Clearable="true">
+                            @foreach (var category in ViewModel.Categories)
+                            {
+                                <MudSelectItem T="int?" Value="@((int?)category.Id)">@category.Name</MudSelectItem>
+                            }
+                        </MudSelect>
+
+                        <MudSelect T="int?" Label="@Localizer["ReportEntryTrainer"]" Value="ViewModel.Entry.TrainerId" ValueChanged="HandleTrainerChangedAsync" Dense="true" Clearable="true">
+                            @foreach (var trainer in ViewModel.Trainers)
+                            {
+                                <MudSelectItem T="int?" Value="@((int?)trainer.Id)">@trainer.Name</MudSelectItem>
+                            }
+                        </MudSelect>
+
+                        <MudDivider />
+
+                        <MudText Typo="Typo.subtitle2">@Localizer["DailySummaryEyebrow"]</MudText>
+                        <MudText Typo="Typo.h6">@ViewModel.DailySummary.Date.ToString("d")</MudText>
+                        <MudText Typo="Typo.body2">@ViewModel.DailySummary.TotalHours.ToString("0.##") h</MudText>
+
+                        @if (ViewModel.DailySummary.Entries.Count == 0)
+                        {
+                            <MudText Typo="Typo.body2" Color="Color.Secondary">@Localizer["DailySummaryEmptyText"]</MudText>
+                        }
+                        else
+                        {
+                            @foreach (var entry in ViewModel.DailySummary.Entries)
+                            {
+                                <MudPaper Elevation="0" Outlined="true" Class="report-entry-mud-summary-item">
+                                    <MudLink Href="@($"report-entries/mud/{entry.Id}")">@entry.Title</MudLink>
+                                    <MudText Typo="Typo.caption" Color="Color.Secondary">@entry.CategoryName · @entry.Hours.ToString("0.##") h</MudText>
+                                </MudPaper>
+                            }
+                        }
+                    </MudStack>
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="12" lg="6">
+                <MudPaper Elevation="0" Outlined="true" Class="report-entry-mud-card">
+                    <EditForm Model="ViewModel.Entry" OnValidSubmit="HandleSaveAsync">
+                        <DataAnnotationsValidator />
+
+                        <MudStack Spacing="3">
+                            <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="report-entry-mud-title-row">
+                                <MudText Typo="Typo.h5">@Localizer[ViewModel.Entry.Id.HasValue ? "ReportEntryEditTitle" : "ReportEntryCreateTitle"]</MudText>
+                                <MudChip T="string" Color="Color.Primary" Variant="Variant.Outlined">@ViewModel.CalculatedHours.ToString("0.##") h</MudChip>
+                            </MudStack>
+
+                            <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="MoveToToday">@Localizer["ReportEntryToday"]</MudButton>
+                            <MudDatePicker Label="@Localizer["ReportEntryDate"]" Date="ViewModel.Entry.Date" DateChanged="HandleDateChangedAsync" DateFormat="dd.MM.yyyy" />
+
+                            <MudTextField T="string" Label="@Localizer["ReportEntryTitle"]" @bind-Value="ViewModel.Entry.Title" Required="true" />
+                            <MudTextField T="string" Label="@Localizer["ReportEntryOrderNumber"]" @bind-Value="ViewModel.Entry.OrderNumber" HelperText="BETRIEB, SCHULE, URLAUB, KRANK, ÜBERSTUNDEN, SONSTIGES" />
+
+                            @if (ViewModel.SchoolDaySuggestion?.IsSchoolDay == true)
+                            {
+                                <MudAlert Severity="Severity.Info" Dense="true">
+                                    <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+                                        <span>@Localizer["ReportEntrySchoolDayHint"]</span>
+                                        <MudButton Variant="Variant.Filled" Color="Color.Info" Size="Size.Small" OnClick="ApplySchoolDayTemplateAsync">@Localizer["ReportEntryApplySchoolDay"]</MudButton>
+                                    </MudStack>
+                                </MudAlert>
+                            }
+
+                            <MudTextField T="string" Label="@Localizer["ReportEntryDescription"]" @bind-Value="ViewModel.Entry.Description" Lines="12" />
+
+                            <MudCheckBox T="bool" Label="@Localizer["ReportEntryVocationalSchoolDay"]" @bind-Value="ViewModel.Entry.IsVocationalSchoolDay" />
+                            @if (ViewModel.Entry.IsVocationalSchoolDay)
+                            {
+                                <MudTextField T="string" Label="@Localizer["ReportEntrySubject"]" @bind-Value="ViewModel.Entry.Subject" />
+                            }
+
+                            <MudGrid>
+                                <MudItem xs="12" sm="6">
+                                    <MudTimePicker Label="@Localizer["ReportEntryStartTime"]" Time="StartTimeValue" TimeChanged="HandleStartTimeChangedAsync" AmPm="false" />
+                                </MudItem>
+                                <MudItem xs="12" sm="6">
+                                    <MudTimePicker Label="@Localizer["ReportEntryEndTime"]" Time="EndTimeValue" TimeChanged="HandleEndTimeChangedAsync" AmPm="false" />
+                                </MudItem>
+                            </MudGrid>
+
+                            <MudTextField T="string" Label="@Localizer["ReportEntryNotes"]" @bind-Value="ViewModel.Entry.Notes" />
+                            <ValidationSummary />
+
+                            <MudStack Row="true" Spacing="2" Class="report-entry-mud-actions">
+                                <MudButton Href="@ViewModel.DailyReportEmailHref" Target="_self" Variant="Variant.Outlined" Color="Color.Info">@Localizer["ReportEntryPrepareDailyEmail"]</MudButton>
+                                <MudButton Variant="Variant.Outlined" Color="Color.Secondary" OnClick="HandleDraftAsync">@Localizer["ReportEntrySaveDraft"]</MudButton>
+                                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">@Localizer["ReportEntrySave"]</MudButton>
+                                @if (ViewModel.Entry.Id.HasValue)
+                                {
+                                    <MudButton Variant="Variant.Text" Color="Color.Error" OnClick="HandleDeleteAsync">@Localizer["ReportEntryDelete"]</MudButton>
+                                }
+                            </MudStack>
+                        </MudStack>
+                    </EditForm>
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="12" lg="3">
+                <MudPaper Elevation="0" Outlined="true" Class="report-entry-mud-panel">
+                    <MudText Typo="Typo.subtitle2">@Localizer["WeeklyOverviewTitle"] @ViewModel.WeeklyOverview.CalendarWeek</MudText>
+                    <MudText Typo="Typo.h5">@ViewModel.WeeklyOverview.RecordedHours.ToString("0.##") h</MudText>
+                    <MudText Typo="Typo.body2" Color="Color.Secondary">@Localizer["DashboardRemainingHours"]: @ViewModel.WeeklyOverview.RemainingHours.ToString("0.##") h</MudText>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+    </MudContainer>
+}

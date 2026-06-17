@@ -1,0 +1,36 @@
+.report-entry-mud-page {
+    padding: 1rem 0 2.5rem;
+}
+
+.report-entry-mud-card,
+.report-entry-mud-panel {
+    background: var(--app-surface);
+    border-color: color-mix(in srgb, var(--app-border) 68%, transparent);
+    border-radius: 8px;
+    color: var(--app-text);
+    padding: 1rem;
+}
+
+.report-entry-mud-summary-item {
+    background: var(--app-bg);
+    border-color: color-mix(in srgb, var(--app-border) 60%, transparent);
+    border-radius: 8px;
+    display: grid;
+    gap: 0.25rem;
+    min-width: 0;
+    padding: 0.6rem;
+}
+
+.report-entry-mud-actions {
+    flex-wrap: wrap;
+}
+
+@media (max-width: 760px) {
+    .report-entry-mud-actions {
+        flex-direction: column !important;
+    }
+
+    .report-entry-mud-actions .mud-button-root {
+        width: 100%;
+    }
+}
