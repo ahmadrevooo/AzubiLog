@@ -32,6 +32,28 @@
             </label>
 
             <label>
+                <span>@Localizer["ReportEntryOrderNumber"]</span>
+                <InputText class="form-control" list="report-entry-order-codes" @bind-Value="Model.OrderNumber" @bind-Value:after="OrderNumberChangedAsync" />
+                <datalist id="report-entry-order-codes">
+                    @foreach (var option in OrderNumberOptions)
+                    {
+                        <option value="@option.Code">@option.Label</option>
+                    }
+                </datalist>
+                <ValidationMessage For="() => Model.OrderNumber" />
+            </label>
+
+            @if (SchoolDaySuggestion?.IsSchoolDay == true)
+            {
+                <div class="report-entry-school-hint">
+                    <span>@Localizer["ReportEntrySchoolDayHint"]</span>
+                    <button class="btn btn-outline-secondary btn-sm" type="button" @onclick="ApplySchoolDayTemplateAsync">
+                        @Localizer["ReportEntryApplySchoolDay"]
+                    </button>
+                </div>
+            }
+
+            <label>
                 <span>@Localizer["ReportEntryDescription"]</span>
                 <InputTextArea class="form-control report-entry-description" @bind-Value="Model.Description" @bind-Value:after="FieldChangedAsync" />
                 <ValidationMessage For="() => Model.Description" />
@@ -104,6 +126,9 @@
     public bool RestoredDraft { get; set; }
 
     [Parameter]
+    public SchoolDaySuggestionViewModel? SchoolDaySuggestion { get; set; }
+
+    [Parameter]
     public EventCallback<ReportEntryFormModel> OnFieldChanged { get; set; }
 
     [Parameter]
@@ -116,6 +141,15 @@
     public EventCallback OnDelete { get; set; }
 
     private static readonly IReadOnlyList<string> BaseTimeOptions = CreateTimeOptions();
+    private static readonly IReadOnlyList<OrderNumberOption> OrderNumberOptions =
+    [
+        new("BETRIEB", "Betrieb"),
+        new("SCHULE", "Berufsschule"),
+        new("URLAUB", "Urlaub"),
+        new("KRANK", "Krankheit"),
+        new("ÜBERSTUNDEN", "Überstunden"),
+        new("SONSTIGES", "Sonstiges")
+    ];
 
     private IReadOnlyList<string> TimeOptions { get; set; } = BaseTimeOptions;
 
@@ -127,6 +161,34 @@
     private Task FieldChangedAsync()
     {
         return OnFieldChanged.InvokeAsync(Model);
+    }
+
+    private Task OrderNumberChangedAsync()
+    {
+        Model.IsOrderNumberOverridden = true;
+        return FieldChangedAsync();
+    }
+
+    private Task ApplySchoolDayTemplateAsync()
+    {
+        Model.IsVocationalSchoolDay = true;
+
+        if (SchoolDaySuggestion?.VocationalSchoolCategoryId is int categoryId)
+        {
+            Model.CategoryId = categoryId;
+        }
+
+        if (!Model.IsOrderNumberOverridden)
+        {
+            Model.OrderNumber = "SCHULE";
+        }
+
+        if (string.IsNullOrWhiteSpace(Model.Description) && SchoolDaySuggestion is not null)
+        {
+            Model.Description = SchoolDaySuggestion.SubjectsText;
+        }
+
+        return FieldChangedAsync();
     }
 
     private void TimeChanged()
@@ -181,4 +243,5 @@
             && parsed < TimeSpan.FromDays(1);
     }
 
+    private sealed record OrderNumberOption(string Code, string Label);
 }

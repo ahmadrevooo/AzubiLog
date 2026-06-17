@@ -4,7 +4,7 @@
     <label class="report-entry-side-field">
         <span>@Localizer["ReportEntryCategory"] *</span>
         <div class="report-entry-category-control">
-            <InputSelect class="form-select" TValue="int?" @bind-Value="Model.CategoryId" @bind-Value:after="FieldChangedAsync">
+            <InputSelect class="form-select" TValue="int?" @bind-Value="Model.CategoryId" @bind-Value:after="CategoryChangedAsync">
                 <option value="">@Localizer["ReportEntrySelectCategory"]</option>
                 @foreach (var category in Categories)
                 {
@@ -63,6 +63,17 @@
         return OnFieldChanged.InvokeAsync(Model);
     }
 
+    private Task CategoryChangedAsync()
+    {
+        if (!Model.IsOrderNumberOverridden)
+        {
+            var categoryName = Categories.FirstOrDefault(category => category.Id == Model.CategoryId)?.Name;
+            Model.OrderNumber = GetDefaultOrderNumber(categoryName);
+        }
+
+        return FieldChangedAsync();
+    }
+
     private void ToggleCategoryCreator()
     {
         IsCategoryCreatorOpen = !IsCategoryCreatorOpen;
@@ -78,5 +89,32 @@
         await OnCreateCategory.InvokeAsync(NewCategoryName);
         NewCategoryName = string.Empty;
         IsCategoryCreatorOpen = false;
+    }
+
+    private static string GetDefaultOrderNumber(string? categoryName)
+    {
+        var normalizedName = (categoryName ?? string.Empty).Trim().ToLowerInvariant();
+
+        if (normalizedName.Contains("berufsschule", StringComparison.Ordinal))
+        {
+            return "SCHULE";
+        }
+
+        if (normalizedName.Contains("urlaub", StringComparison.Ordinal))
+        {
+            return "URLAUB";
+        }
+
+        if (normalizedName.Contains("krank", StringComparison.Ordinal))
+        {
+            return "KRANK";
+        }
+
+        if (normalizedName.Contains("überstunden", StringComparison.Ordinal))
+        {
+            return "ÜBERSTUNDEN";
+        }
+
+        return "BETRIEB";
     }
 }

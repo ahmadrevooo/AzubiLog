@@ -19,6 +19,7 @@ public class ApplicationUser : IdentityUser
 
     public List<WeeklyReport> WeeklyReports { get; set; } = new();
     public List<ReportEntry> ReportEntries { get; set; } = new();
+    public List<SchoolScheduleDay> SchoolScheduleDays { get; set; } = new();
     public List<Category> Categories { get; set; } = new();
     public List<TodoItem> Todos { get; set; } = new();
 }

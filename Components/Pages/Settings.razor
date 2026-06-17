@@ -95,6 +95,33 @@ else
                     </label>
                 </div>
 
+                <section class="profile-schedule-section">
+                    <div class="profile-section-heading">
+                        <p>@Localizer["ProfileSchoolScheduleEyebrow"]</p>
+                        <h3>@Localizer["ProfileSchoolScheduleTitle"]</h3>
+                    </div>
+
+                    <div class="profile-schedule-grid">
+                        @for (var index = 0; index < Profile.SchoolScheduleDays.Count; index++)
+                        {
+                            var scheduleDay = Profile.SchoolScheduleDays[index];
+
+                            <div class="profile-schedule-day" @key="scheduleDay.DayOfWeek">
+                                <label class="profile-schedule-check">
+                                    <InputCheckbox @bind-Value="scheduleDay.IsSelected" />
+                                    <span>@scheduleDay.Label</span>
+                                </label>
+
+                                <InputTextArea
+                                    class="form-control profile-schedule-subjects"
+                                    @bind-Value="scheduleDay.SubjectsText"
+                                    disabled="@(!scheduleDay.IsSelected)"
+                                    placeholder="@Localizer["ProfileSchoolScheduleSubjectsPlaceholder"]" />
+                            </div>
+                        }
+                    </div>
+                </section>
+
                 <ValidationSummary />
 
                 <div class="profile-actions">

@@ -555,4 +555,22 @@
   <data name="ProfileSaveFailed" xml:space="preserve">
     <value>Stammdaten konnten nicht gespeichert werden.</value>
   </data>
+  <data name="ProfileSchoolScheduleEyebrow" xml:space="preserve">
+    <value>Berufsschule</value>
+  </data>
+  <data name="ProfileSchoolScheduleTitle" xml:space="preserve">
+    <value>Berufsschule / Schulplan</value>
+  </data>
+  <data name="ProfileSchoolScheduleSubjectsPlaceholder" xml:space="preserve">
+    <value>Fächer untereinander eintragen</value>
+  </data>
+  <data name="ReportEntryOrderNumber" xml:space="preserve">
+    <value>Auftragsnummer / Berichtscode</value>
+  </data>
+  <data name="ReportEntrySchoolDayHint" xml:space="preserve">
+    <value>Dieser Tag ist laut deinem Profil ein Berufsschultag.</value>
+  </data>
+  <data name="ReportEntryApplySchoolDay" xml:space="preserve">
+    <value>Schultag übernehmen</value>
+  </data>
 </root>

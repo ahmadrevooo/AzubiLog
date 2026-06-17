@@ -22,6 +22,11 @@ public class ReportEntryFormModel
     [StringLength(2_000)]
     public string Notes { get; set; } = string.Empty;
 
+    [StringLength(80)]
+    public string OrderNumber { get; set; } = string.Empty;
+
+    public bool IsOrderNumberOverridden { get; set; }
+
     public int? TrainerId { get; set; }
 
     public string StartTime { get; set; } = "08:00";

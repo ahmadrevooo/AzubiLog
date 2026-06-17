@@ -56,6 +56,7 @@ public class ReportEntryService(
         CancellationToken cancellationToken = default)
     {
         var user = await currentUserService.GetRequiredUserAsync(cancellationToken);
+        await ApplySmartOrderNumberAsync(form, user.Id, cancellationToken);
         var entry = await GetOrCreateEntryAsync(form, user.Id, cancellationToken);
         await ApplyFormAsync(entry, form, user.Id, ReportEntryStatus.Draft, cancellationToken);
         await dbContext.SaveChangesAsync(cancellationToken);
@@ -70,6 +71,7 @@ public class ReportEntryService(
         ValidateForSave(form);
 
         var user = await currentUserService.GetRequiredUserAsync(cancellationToken);
+        await ApplySmartOrderNumberAsync(form, user.Id, cancellationToken);
         var entry = await GetOrCreateEntryAsync(form, user.Id, cancellationToken);
         await ApplyFormAsync(entry, form, user.Id, ReportEntryStatus.Saved, cancellationToken);
         await dbContext.SaveChangesAsync(cancellationToken);
@@ -155,11 +157,17 @@ public class ReportEntryService(
         CancellationToken cancellationToken)
     {
         var user = await currentUserService.GetRequiredUserAsync(cancellationToken);
+        await ApplySmartOrderNumberAsync(form, user.Id, cancellationToken);
         var summary = await BuildDailySummaryAsync(user.Id, form.Date, cancellationToken);
         var weeklyOverview = await BuildWeeklyOverviewAsync(
             user.Id,
             form.Date,
             GetWeeklyTargetHours(user),
+            cancellationToken);
+        var schoolDaySuggestion = await BuildSchoolDaySuggestionAsync(
+            user.Id,
+            form.Date,
+            categories,
             cancellationToken);
 
         return new ReportEntryEditorViewModel
@@ -169,6 +177,7 @@ public class ReportEntryService(
             Trainers = trainers,
             DailySummary = summary,
             WeeklyOverview = weeklyOverview,
+            SchoolDaySuggestion = schoolDaySuggestion,
             CalculatedHours = CalculateHours(form.StartTime, form.EndTime),
             RestoredDraft = restoredDraft
         };
@@ -269,6 +278,7 @@ public class ReportEntryService(
         entry.Title = form.Title.Trim();
         entry.Description = form.Description.Trim();
         entry.Note = form.Notes.Trim();
+        entry.OrderNumber = string.IsNullOrWhiteSpace(form.OrderNumber) ? null : form.OrderNumber.Trim();
         entry.Subject = string.IsNullOrWhiteSpace(form.Subject) ? null : form.Subject.Trim();
         entry.DayType = form.IsVocationalSchoolDay
             ? ReportEntryDayType.VocationalSchool
@@ -449,12 +459,14 @@ public class ReportEntryService(
             Title = entry.Title,
             Description = entry.Description,
             Notes = entry.Note,
+            OrderNumber = entry.OrderNumber ?? string.Empty,
             TrainerId = entry.TrainerId,
             StartTime = entry.StartTime == default ? "08:00" : entry.StartTime.ToString("HH:mm", CultureInfo.InvariantCulture),
             EndTime = entry.EndTime == default ? "16:00" : entry.EndTime.ToString("HH:mm", CultureInfo.InvariantCulture),
             IsVocationalSchoolDay = entry.DayType == ReportEntryDayType.VocationalSchool,
             Subject = entry.Subject,
-            IsDraft = entry.Status == ReportEntryStatus.Draft
+            IsDraft = entry.Status == ReportEntryStatus.Draft,
+            IsOrderNumberOverridden = !string.IsNullOrWhiteSpace(entry.OrderNumber)
         };
     }
 
@@ -490,6 +502,127 @@ public class ReportEntryService(
             "Overtime" => "Überstunden",
             _ => categoryName
         };
+    }
+
+    private async Task ApplySmartOrderNumberAsync(
+        ReportEntryFormModel form,
+        string userId,
+        CancellationToken cancellationToken)
+    {
+        if (!ShouldApplySmartOrderNumber(form))
+        {
+            return;
+        }
+
+        var categoryName = await GetCategoryNameAsync(userId, form.CategoryId, cancellationToken);
+        form.OrderNumber = GetDefaultOrderNumber(categoryName);
+    }
+
+    private static bool ShouldApplySmartOrderNumber(ReportEntryFormModel form)
+    {
+        return !form.IsOrderNumberOverridden && string.IsNullOrWhiteSpace(form.OrderNumber);
+    }
+
+    private async Task<string?> GetCategoryNameAsync(
+        string userId,
+        int? categoryId,
+        CancellationToken cancellationToken)
+    {
+        if (!categoryId.HasValue)
+        {
+            return null;
+        }
+
+        return await dbContext.Categories
+            .Where(category => category.UserId == userId && category.Id == categoryId.Value)
+            .Select(category => category.Name)
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+
+    private static string GetDefaultOrderNumber(string? categoryName)
+    {
+        var normalizedName = NormalizeCategoryName(categoryName);
+
+        if (normalizedName.Contains("berufsschule", StringComparison.Ordinal)
+            || normalizedName.Contains("vocational school", StringComparison.Ordinal))
+        {
+            return "SCHULE";
+        }
+
+        if (normalizedName.Contains("urlaub", StringComparison.Ordinal)
+            || normalizedName.Contains("vacation", StringComparison.Ordinal))
+        {
+            return "URLAUB";
+        }
+
+        if (normalizedName.Contains("krank", StringComparison.Ordinal)
+            || normalizedName.Contains("sick", StringComparison.Ordinal))
+        {
+            return "KRANK";
+        }
+
+        if (normalizedName.Contains("überstunden", StringComparison.Ordinal)
+            || normalizedName.Contains("overtime", StringComparison.Ordinal))
+        {
+            return "ÜBERSTUNDEN";
+        }
+
+        return "BETRIEB";
+    }
+
+    private async Task<SchoolDaySuggestionViewModel?> BuildSchoolDaySuggestionAsync(
+        string userId,
+        DateTime date,
+        IReadOnlyList<ReportEntryOption> categories,
+        CancellationToken cancellationToken)
+    {
+        var scheduleDay = await dbContext.SchoolScheduleDays
+            .FirstOrDefaultAsync(
+                day => day.UserId == userId && day.DayOfWeek == date.DayOfWeek,
+                cancellationToken);
+
+        if (scheduleDay is null)
+        {
+            return null;
+        }
+
+        return new SchoolDaySuggestionViewModel
+        {
+            IsSchoolDay = true,
+            SubjectsText = BuildSchoolDayDescription(scheduleDay.SubjectsText),
+            VocationalSchoolCategoryId = FindVocationalSchoolCategoryId(categories)
+        };
+    }
+
+    private static int? FindVocationalSchoolCategoryId(IReadOnlyList<ReportEntryOption> categories)
+    {
+        return categories
+            .FirstOrDefault(category => NormalizeCategoryName(category.Name).Contains("berufsschule", StringComparison.Ordinal))
+            ?.Id;
+    }
+
+    private static string BuildSchoolDayDescription(string subjectsText)
+    {
+        var subjects = subjectsText
+            .Split(["\r\n", "\n"], StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
+            .ToList();
+
+        if (subjects.Count == 0)
+        {
+            return "Berufsschultag";
+        }
+
+        return "Berufsschultag"
+            + Environment.NewLine
+            + Environment.NewLine
+            + string.Join(
+                Environment.NewLine + Environment.NewLine,
+                subjects.Select(subject => $"{subject}:{Environment.NewLine}- "));
+    }
+
+    private static string NormalizeCategoryName(string? categoryName)
+    {
+        return (categoryName ?? string.Empty).Trim().ToLowerInvariant();
     }
 
     private static void ValidateForSave(ReportEntryFormModel form)

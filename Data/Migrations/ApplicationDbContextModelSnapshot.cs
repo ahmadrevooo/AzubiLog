@@ -94,6 +94,18 @@ namespace AzubiLog.Data.Migrations
                     b.ToTable("ReportEntries", (string)null);
                 });
 
+            modelBuilder.Entity("AzubiLog.Models.SchoolScheduleDay", b =>
+                {
+                    b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("INTEGER");
+                    b.Property<string>("DayOfWeek").IsRequired().HasMaxLength(20).HasColumnType("TEXT");
+                    b.Property<string>("SubjectsText").IsRequired().HasMaxLength(1000).HasColumnType("TEXT");
+                    b.Property<string>("UserId").IsRequired().HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+                    b.HasIndex("UserId", "DayOfWeek").IsUnique();
+                    b.ToTable("SchoolScheduleDays", (string)null);
+                });
+
             modelBuilder.Entity("AzubiLog.Models.TodoItem", b =>
                 {
                     b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("INTEGER");
@@ -214,6 +226,17 @@ namespace AzubiLog.Data.Migrations
                     b.Navigation("WeeklyReport");
                 });
 
+            modelBuilder.Entity("AzubiLog.Models.SchoolScheduleDay", b =>
+                {
+                    b.HasOne("AzubiLog.Models.ApplicationUser", "User")
+                        .WithMany("SchoolScheduleDays")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("AzubiLog.Models.TodoItem", b =>
                 {
                     b.HasOne("AzubiLog.Models.ApplicationUser", "User")
@@ -267,6 +290,7 @@ namespace AzubiLog.Data.Migrations
                 {
                     b.Navigation("Categories");
                     b.Navigation("ReportEntries");
+                    b.Navigation("SchoolScheduleDays");
                     b.Navigation("Todos");
                     b.Navigation("WeeklyReports");
                 });

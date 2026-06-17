@@ -41,4 +41,16 @@ public sealed class ApprenticeProfileFormModel
 
     [Range(0, 60, ErrorMessage = "Die Urlaubstage müssen zwischen 0 und 60 liegen.")]
     public int AnnualVacationDays { get; set; } = 30;
+
+    public List<SchoolScheduleDayFormModel> SchoolScheduleDays { get; set; } = [];
+}
+
+public sealed class SchoolScheduleDayFormModel
+{
+    public DayOfWeek DayOfWeek { get; set; }
+    public string Label { get; set; } = string.Empty;
+    public bool IsSelected { get; set; }
+
+    [StringLength(1_000, ErrorMessage = "Die Fächer dürfen maximal 1000 Zeichen lang sein.")]
+    public string SubjectsText { get; set; } = string.Empty;
 }

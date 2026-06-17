@@ -9,6 +9,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 {
     public DbSet<Category> Categories => Set<Category>();
     public DbSet<ReportEntry> ReportEntries => Set<ReportEntry>();
+    public DbSet<SchoolScheduleDay> SchoolScheduleDays => Set<SchoolScheduleDay>();
     public DbSet<TodoItem> Todos => Set<TodoItem>();
     public DbSet<Trainer> Trainers => Set<Trainer>();
     public DbSet<WeeklyReport> WeeklyReports => Set<WeeklyReport>();
@@ -22,6 +23,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         ConfigureTrainer(builder);
         ConfigureWeeklyReport(builder);
         ConfigureReportEntry(builder);
+        ConfigureSchoolScheduleDay(builder);
         ConfigureTodoItem(builder);
     }
 
@@ -187,6 +189,30 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                 .WithMany(category => category.ReportEntries)
                 .HasForeignKey(entry => entry.CategoryId)
                 .OnDelete(DeleteBehavior.SetNull);
+        });
+    }
+
+    private static void ConfigureSchoolScheduleDay(ModelBuilder builder)
+    {
+        builder.Entity<SchoolScheduleDay>(entity =>
+        {
+            entity.ToTable("SchoolScheduleDays");
+
+            entity.Property(scheduleDay => scheduleDay.DayOfWeek)
+                .HasConversion<string>()
+                .HasMaxLength(20)
+                .IsRequired();
+
+            entity.Property(scheduleDay => scheduleDay.SubjectsText)
+                .HasMaxLength(1_000);
+
+            entity.HasIndex(scheduleDay => new { scheduleDay.UserId, scheduleDay.DayOfWeek })
+                .IsUnique();
+
+            entity.HasOne(scheduleDay => scheduleDay.User)
+                .WithMany(user => user.SchoolScheduleDays)
+                .HasForeignKey(scheduleDay => scheduleDay.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
     }
 

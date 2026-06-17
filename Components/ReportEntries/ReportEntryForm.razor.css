@@ -120,6 +120,26 @@
     box-shadow: 0 0 0 0.18rem color-mix(in srgb, var(--app-primary) 22%, transparent);
 }
 
+.report-entry-school-hint {
+    align-items: center;
+    background: color-mix(in srgb, var(--app-primary) 8%, var(--app-surface-muted));
+    border: 1px solid color-mix(in srgb, var(--app-primary) 18%, var(--app-border));
+    border-radius: 8px;
+    color: var(--app-text);
+    display: flex;
+    gap: 0.75rem;
+    justify-content: space-between;
+    min-width: 0;
+    padding: 0.7rem;
+}
+
+.report-entry-school-hint span {
+    color: var(--app-text);
+    font-size: 0.88rem;
+    font-weight: 620;
+    overflow-wrap: anywhere;
+}
+
 .report-entry-description {
     min-height: 10rem;
     resize: vertical;
@@ -185,6 +205,11 @@
     .report-entry-compact-grid,
     .report-entry-time-grid {
         grid-template-columns: 1fr;
+    }
+
+    .report-entry-school-hint {
+        align-items: stretch;
+        flex-direction: column;
     }
 
     .report-entry-actions .btn {
