@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
+using MudBlazor.Services;
 using QuestPDF.Infrastructure;
 
 namespace AzubiLog
@@ -34,6 +35,7 @@ namespace AzubiLog
             builder.Services.AddCascadingAuthenticationState();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+            builder.Services.AddMudServices();
             var dataProtectionKeysPath = Path.Combine(
                 builder.Environment.ContentRootPath,
                 "App_Data",
