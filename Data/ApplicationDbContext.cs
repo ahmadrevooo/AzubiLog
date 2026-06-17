@@ -35,6 +35,9 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             entity.Property(user => user.LastName)
                 .HasMaxLength(100);
 
+            entity.Property(user => user.CompanyName)
+                .HasMaxLength(150);
+
             entity.Property(user => user.School)
                 .HasMaxLength(150);
 
@@ -43,6 +46,15 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
             entity.Property(user => user.TrainingOccupation)
                 .HasMaxLength(150);
+
+            entity.Property(user => user.TrainerName)
+                .HasMaxLength(150);
+
+            entity.Property(user => user.Subjects)
+                .HasMaxLength(500);
+
+            entity.Property(user => user.TrainingYear)
+                .HasDefaultValue(1);
 
             entity.Property(user => user.WeeklyTargetHours)
                 .HasDefaultValue(40d);

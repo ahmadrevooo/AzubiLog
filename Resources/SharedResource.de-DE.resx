@@ -51,6 +51,9 @@
   <data name="DashboardWelcome" xml:space="preserve">
     <value>Willkommen bei AzubiLog</value>
   </data>
+  <data name="DashboardWelcomeNamed" xml:space="preserve">
+    <value>Hallo, {0}</value>
+  </data>
   <data name="DashboardIntro" xml:space="preserve">
     <value>Deine Übersicht für die aktuelle Ausbildungswoche.</value>
   </data>
@@ -494,5 +497,62 @@
   </data>
   <data name="ReportEntryNextDay" xml:space="preserve">
     <value>Nächster Tag</value>
+  </data>
+  <data name="ProfilePageTitle" xml:space="preserve">
+    <value>Profil und Stammdaten</value>
+  </data>
+  <data name="ProfileLoading" xml:space="preserve">
+    <value>Profil wird geladen...</value>
+  </data>
+  <data name="ProfileEyebrow" xml:space="preserve">
+    <value>Einstellungen</value>
+  </data>
+  <data name="ProfilePageIntro" xml:space="preserve">
+    <value>Verwalte deine pers&#xF6;nlichen Daten und Angaben zur Ausbildung.</value>
+  </data>
+  <data name="ProfileMasterData" xml:space="preserve">
+    <value>Stammdaten</value>
+  </data>
+  <data name="ProfilePersonalData" xml:space="preserve">
+    <value>Ausbildungsprofil</value>
+  </data>
+  <data name="ProfileCompanyName" xml:space="preserve">
+    <value>Firmenname</value>
+  </data>
+  <data name="ProfileTrainingOccupation" xml:space="preserve">
+    <value>Ausbildungsberuf</value>
+  </data>
+  <data name="ProfileTrainingYear" xml:space="preserve">
+    <value>Ausbildungsjahr</value>
+  </data>
+  <data name="ProfileTrainerName" xml:space="preserve">
+    <value>Ausbildername</value>
+  </data>
+  <data name="ProfileSchool" xml:space="preserve">
+    <value>Schule</value>
+  </data>
+  <data name="ProfileClassName" xml:space="preserve">
+    <value>Klasse</value>
+  </data>
+  <data name="ProfileSubjects" xml:space="preserve">
+    <value>F&#xE4;cher</value>
+  </data>
+  <data name="ProfileWeeklyTargetHours" xml:space="preserve">
+    <value>W&#xF6;chentliche Sollarbeitszeit</value>
+  </data>
+  <data name="ProfileAnnualVacationDays" xml:space="preserve">
+    <value>Urlaubstage pro Jahr</value>
+  </data>
+  <data name="ProfileSave" xml:space="preserve">
+    <value>Stammdaten speichern</value>
+  </data>
+  <data name="ProfileSaving" xml:space="preserve">
+    <value>Wird gespeichert...</value>
+  </data>
+  <data name="ProfileSaved" xml:space="preserve">
+    <value>Stammdaten wurden gespeichert.</value>
+  </data>
+  <data name="ProfileSaveFailed" xml:space="preserve">
+    <value>Stammdaten konnten nicht gespeichert werden.</value>
   </data>
 </root>

@@ -9,7 +9,7 @@ public class ApplicationNavigationService : IApplicationNavigationService
         new("NavWeeklyReports", "weekly-reports", "bi-journal-text-nav-menu", true),
         new("NavTodos", "todos", "bi-list-nested-nav-menu", true),
         new("NavHistory", "history", "bi-list-nested-nav-menu", false),
-        new("NavSettings", "settings", "bi-gear-fill-nav-menu", false)
+        new("NavSettings", "settings", "bi-gear-fill-nav-menu", true)
     ];
 
     public IReadOnlyList<NavigationItem> GetMainNavigation() => MainNavigation;

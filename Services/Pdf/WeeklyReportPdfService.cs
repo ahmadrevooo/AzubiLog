@@ -76,8 +76,10 @@ public class WeeklyReportPdfService(
         return new WeeklyReportPdfModel
         {
             ApprenticeName = FormatApprenticeName(user),
-            CompanyName = string.IsNullOrWhiteSpace(user.School) ? "Ausbildungsbetrieb" : user.School,
+            CompanyName = string.IsNullOrWhiteSpace(user.CompanyName) ? "Ausbildungsbetrieb" : user.CompanyName,
             Occupation = string.IsNullOrWhiteSpace(user.TrainingOccupation) ? "Ausbildungsberuf" : user.TrainingOccupation,
+            TrainingYear = user.TrainingYear <= 0 ? 1 : user.TrainingYear,
+            TrainerName = string.IsNullOrWhiteSpace(user.TrainerName) ? "Ausbilder/in" : user.TrainerName,
             CalendarWeek = ISOWeek.GetWeekOfYear(date),
             Year = ISOWeek.GetYear(date),
             TotalHours = entries.Sum(entry => entry.Duration ?? 0m),
@@ -121,6 +123,11 @@ public class WeeklyReportPdfService(
             {
                 row.RelativeItem().Element(item => HeaderField(item, "Ausbildungsberuf", model.Occupation));
                 row.RelativeItem().Element(item => HeaderField(item, "Kalenderwoche / Jahr", $"KW {model.CalendarWeek:00} / {model.Year}"));
+            });
+            column.Item().Row(row =>
+            {
+                row.RelativeItem().Element(item => HeaderField(item, "Ausbildungsjahr", model.TrainingYear.ToString(CultureInfo.CurrentCulture)));
+                row.RelativeItem().Element(item => HeaderField(item, "Ausbilder/in", model.TrainerName));
             });
         });
     }
@@ -170,7 +177,7 @@ public class WeeklyReportPdfService(
 
             if (day.Entries.Count == 0)
             {
-                column.Item().Text("Keine Eintraege vorhanden.").FontColor(Colors.Grey.Darken1);
+                column.Item().Text("Keine Einträge vorhanden.").FontColor(Colors.Grey.Darken1);
                 return;
             }
 
@@ -198,7 +205,7 @@ public class WeeklyReportPdfService(
 
                 if (!string.IsNullOrWhiteSpace(entry.Subject))
                 {
-                    column.Item().Text($"Faecher: {entry.Subject}");
+                    column.Item().Text($"Fächer: {entry.Subject}");
                 }
             }
             else if (!string.IsNullOrWhiteSpace(entry.Description))

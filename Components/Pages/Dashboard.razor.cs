@@ -14,4 +14,17 @@ public partial class Dashboard : ComponentBase
     {
         ViewModel = await DashboardService.GetDashboardAsync();
     }
+
+    protected string GetWelcomeHeading()
+    {
+        if (string.IsNullOrWhiteSpace(ViewModel?.ApprenticeName))
+        {
+            return Localizer["DashboardWelcome"];
+        }
+
+        return string.Format(
+            System.Globalization.CultureInfo.CurrentCulture,
+            Localizer["DashboardWelcomeNamed"],
+            ViewModel.ApprenticeName);
+    }
 }

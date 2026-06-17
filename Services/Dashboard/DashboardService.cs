@@ -1,12 +1,16 @@
 using System.Globalization;
+using AzubiLog.Services.Identity;
 using AzubiLog.Services.Todos;
 
 namespace AzubiLog.Services.Dashboard;
 
-public class DashboardService(ITodoService todoService) : IDashboardService
+public class DashboardService(
+    ITodoService todoService,
+    ICurrentUserService currentUserService) : IDashboardService
 {
     public async Task<DashboardViewModel> GetDashboardAsync(CancellationToken cancellationToken = default)
     {
+        var user = await currentUserService.GetRequiredUserAsync(cancellationToken);
         var recordedHours = 0m;
         var calendarWeek = ISOWeek.GetWeekOfYear(DateTime.Today);
         var openTodoCount = await todoService.GetOpenTodoCountAsync(cancellationToken);
@@ -15,6 +19,7 @@ public class DashboardService(ITodoService todoService) : IDashboardService
         var model = new DashboardViewModel
         {
             CalendarWeek = calendarWeek,
+            ApprenticeName = FormatApprenticeName(user.FirstName, user.LastName),
             RecordedHours = recordedHours,
             OpenTodoCount = openTodoCount,
             Metrics =
@@ -42,5 +47,10 @@ public class DashboardService(ITodoService todoService) : IDashboardService
     private static string FormatHours(decimal hours)
     {
         return string.Create(CultureInfo.CurrentCulture, $"{hours:0.#} h");
+    }
+
+    private static string FormatApprenticeName(string firstName, string lastName)
+    {
+        return $"{firstName} {lastName}".Trim();
     }
 }

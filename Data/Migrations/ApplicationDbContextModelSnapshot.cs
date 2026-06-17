@@ -22,6 +22,7 @@ namespace AzubiLog.Data.Migrations
                     b.Property<int>("AccessFailedCount").HasColumnType("INTEGER");
                     b.Property<int>("AnnualVacationDays").ValueGeneratedOnAdd().HasColumnType("INTEGER").HasDefaultValue(30);
                     b.Property<string>("ClassName").IsRequired().HasMaxLength(80).HasColumnType("TEXT");
+                    b.Property<string>("CompanyName").IsRequired().HasMaxLength(150).HasColumnType("TEXT");
                     b.Property<string>("ConcurrencyStamp").IsConcurrencyToken().HasColumnType("TEXT");
                     b.Property<string>("Email").HasMaxLength(256).HasColumnType("TEXT");
                     b.Property<bool>("EmailConfirmed").HasColumnType("INTEGER");
@@ -37,8 +38,11 @@ namespace AzubiLog.Data.Migrations
                     b.Property<bool>("PhoneNumberConfirmed").HasColumnType("INTEGER");
                     b.Property<string>("School").IsRequired().HasMaxLength(150).HasColumnType("TEXT");
                     b.Property<string>("SecurityStamp").HasColumnType("TEXT");
+                    b.Property<string>("Subjects").IsRequired().HasMaxLength(500).HasColumnType("TEXT");
                     b.Property<bool>("TwoFactorEnabled").HasColumnType("INTEGER");
+                    b.Property<string>("TrainerName").IsRequired().HasMaxLength(150).HasColumnType("TEXT");
                     b.Property<string>("TrainingOccupation").IsRequired().HasMaxLength(150).HasColumnType("TEXT");
+                    b.Property<int>("TrainingYear").ValueGeneratedOnAdd().HasColumnType("INTEGER").HasDefaultValue(1);
                     b.Property<string>("UserName").HasMaxLength(256).HasColumnType("TEXT");
                     b.Property<double>("WeeklyTargetHours").ValueGeneratedOnAdd().HasColumnType("REAL").HasDefaultValue(40.0);
 

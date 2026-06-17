@@ -15,9 +15,13 @@
             <label>
                 <span>@Localizer["ReportEntryDate"] *</span>
                 <div class="report-entry-date-control">
-                    <button class="report-entry-day-button" type="button" title="@Localizer["ReportEntryPreviousDay"]" @onclick="MoveToPreviousDay">&lt;</button>
+                    <button class="report-entry-day-button" type="button" title="@Localizer["ReportEntryPreviousDay"]" aria-label="@Localizer["ReportEntryPreviousDay"]" @onclick="MoveToPreviousDay">
+                        <span aria-hidden="true">&lt;</span>
+                    </button>
                     <InputDate class="form-control" @bind-Value="Model.Date" @bind-Value:after="FieldChangedAsync" />
-                    <button class="report-entry-day-button" type="button" title="@Localizer["ReportEntryNextDay"]" @onclick="MoveToNextDay">&gt;</button>
+                    <button class="report-entry-day-button" type="button" title="@Localizer["ReportEntryNextDay"]" aria-label="@Localizer["ReportEntryNextDay"]" @onclick="MoveToNextDay">
+                        <span aria-hidden="true">&gt;</span>
+                    </button>
                 </div>
             </label>
 

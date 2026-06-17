@@ -12,8 +12,6 @@ public class ReportEntryService(
     ApplicationDbContext dbContext,
     ICurrentUserService currentUserService) : IReportEntryService
 {
-    private const decimal WeeklyTargetHours = 40m;
-
     public async Task<ReportEntryEditorViewModel> GetEditorAsync(
         int? entryId,
         DateTime? date,
@@ -134,7 +132,7 @@ public class ReportEntryService(
         CancellationToken cancellationToken = default)
     {
         var user = await currentUserService.GetRequiredUserAsync(cancellationToken);
-        return await BuildWeeklyOverviewAsync(user.Id, date, cancellationToken);
+        return await BuildWeeklyOverviewAsync(user.Id, date, GetWeeklyTargetHours(user), cancellationToken);
     }
 
     public decimal CalculateHours(string startTime, string endTime)
@@ -158,7 +156,11 @@ public class ReportEntryService(
     {
         var user = await currentUserService.GetRequiredUserAsync(cancellationToken);
         var summary = await BuildDailySummaryAsync(user.Id, form.Date, cancellationToken);
-        var weeklyOverview = await BuildWeeklyOverviewAsync(user.Id, form.Date, cancellationToken);
+        var weeklyOverview = await BuildWeeklyOverviewAsync(
+            user.Id,
+            form.Date,
+            GetWeeklyTargetHours(user),
+            cancellationToken);
 
         return new ReportEntryEditorViewModel
         {
@@ -361,6 +363,7 @@ public class ReportEntryService(
     private async Task<WeeklyOverviewViewModel> BuildWeeklyOverviewAsync(
         string userId,
         DateTime date,
+        decimal weeklyTargetHours,
         CancellationToken cancellationToken)
     {
         var monday = GetMonday(date);
@@ -412,11 +415,16 @@ public class ReportEntryService(
         return new WeeklyOverviewViewModel
         {
             CalendarWeek = ISOWeek.GetWeekOfYear(date),
-            WeeklyTargetHours = WeeklyTargetHours,
+            WeeklyTargetHours = weeklyTargetHours,
             RecordedHours = recordedHours,
-            RemainingHours = Math.Max(WeeklyTargetHours - recordedHours, 0m),
+            RemainingHours = Math.Max(weeklyTargetHours - recordedHours, 0m),
             Days = days
         };
+    }
+
+    private static decimal GetWeeklyTargetHours(ApplicationUser user)
+    {
+        return user.WeeklyTargetHours <= 0 ? 40m : (decimal)user.WeeklyTargetHours;
     }
 
     private static ReportEntryFormModel CreateNewForm(DateTime date, int? defaultCategoryId)

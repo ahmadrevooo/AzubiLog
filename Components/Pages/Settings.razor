@@ -1,0 +1,108 @@
+@page "/settings"
+@attribute [Authorize(Policy = "ConfirmedEmail")]
+@inject IStringLocalizer<SharedResource> Localizer
+
+<PageTitle>@Localizer["ProfilePageTitle"]</PageTitle>
+
+@if (ViewModel is null)
+{
+    <div class="profile-loading">@Localizer["ProfileLoading"]</div>
+}
+else
+{
+    <div class="profile-page">
+        <header class="profile-page-header">
+            <p>@Localizer["ProfileEyebrow"]</p>
+            <h1>@Localizer["ProfilePageTitle"]</h1>
+            <span>@Localizer["ProfilePageIntro"]</span>
+        </header>
+
+        <EditForm Model="Profile" FormName="profile-form" OnValidSubmit="HandleSaveAsync">
+            <DataAnnotationsValidator />
+
+            <section class="profile-card">
+                <div class="profile-card-header">
+                    <div>
+                        <p>@Localizer["ProfileMasterData"]</p>
+                        <h2>@Localizer["ProfilePersonalData"]</h2>
+                    </div>
+                    @if (!string.IsNullOrWhiteSpace(StatusMessage))
+                    {
+                        <span class="profile-status">@StatusMessage</span>
+                    }
+                </div>
+
+                <div class="profile-readonly-field">
+                    <span>@Localizer["AccountEmail"]</span>
+                    <strong>@ViewModel.Email</strong>
+                </div>
+
+                <div class="profile-grid">
+                    <label>
+                        <span>@Localizer["AccountFirstName"] *</span>
+                        <InputText class="form-control" @bind-Value="Profile.FirstName" />
+                        <ValidationMessage For="() => Profile.FirstName" />
+                    </label>
+                    <label>
+                        <span>@Localizer["AccountLastName"] *</span>
+                        <InputText class="form-control" @bind-Value="Profile.LastName" />
+                        <ValidationMessage For="() => Profile.LastName" />
+                    </label>
+                    <label>
+                        <span>@Localizer["ProfileCompanyName"] *</span>
+                        <InputText class="form-control" @bind-Value="Profile.CompanyName" />
+                        <ValidationMessage For="() => Profile.CompanyName" />
+                    </label>
+                    <label>
+                        <span>@Localizer["ProfileTrainingOccupation"] *</span>
+                        <InputText class="form-control" @bind-Value="Profile.TrainingOccupation" />
+                        <ValidationMessage For="() => Profile.TrainingOccupation" />
+                    </label>
+                    <label>
+                        <span>@Localizer["ProfileTrainingYear"] *</span>
+                        <InputNumber class="form-control" @bind-Value="Profile.TrainingYear" />
+                        <ValidationMessage For="() => Profile.TrainingYear" />
+                    </label>
+                    <label>
+                        <span>@Localizer["ProfileTrainerName"] *</span>
+                        <InputText class="form-control" @bind-Value="Profile.TrainerName" />
+                        <ValidationMessage For="() => Profile.TrainerName" />
+                    </label>
+                    <label>
+                        <span>@Localizer["ProfileSchool"]</span>
+                        <InputText class="form-control" @bind-Value="Profile.School" />
+                        <ValidationMessage For="() => Profile.School" />
+                    </label>
+                    <label>
+                        <span>@Localizer["ProfileClassName"]</span>
+                        <InputText class="form-control" @bind-Value="Profile.ClassName" />
+                        <ValidationMessage For="() => Profile.ClassName" />
+                    </label>
+                    <label class="profile-grid-wide">
+                        <span>@Localizer["ProfileSubjects"]</span>
+                        <InputTextArea class="form-control profile-subjects" @bind-Value="Profile.Subjects" />
+                        <ValidationMessage For="() => Profile.Subjects" />
+                    </label>
+                    <label>
+                        <span>@Localizer["ProfileWeeklyTargetHours"] *</span>
+                        <InputNumber class="form-control" @bind-Value="Profile.WeeklyTargetHours" />
+                        <ValidationMessage For="() => Profile.WeeklyTargetHours" />
+                    </label>
+                    <label>
+                        <span>@Localizer["ProfileAnnualVacationDays"] *</span>
+                        <InputNumber class="form-control" @bind-Value="Profile.AnnualVacationDays" />
+                        <ValidationMessage For="() => Profile.AnnualVacationDays" />
+                    </label>
+                </div>
+
+                <ValidationSummary />
+
+                <div class="profile-actions">
+                    <button class="btn btn-primary" type="submit" disabled="@IsSaving">
+                        @Localizer[IsSaving ? "ProfileSaving" : "ProfileSave"]
+                    </button>
+                </div>
+            </section>
+        </EditForm>
+    </div>
+}
