@@ -67,22 +67,12 @@
             <div class="report-entry-time-grid">
                 <label>
                     <span>@Localizer["ReportEntryStartTime"]</span>
-                    <InputSelect class="form-select report-entry-time-input" @bind-Value="Model.StartTime" @bind-Value:after="TimeChanged">
-                        @foreach (var time in TimeOptions)
-                        {
-                            <option value="@time">@time</option>
-                        }
-                    </InputSelect>
+                    <InputText class="form-control report-entry-time-input" type="time" step="900" @bind-Value="Model.StartTime" @bind-Value:after="FieldChangedAsync" />
                 </label>
 
                 <label>
                     <span>@Localizer["ReportEntryEndTime"]</span>
-                    <InputSelect class="form-select report-entry-time-input" @bind-Value="Model.EndTime" @bind-Value:after="TimeChanged">
-                        @foreach (var time in TimeOptions)
-                        {
-                            <option value="@time">@time</option>
-                        }
-                    </InputSelect>
+                    <InputText class="form-control report-entry-time-input" type="time" step="900" @bind-Value="Model.EndTime" @bind-Value:after="FieldChangedAsync" />
                 </label>
             </div>
 
@@ -143,7 +133,6 @@
     [Parameter]
     public EventCallback OnDelete { get; set; }
 
-    private static readonly IReadOnlyList<string> BaseTimeOptions = CreateTimeOptions();
     private static readonly IReadOnlyList<OrderNumberOption> OrderNumberOptions =
     [
         new("BETRIEB", "Betrieb"),
@@ -153,13 +142,6 @@
         new("ÜBERSTUNDEN", "Überstunden"),
         new("SONSTIGES", "Sonstiges")
     ];
-
-    private IReadOnlyList<string> TimeOptions { get; set; } = BaseTimeOptions;
-
-    protected override void OnParametersSet()
-    {
-        TimeOptions = GetTimeOptions(Model.StartTime, Model.EndTime);
-    }
 
     private Task FieldChangedAsync()
     {
@@ -194,11 +176,6 @@
         return FieldChangedAsync();
     }
 
-    private void TimeChanged()
-    {
-        TimeOptions = GetTimeOptions(Model.StartTime, Model.EndTime);
-    }
-
     private Task HandleDraftRequestedAsync()
     {
         return OnDraft.InvokeAsync(Model);
@@ -225,31 +202,6 @@
     {
         Model.Date = DateTime.Today;
         return FieldChangedAsync();
-    }
-
-    private static IReadOnlyList<string> GetTimeOptions(params string[] selectedTimes)
-    {
-        var options = BaseTimeOptions
-            .Concat(selectedTimes.Where(IsValidTime))
-            .Distinct(StringComparer.Ordinal)
-            .OrderBy(time => time, StringComparer.Ordinal)
-            .ToList();
-
-        return options;
-    }
-
-    private static IReadOnlyList<string> CreateTimeOptions()
-    {
-        return Enumerable.Range(0, 24 * 4)
-            .Select(index => TimeSpan.FromMinutes(index * 15).ToString(@"hh\:mm", System.Globalization.CultureInfo.InvariantCulture))
-            .ToList();
-    }
-
-    private static bool IsValidTime(string time)
-    {
-        return TimeSpan.TryParse(time, System.Globalization.CultureInfo.InvariantCulture, out var parsed)
-            && parsed >= TimeSpan.Zero
-            && parsed < TimeSpan.FromDays(1);
     }
 
     private sealed record OrderNumberOption(string Code, string Label);

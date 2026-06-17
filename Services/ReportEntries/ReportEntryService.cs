@@ -73,10 +73,15 @@ public class ReportEntryService(
         var user = await currentUserService.GetRequiredUserAsync(cancellationToken);
         await ApplySmartOrderNumberAsync(form, user.Id, cancellationToken);
         var entry = await GetOrCreateEntryAsync(form, user.Id, cancellationToken);
+        var previousWeeklyReportId = entry.WeeklyReportId;
         await ApplyFormAsync(entry, form, user.Id, ReportEntryStatus.Saved, cancellationToken);
         await dbContext.SaveChangesAsync(cancellationToken);
 
         await UpdateWeeklyReportTotalAsync(entry.WeeklyReportId, cancellationToken);
+        if (previousWeeklyReportId != default && previousWeeklyReportId != entry.WeeklyReportId)
+        {
+            await UpdateWeeklyReportTotalAsync(previousWeeklyReportId, cancellationToken);
+        }
 
         return entry.Id;
     }
