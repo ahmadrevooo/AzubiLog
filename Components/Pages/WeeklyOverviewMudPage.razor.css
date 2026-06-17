@@ -1,0 +1,53 @@
+.weekly-mud-page {
+    padding: 1rem 0 2.5rem;
+}
+
+.weekly-mud-controls,
+.weekly-mud-total,
+.weekly-mud-day-card {
+    background: var(--app-surface);
+    border-color: color-mix(in srgb, var(--app-border) 68%, transparent);
+    border-radius: 8px;
+    color: var(--app-text);
+}
+
+.weekly-mud-controls,
+.weekly-mud-total {
+    padding: 0.9rem 1rem;
+}
+
+.weekly-mud-day-card {
+    min-height: 24rem;
+}
+
+.weekly-mud-entry-list,
+.weekly-mud-entry-meta {
+    min-width: 0;
+}
+
+.weekly-mud-entry {
+    background: var(--app-bg);
+    border-color: color-mix(in srgb, var(--app-border) 58%, transparent);
+    border-radius: 8px;
+    display: grid;
+    gap: 0.35rem;
+    min-width: 0;
+    padding: 0.65rem;
+}
+
+.weekly-mud-entry .mud-typography,
+.weekly-mud-entry a {
+    overflow-wrap: anywhere;
+}
+
+.weekly-mud-empty {
+    margin-top: 1rem;
+}
+
+@media (max-width: 760px) {
+    .weekly-mud-control-stack,
+    .weekly-mud-nav {
+        align-items: stretch !important;
+        flex-direction: column !important;
+    }
+}

@@ -1,0 +1,85 @@
+@page "/weekly-reports/mud"
+@attribute [Authorize(Policy = "ConfirmedEmail")]
+@inject IStringLocalizer<SharedResource> Localizer
+
+<PageTitle>@Localizer["WeeklyOverviewMudPageTitle"]</PageTitle>
+
+@if (Overview is null)
+{
+    <MudProgressLinear Color="Color.Primary" Indeterminate="true" />
+}
+else
+{
+    <MudContainer MaxWidth="MaxWidth.False" Class="weekly-mud-page">
+        <MudStack Spacing="2">
+            <MudText Typo="Typo.overline" Color="Color.Primary">@Localizer["WeeklyOverviewEyebrow"]</MudText>
+            <MudText Typo="Typo.h4">@Localizer["WeeklyOverviewMudPageTitle"]</MudText>
+            <MudText Typo="Typo.body2" Color="Color.Secondary">@Localizer["WeeklyOverviewPageIntro"]</MudText>
+        </MudStack>
+
+        <MudPaper Elevation="0" Outlined="true" Class="weekly-mud-controls mt-4">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="weekly-mud-control-stack">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="weekly-mud-nav">
+                    <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="GoToToday">@Localizer["ReportEntryToday"]</MudButton>
+                    <MudIconButton Icon="@Icons.Material.Filled.ChevronLeft" Color="Color.Default" OnClick="GoToPreviousWeek" aria-label="@Localizer["WeeklyOverviewPreviousWeek"]" />
+                    <MudDatePicker Date="SelectedDate" DateChanged="HandleDateChangedAsync" DateFormat="dd.MM.yyyy" Margin="Margin.Dense" />
+                    <MudIconButton Icon="@Icons.Material.Filled.ChevronRight" Color="Color.Default" OnClick="GoToNextWeek" aria-label="@Localizer["WeeklyOverviewNextWeek"]" />
+                </MudStack>
+                <MudButton Href="@ExportHref" Target="_self" Variant="Variant.Filled" Color="Color.Primary">@Localizer["DashboardExportPdf"]</MudButton>
+            </MudStack>
+        </MudPaper>
+
+        <MudPaper Elevation="0" Outlined="true" Class="weekly-mud-total">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+                <MudText Typo="Typo.subtitle1">@Localizer["WeeklyOverviewTitle"] @Overview.CalendarWeek</MudText>
+                <MudText Typo="Typo.h5">@Overview.RecordedHours.ToString("0.##") h</MudText>
+            </MudStack>
+        </MudPaper>
+
+        <MudGrid Spacing="3">
+            @foreach (var day in Overview.Days)
+            {
+                <MudItem xs="12" md="6" xl="2">
+                    <MudCard Elevation="0" Outlined="true" Class="weekly-mud-day-card">
+                        <MudCardHeader>
+                            <CardHeaderContent>
+                                <MudLink Href="@($"report-entries/new?date={day.Date:yyyy-MM-dd}")" Typo="Typo.h6">@Localizer[day.DayKey]</MudLink>
+                                <MudText Typo="Typo.body2" Color="Color.Secondary">@day.Date.ToString("dd.MM.yyyy")</MudText>
+                            </CardHeaderContent>
+                            <CardHeaderActions>
+                                <MudChip T="string" Color="Color.Primary" Variant="Variant.Outlined">@day.TotalHours.ToString("0.##") h</MudChip>
+                            </CardHeaderActions>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            <MudText Typo="Typo.caption" Color="Color.Secondary">@day.EntryCount @Localizer["WeeklyOverviewEntries"]</MudText>
+
+                            @if (day.Entries.Count == 0)
+                            {
+                                <MudText Typo="Typo.body2" Color="Color.Secondary" Class="weekly-mud-empty">@Localizer["WeeklyOverviewNoEntries"]</MudText>
+                            }
+                            else
+                            {
+                                <MudStack Spacing="1" Class="weekly-mud-entry-list">
+                                    @foreach (var entry in day.Entries)
+                                    {
+                                        <MudPaper Elevation="0" Outlined="true" Class="weekly-mud-entry">
+                                            <MudText Typo="Typo.caption" Color="Color.Secondary">@entry.TimeRange</MudText>
+                                            <MudLink Href="@($"report-entries/{entry.Id}")" Typo="Typo.subtitle2">@entry.Title</MudLink>
+                                            <MudStack Row="true" Spacing="1" Class="weekly-mud-entry-meta">
+                                                <MudChip T="string" Size="Size.Small" Variant="Variant.Outlined">@entry.CategoryName</MudChip>
+                                                @if (!string.IsNullOrWhiteSpace(entry.OrderNumber))
+                                                {
+                                                    <MudChip T="string" Size="Size.Small" Color="Color.Info" Variant="Variant.Outlined">@entry.OrderNumber</MudChip>
+                                                }
+                                            </MudStack>
+                                        </MudPaper>
+                                    }
+                                </MudStack>
+                            }
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+            }
+        </MudGrid>
+    </MudContainer>
+}
