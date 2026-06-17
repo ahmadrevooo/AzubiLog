@@ -48,6 +48,14 @@
     min-width: max-content;
 }
 
+.weekly-vertical-actions {
+    align-items: center;
+    display: flex;
+    gap: 0.55rem;
+    justify-content: space-between;
+    min-width: 0;
+}
+
 .weekly-vertical-date-picker {
     margin: 0;
     width: 10.5rem;
@@ -60,6 +68,28 @@
     border-radius: 8px;
     color: var(--app-text);
     min-height: 2.15rem;
+}
+
+.weekly-vertical-today-button,
+.weekly-vertical-export-button {
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 720;
+    min-height: 2.15rem;
+    padding: 0.3rem 0.7rem;
+    text-decoration: none;
+}
+
+.weekly-vertical-today-button {
+    background: var(--app-surface);
+    border: 1px solid color-mix(in srgb, var(--app-border) 68%, transparent);
+    color: var(--app-text);
+}
+
+.weekly-vertical-export-button {
+    background: var(--app-primary);
+    border: 1px solid var(--app-primary);
+    color: #fff;
 }
 
 .weekly-vertical-date-picker .form-control {
@@ -224,6 +254,11 @@
     .weekly-vertical-navigation {
         justify-content: flex-start;
         min-width: 0;
+    }
+
+    .weekly-vertical-actions {
+        align-items: stretch;
+        flex-direction: column;
     }
 
     .weekly-vertical-date-picker {

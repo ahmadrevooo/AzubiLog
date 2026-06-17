@@ -35,6 +35,11 @@ public partial class WeeklyOverviewPage : ComponentBase
         NavigateToWeek(SelectedDate.AddDays(7));
     }
 
+    protected void GoToToday()
+    {
+        NavigateToWeek(DateTime.Today);
+    }
+
     protected Task HandleDateChangedAsync(ChangeEventArgs args)
     {
         if (DateTime.TryParse(args.Value?.ToString(), CultureInfo.InvariantCulture, DateTimeStyles.None, out var selectedDate))

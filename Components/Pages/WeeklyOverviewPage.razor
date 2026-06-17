@@ -17,25 +17,25 @@ else
                 <h1>@Localizer["WeeklyOverviewPageTitle"]</h1>
                 <span>@Localizer["WeeklyOverviewPageIntro"]</span>
             </div>
-            <div class="weekly-overview-page-actions">
-                <section class="weekly-overview-navigation" aria-label="@Localizer["WeeklyOverviewNavigation"]">
-                    <button class="weekly-overview-nav-button" type="button" title="@Localizer["WeeklyOverviewPreviousWeek"]" aria-label="@Localizer["WeeklyOverviewPreviousWeek"]" @onclick="GoToPreviousWeek">
-                        &lt;
-                    </button>
-                    <label class="weekly-overview-date-picker">
-                        <span class="visually-hidden">@Localizer["WeeklyOverviewJumpToWeek"]</span>
-                        <input class="form-control" type="date" value="@SelectedDateString" @onchange="HandleDateChangedAsync" />
-                    </label>
-                    <button class="weekly-overview-nav-button" type="button" title="@Localizer["WeeklyOverviewNextWeek"]" aria-label="@Localizer["WeeklyOverviewNextWeek"]" @onclick="GoToNextWeek">
-                        &gt;
-                    </button>
-                </section>
-            </div>
         </header>
 
+        <div class="weekly-overview-page-actions">
+            <section class="weekly-overview-navigation" aria-label="@Localizer["WeeklyOverviewNavigation"]">
+                <button class="weekly-overview-today-button" type="button" @onclick="GoToToday">@Localizer["ReportEntryToday"]</button>
+                <button class="weekly-overview-nav-button" type="button" title="@Localizer["WeeklyOverviewPreviousWeek"]" aria-label="@Localizer["WeeklyOverviewPreviousWeek"]" @onclick="GoToPreviousWeek">
+                    &lt;
+                </button>
+                <label class="weekly-overview-date-picker">
+                    <span class="visually-hidden">@Localizer["WeeklyOverviewJumpToWeek"]</span>
+                    <input class="form-control" type="date" value="@SelectedDateString" @onchange="HandleDateChangedAsync" />
+                </label>
+                <button class="weekly-overview-nav-button" type="button" title="@Localizer["WeeklyOverviewNextWeek"]" aria-label="@Localizer["WeeklyOverviewNextWeek"]" @onclick="GoToNextWeek">
+                    &gt;
+                </button>
+            </section>
+            <a class="weekly-overview-export-button" href="@ExportHref" download data-enhance-nav="false">@Localizer["DashboardExportPdf"]</a>
+        </div>
+
         <WeeklyOverview Overview="Overview" />
-    </div>
-    <div>
-        <a class="btn btn-outline-secondary" href="@ExportHref" download data-enhance-nav="false">@Localizer["DashboardExportPdf"]</a>
     </div>
 }

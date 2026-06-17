@@ -17,22 +17,24 @@ else
                 <h1>@Localizer["WeeklyOverviewGridPageTitle"]</h1>
                 <span>@Localizer["WeeklyOverviewPageIntro"]</span>
             </div>
-            <div class="weekly-grid-actions">
-                <section class="weekly-grid-navigation" aria-label="@Localizer["WeeklyOverviewNavigation"]">
-                    <button class="weekly-grid-nav-button" type="button" title="@Localizer["WeeklyOverviewPreviousWeek"]" aria-label="@Localizer["WeeklyOverviewPreviousWeek"]" @onclick="GoToPreviousWeek">
-                        &lt;
-                    </button>
-                    <label class="weekly-grid-date-picker">
-                        <span class="visually-hidden">@Localizer["WeeklyOverviewJumpToWeek"]</span>
-                        <input class="form-control" type="date" value="@SelectedDateString" @onchange="HandleDateChangedAsync" />
-                    </label>
-                    <button class="weekly-grid-nav-button" type="button" title="@Localizer["WeeklyOverviewNextWeek"]" aria-label="@Localizer["WeeklyOverviewNextWeek"]" @onclick="GoToNextWeek">
-                        &gt;
-                    </button>
-                </section>
-                <a class="btn btn-outline-secondary btn-sm" href="@ExportHref" download data-enhance-nav="false">@Localizer["DashboardExportPdf"]</a>
-            </div>
         </header>
+
+        <div class="weekly-grid-actions">
+            <section class="weekly-grid-navigation" aria-label="@Localizer["WeeklyOverviewNavigation"]">
+                <button class="weekly-grid-today-button" type="button" @onclick="GoToToday">@Localizer["ReportEntryToday"]</button>
+                <button class="weekly-grid-nav-button" type="button" title="@Localizer["WeeklyOverviewPreviousWeek"]" aria-label="@Localizer["WeeklyOverviewPreviousWeek"]" @onclick="GoToPreviousWeek">
+                    &lt;
+                </button>
+                <label class="weekly-grid-date-picker">
+                    <span class="visually-hidden">@Localizer["WeeklyOverviewJumpToWeek"]</span>
+                    <input class="form-control" type="date" value="@SelectedDateString" @onchange="HandleDateChangedAsync" />
+                </label>
+                <button class="weekly-grid-nav-button" type="button" title="@Localizer["WeeklyOverviewNextWeek"]" aria-label="@Localizer["WeeklyOverviewNextWeek"]" @onclick="GoToNextWeek">
+                    &gt;
+                </button>
+            </section>
+            <a class="weekly-grid-export-button" href="@ExportHref" download data-enhance-nav="false">@Localizer["DashboardExportPdf"]</a>
+        </div>
 
         <section class="weekly-grid-summary">
             <span>@Localizer["WeeklyOverviewTitle"] @Overview.CalendarWeek</span>

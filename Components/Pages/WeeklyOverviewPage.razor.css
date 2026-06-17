@@ -47,11 +47,11 @@
 }
 
 .weekly-overview-page-actions {
-    align-items: flex-end;
-    display: grid;
+    align-items: center;
+    display: flex;
     gap: 0.55rem;
-    justify-items: end;
-    min-width: max-content;
+    justify-content: space-between;
+    min-width: 0;
 }
 
 .weekly-overview-navigation {
@@ -89,6 +89,28 @@
     width: 2.15rem;
 }
 
+.weekly-overview-today-button,
+.weekly-overview-export-button {
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 720;
+    min-height: 2.15rem;
+    padding: 0.3rem 0.7rem;
+    text-decoration: none;
+}
+
+.weekly-overview-today-button {
+    background: var(--app-surface);
+    border: 1px solid color-mix(in srgb, var(--app-border) 64%, transparent);
+    color: var(--app-text);
+}
+
+.weekly-overview-export-button {
+    background: var(--app-primary);
+    border: 1px solid var(--app-primary);
+    color: #fff;
+}
+
 .weekly-overview-nav-button:focus-visible {
     box-shadow: 0 0 0 0.18rem color-mix(in srgb, var(--app-primary) 22%, transparent);
 }
@@ -107,8 +129,7 @@
 
     .weekly-overview-page-actions {
         align-items: stretch;
-        justify-items: stretch;
-        min-width: 0;
+        flex-direction: column;
     }
 
     .weekly-overview-navigation {

@@ -18,6 +18,7 @@ public partial class WeeklyOverviewVerticalPage : ComponentBase
     protected WeeklyOverviewViewModel? Overview { get; private set; }
     protected DateTime SelectedDate => (Date ?? DateTime.Today).Date;
     protected string SelectedDateString => SelectedDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+    protected string ExportHref => $"/weekly-reports/export?date={SelectedDateString}";
 
     protected override async Task OnParametersSetAsync()
     {
@@ -32,6 +33,11 @@ public partial class WeeklyOverviewVerticalPage : ComponentBase
     protected void GoToNextWeek()
     {
         NavigateToWeek(SelectedDate.AddDays(7));
+    }
+
+    protected void GoToToday()
+    {
+        NavigateToWeek(DateTime.Today);
     }
 
     protected Task HandleDateChangedAsync(ChangeEventArgs args)

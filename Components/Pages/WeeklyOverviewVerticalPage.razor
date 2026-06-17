@@ -17,7 +17,11 @@ else
                 <h1>@Localizer["WeeklyOverviewVerticalPageTitle"]</h1>
                 <span>@Localizer["WeeklyOverviewPageIntro"]</span>
             </div>
+        </header>
+
+        <div class="weekly-vertical-actions">
             <section class="weekly-vertical-navigation" aria-label="@Localizer["WeeklyOverviewNavigation"]">
+                <button class="weekly-vertical-today-button" type="button" @onclick="GoToToday">@Localizer["ReportEntryToday"]</button>
                 <button class="weekly-vertical-nav-button" type="button" title="@Localizer["WeeklyOverviewPreviousWeek"]" aria-label="@Localizer["WeeklyOverviewPreviousWeek"]" @onclick="GoToPreviousWeek">
                     &lt;
                 </button>
@@ -29,7 +33,8 @@ else
                     &gt;
                 </button>
             </section>
-        </header>
+            <a class="weekly-vertical-export-button" href="@ExportHref" download data-enhance-nav="false">@Localizer["DashboardExportPdf"]</a>
+        </div>
 
         <section class="weekly-vertical-total">
             <span>@Localizer["WeeklyOverviewTitle"] @Overview.CalendarWeek</span>

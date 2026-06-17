@@ -41,11 +41,11 @@
 }
 
 .weekly-grid-actions {
-    align-items: end;
-    display: grid;
+    align-items: center;
+    display: flex;
     gap: 0.55rem;
-    justify-items: end;
-    min-width: max-content;
+    justify-content: space-between;
+    min-width: 0;
 }
 
 .weekly-grid-navigation {
@@ -66,6 +66,28 @@
     border-radius: 8px;
     color: var(--app-text);
     min-height: 2.15rem;
+}
+
+.weekly-grid-today-button,
+.weekly-grid-export-button {
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 720;
+    min-height: 2.15rem;
+    padding: 0.3rem 0.7rem;
+    text-decoration: none;
+}
+
+.weekly-grid-today-button {
+    background: var(--app-surface);
+    border: 1px solid color-mix(in srgb, var(--app-border) 68%, transparent);
+    color: var(--app-text);
+}
+
+.weekly-grid-export-button {
+    background: var(--app-primary);
+    border: 1px solid var(--app-primary);
+    color: #fff;
 }
 
 .weekly-grid-date-picker .form-control {
@@ -214,7 +236,8 @@
     }
 
     .weekly-grid-actions {
-        justify-items: stretch;
+        align-items: stretch;
+        flex-direction: column;
         min-width: 0;
     }
 
