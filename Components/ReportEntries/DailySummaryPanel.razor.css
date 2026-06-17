@@ -6,8 +6,9 @@
     display: grid;
     gap: 0.9rem;
     grid-template-rows: auto minmax(0, 1fr) auto;
-    align-content: start;
     min-height: 100%;
+    min-width: 0;
+    overflow: hidden;
     padding: 1.15rem;
 }
 
@@ -18,6 +19,12 @@
     display: flex;
     gap: 1rem;
     justify-content: space-between;
+    min-width: 0;
+}
+
+.daily-summary-header > div,
+.daily-summary-total > span {
+    min-width: 0;
 }
 
 .daily-summary-header p {
@@ -34,6 +41,8 @@
     font-size: 1.05rem;
     font-weight: 800;
     margin: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
 }
 
 .daily-summary-header > strong {
@@ -73,6 +82,8 @@
     align-self: start;
     display: grid;
     gap: 0.75rem;
+    min-width: 0;
+    overflow: auto;
 }
 
 .daily-summary-entry {
@@ -81,11 +92,42 @@
     border-radius: 8px;
     padding: 0.85rem;
     text-decoration: none;
+    max-width: 100%;
+    min-width: 0;
+    overflow: hidden;
 }
 
-.daily-summary-entry div {
+.daily-summary-entry-text {
     display: grid;
     gap: 0.2rem;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.daily-summary-entry-text strong,
+.daily-summary-entry-text span {
+    max-width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.daily-summary-entry-text strong {
+    display: -webkit-box;
+    line-clamp: 2;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow-wrap: anywhere;
+}
+
+.daily-summary-entry-text span {
+    display: block;
+    white-space: nowrap;
+}
+
+.daily-summary-entry-hours {
+    flex: 0 0 auto;
+    white-space: nowrap;
 }
 
 .daily-summary-total {
@@ -93,8 +135,11 @@
     border-top: 1px solid var(--app-border);
     margin-top: 0;
     padding-top: 1rem;
+    min-width: 0;
 }
 
 .daily-summary-total strong {
     font-size: 1.4rem;
+    flex: 0 0 auto;
+    white-space: nowrap;
 }

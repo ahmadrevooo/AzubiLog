@@ -18,22 +18,21 @@ else
                 <span>@Localizer["WeeklyOverviewPageIntro"]</span>
             </div>
             <div class="weekly-overview-page-actions">
+                <section class="weekly-overview-navigation" aria-label="@Localizer["WeeklyOverviewNavigation"]">
+                    <button class="weekly-overview-nav-button" type="button" title="@Localizer["WeeklyOverviewPreviousWeek"]" aria-label="@Localizer["WeeklyOverviewPreviousWeek"]" @onclick="GoToPreviousWeek">
+                        &lt;
+                    </button>
+                    <label class="weekly-overview-date-picker">
+                        <span class="visually-hidden">@Localizer["WeeklyOverviewJumpToWeek"]</span>
+                        <input class="form-control" type="date" value="@SelectedDateString" @onchange="HandleDateChangedAsync" />
+                    </label>
+                    <button class="weekly-overview-nav-button" type="button" title="@Localizer["WeeklyOverviewNextWeek"]" aria-label="@Localizer["WeeklyOverviewNextWeek"]" @onclick="GoToNextWeek">
+                        &gt;
+                    </button>
+                </section>
                 <a class="btn btn-outline-secondary" href="@ExportHref" download data-enhance-nav="false">@Localizer["DashboardExportPdf"]</a>
             </div>
         </header>
-
-        <section class="weekly-overview-navigation" aria-label="@Localizer["WeeklyOverviewNavigation"]">
-            <button class="weekly-overview-nav-button" type="button" @onclick="GoToPreviousWeek">
-                &lt; @Localizer["WeeklyOverviewPreviousWeek"]
-            </button>
-            <label class="weekly-overview-date-picker">
-                <span>@Localizer["WeeklyOverviewJumpToWeek"]</span>
-                <input class="form-control" type="date" value="@SelectedDateString" @onchange="HandleDateChangedAsync" />
-            </label>
-            <button class="weekly-overview-nav-button" type="button" @onclick="GoToNextWeek">
-                @Localizer["WeeklyOverviewNextWeek"] &gt;
-            </button>
-        </section>
 
         <WeeklyOverview Overview="Overview" />
     </div>

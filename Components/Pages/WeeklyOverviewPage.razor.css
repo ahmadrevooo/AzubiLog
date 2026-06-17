@@ -1,9 +1,9 @@
 .weekly-overview-page {
     display: grid;
-    gap: 1.2rem;
+    gap: 0.9rem;
     margin-inline: auto;
-    max-width: 94rem;
-    padding: 1.4rem 0 2.5rem;
+    max-width: min(100%, 108rem);
+    padding: 0.75rem 0 2.5rem;
 }
 
 .weekly-overview-page-loading {
@@ -21,10 +21,15 @@
 }
 
 .weekly-overview-page-header {
-    align-items: center;
+    align-items: start;
     display: flex;
     gap: 1rem;
     justify-content: space-between;
+    min-width: 0;
+}
+
+.weekly-overview-page-header > div:first-child {
+    min-width: 0;
 }
 
 .weekly-overview-page-header h1 {
@@ -42,45 +47,46 @@
 }
 
 .weekly-overview-page-actions {
-    align-self: start;
+    align-items: flex-end;
+    display: grid;
+    gap: 0.55rem;
+    justify-items: end;
+    min-width: max-content;
 }
 
 .weekly-overview-navigation {
-    align-items: end;
+    align-items: center;
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    justify-content: space-between;
+    gap: 0.35rem;
+    justify-content: flex-end;
 }
 
 .weekly-overview-date-picker {
-    display: grid;
-    gap: 0.35rem;
     margin: 0;
-    min-width: 12rem;
-}
-
-.weekly-overview-date-picker span {
-    color: var(--app-text-muted);
-    font-size: 0.82rem;
-    font-weight: 650;
+    width: 10.5rem;
 }
 
 .weekly-overview-date-picker .form-control {
     background-color: var(--app-surface);
     border-color: color-mix(in srgb, var(--app-border) 70%, transparent);
-    border-radius: 10px;
+    border-radius: 8px;
     color: var(--app-text);
-    min-height: 2.45rem;
+    font-size: 0.9rem;
+    min-height: 2.15rem;
+    padding: 0.3rem 0.55rem;
 }
 
 .weekly-overview-nav-button {
     background: var(--app-surface);
     border: 1px solid color-mix(in srgb, var(--app-border) 64%, transparent);
-    border-radius: 10px;
+    border-radius: 8px;
     color: var(--app-text);
-    min-height: 2.45rem;
-    padding: 0.45rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 700;
+    height: 2.15rem;
+    line-height: 1;
+    padding: 0;
+    width: 2.15rem;
 }
 
 .weekly-overview-nav-button:hover {
@@ -93,13 +99,19 @@
         flex-direction: column;
     }
 
-    .weekly-overview-navigation {
+    .weekly-overview-page-actions {
         align-items: stretch;
-        flex-direction: column;
+        justify-items: stretch;
+        min-width: 0;
     }
 
-    .weekly-overview-nav-button,
+    .weekly-overview-navigation {
+        justify-content: flex-start;
+    }
+
     .weekly-overview-date-picker {
+        flex: 1;
+        min-width: 0;
         width: 100%;
     }
 }

@@ -22,11 +22,11 @@
             @foreach (var entry in Summary.Entries)
             {
                 <a class="daily-summary-entry" href="@($"report-entries/{entry.Id}")">
-                    <div>
+                    <div class="daily-summary-entry-text">
                         <strong>@entry.Title</strong>
                         <span>@entry.CategoryName</span>
                     </div>
-                    <span>@entry.Hours.ToString("0.##") h</span>
+                    <span class="daily-summary-entry-hours">@entry.Hours.ToString("0.##") h</span>
                 </a>
             }
         </div>
