@@ -23,21 +23,10 @@ namespace AzubiLog.Data.Migrations
                 table: "Trainers",
                 columns: new[] { "UserId", "Name" });
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_Trainers_AspNetUsers_UserId",
-                table: "Trainers",
-                column: "UserId",
-                principalTable: "AspNetUsers",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Trainers_AspNetUsers_UserId",
-                table: "Trainers");
-
             migrationBuilder.DropIndex(
                 name: "IX_Trainers_UserId_Name",
                 table: "Trainers");
