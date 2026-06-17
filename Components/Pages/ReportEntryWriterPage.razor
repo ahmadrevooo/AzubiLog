@@ -1,0 +1,146 @@
+@page "/report-entries/writer"
+@page "/report-entries/writer/{EntryId:int}"
+@attribute [Authorize(Policy = "ConfirmedEmail")]
+@inject IStringLocalizer<SharedResource> Localizer
+
+<PageTitle>@Localizer["ReportEntryWriterPageTitle"]</PageTitle>
+
+@if (ViewModel is null)
+{
+    <div class="writer-report-loading">@Localizer["ReportEntryLoading"]</div>
+}
+else
+{
+    <div class="writer-report-page">
+        <header class="writer-report-header">
+            <div>
+                <p>@Localizer["ReportEntryPageEyebrow"]</p>
+                <h1>@Localizer["ReportEntryWriterPageTitle"]</h1>
+                <span>@Localizer["ReportEntryPageIntro"]</span>
+            </div>
+            <strong>@ViewModel.CalculatedHours.ToString("0.##") h</strong>
+        </header>
+
+        <section class="writer-report-shell">
+            <aside class="writer-report-context">
+                <label>
+                    <span>@Localizer["ReportEntryCategory"]</span>
+                    <select class="form-select" value="@BindConverter.FormatValue(ViewModel.Entry.CategoryId)" @onchange="HandleCategoryChangedAsync">
+                        <option value="">@Localizer["ReportEntrySelectCategory"]</option>
+                        @foreach (var category in ViewModel.Categories)
+                        {
+                            <option value="@category.Id">@category.Name</option>
+                        }
+                    </select>
+                </label>
+
+                <label>
+                    <span>@Localizer["ReportEntryTrainer"]</span>
+                    <select class="form-select" value="@BindConverter.FormatValue(ViewModel.Entry.TrainerId)" @onchange="HandleTrainerChangedAsync">
+                        <option value="">@Localizer["ReportEntryNoTrainer"]</option>
+                        @foreach (var trainer in ViewModel.Trainers)
+                        {
+                            <option value="@trainer.Id">@trainer.Name</option>
+                        }
+                    </select>
+                </label>
+
+                <div class="writer-summary">
+                    <p>@Localizer["DailySummaryEyebrow"]</p>
+                    <h2>@ViewModel.DailySummary.Date.ToString("d")</h2>
+                    <strong>@ViewModel.DailySummary.TotalHours.ToString("0.##") h</strong>
+                    @if (ViewModel.DailySummary.Entries.Count == 0)
+                    {
+                        <span>@Localizer["DailySummaryEmptyText"]</span>
+                    }
+                    else
+                    {
+                        @foreach (var entry in ViewModel.DailySummary.Entries)
+                        {
+                            <a href="@($"report-entries/writer/{entry.Id}")">
+                                <strong>@entry.Title</strong>
+                                <span>@entry.Hours.ToString("0.##") h</span>
+                            </a>
+                        }
+                    }
+                </div>
+            </aside>
+
+            <main class="writer-report-editor">
+                <EditForm Model="ViewModel.Entry" OnValidSubmit="HandleSaveAsync">
+                    <DataAnnotationsValidator />
+
+                    <div class="writer-meta-grid">
+                        <label>
+                            <span>@Localizer["ReportEntryDate"]</span>
+                            <button class="writer-today-button" type="button" @onclick="MoveToToday">@Localizer["ReportEntryToday"]</button>
+                            <InputDate class="form-control" @bind-Value="ViewModel.Entry.Date" @bind-Value:after="RefreshAsync" />
+                        </label>
+                        <label>
+                            <span>@Localizer["ReportEntryStartTime"]</span>
+                            <InputText class="form-control" type="time" step="900" @bind-Value="ViewModel.Entry.StartTime" @bind-Value:after="RefreshAsync" />
+                        </label>
+                        <label>
+                            <span>@Localizer["ReportEntryEndTime"]</span>
+                            <InputText class="form-control" type="time" step="900" @bind-Value="ViewModel.Entry.EndTime" @bind-Value:after="RefreshAsync" />
+                        </label>
+                        <label>
+                            <span>@Localizer["ReportEntryOrderNumber"]</span>
+                            <InputText class="form-control" @bind-Value="ViewModel.Entry.OrderNumber" @bind-Value:after="MarkOrderNumberChangedAsync" />
+                        </label>
+                    </div>
+
+                    @if (ViewModel.SchoolDaySuggestion?.IsSchoolDay == true)
+                    {
+                        <div class="writer-school-hint">
+                            <span>@Localizer["ReportEntrySchoolDayHint"]</span>
+                            <button class="btn btn-sm btn-outline-secondary" type="button" @onclick="ApplySchoolDayTemplateAsync">@Localizer["ReportEntryApplySchoolDay"]</button>
+                        </div>
+                    }
+
+                    <label class="writer-title-field">
+                        <span>@Localizer["ReportEntryTitle"]</span>
+                        <InputText class="form-control" @bind-Value="ViewModel.Entry.Title" />
+                        <ValidationMessage For="() => ViewModel.Entry.Title" />
+                    </label>
+
+                    <label class="writer-description-field">
+                        <span>@Localizer["ReportEntryDescription"]</span>
+                        <InputTextArea class="form-control" @bind-Value="ViewModel.Entry.Description" />
+                        <ValidationMessage For="() => ViewModel.Entry.Description" />
+                    </label>
+
+                    <div class="writer-options">
+                        <label class="writer-check">
+                            <InputCheckbox @bind-Value="ViewModel.Entry.IsVocationalSchoolDay" />
+                            <span>@Localizer["ReportEntryVocationalSchoolDay"]</span>
+                        </label>
+                        @if (ViewModel.Entry.IsVocationalSchoolDay)
+                        {
+                            <label>
+                                <span>@Localizer["ReportEntrySubject"]</span>
+                                <InputText class="form-control" @bind-Value="ViewModel.Entry.Subject" />
+                            </label>
+                        }
+                        <label>
+                            <span>@Localizer["ReportEntryNotes"]</span>
+                            <InputText class="form-control" @bind-Value="ViewModel.Entry.Notes" />
+                        </label>
+                    </div>
+
+                    <ValidationSummary />
+
+                    <div class="writer-action-bar">
+                        <a class="writer-email-link" href="@ViewModel.DailyReportEmailHref" data-enhance-nav="false">@Localizer["ReportEntryPrepareDailyEmail"]</a>
+                        <button class="btn btn-outline-secondary" type="button" @onclick="HandleDraftAsync">@Localizer["ReportEntrySaveDraft"]</button>
+                        <button class="btn btn-primary" type="submit">@Localizer["ReportEntrySave"]</button>
+                        @if (ViewModel.Entry.Id.HasValue)
+                        {
+                            <button class="writer-delete-button" type="button" @onclick="HandleDeleteAsync">@Localizer["ReportEntryDelete"]</button>
+                        }
+                    </div>
+                </EditForm>
+            </main>
+        </section>
+    </div>
+}

@@ -7,6 +7,7 @@ public class ApplicationNavigationService : IApplicationNavigationService
         new("NavDashboard", "", "bi-speedometer-nav-menu", true),
         new("NavNewEntry", "report-entries/new", "bi-plus-square-fill-nav-menu", true),
         new("NavReportEntryMud", "report-entries/mud", "bi-plus-square-fill-nav-menu", true),
+        new("NavReportEntryWriter", "report-entries/writer", "bi-plus-square-fill-nav-menu", true),
         new("NavWeeklyReports", "weekly-reports", "bi-journal-text-nav-menu", true),
         new("NavWeeklyReportsGrid", "weekly-reports/grid", "bi-grid-nav-menu", true),
         new("NavWeeklyReportsVertical", "weekly-reports/vertical", "bi-list-nested-nav-menu", true),

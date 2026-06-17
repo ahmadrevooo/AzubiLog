@@ -36,6 +36,9 @@
   <data name="NavReportEntryMud" xml:space="preserve">
     <value>Eintrag Mud</value>
   </data>
+  <data name="NavReportEntryWriter" xml:space="preserve">
+    <value>Eintrag Writer</value>
+  </data>
   <data name="NavCategories" xml:space="preserve">
     <value>Kategorien</value>
   </data>
@@ -131,6 +134,9 @@
   </data>
   <data name="ReportEntryMudPageTitle" xml:space="preserve">
     <value>Tagesbericht Mud</value>
+  </data>
+  <data name="ReportEntryWriterPageTitle" xml:space="preserve">
+    <value>Tagesbericht Writer</value>
   </data>
   <data name="ReportEntryLoading" xml:space="preserve">
     <value>Berichtseintrag wird geladen...</value>
