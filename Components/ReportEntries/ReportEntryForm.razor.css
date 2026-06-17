@@ -5,7 +5,10 @@
     box-shadow: 0 18px 44px rgba(15, 23, 42, 0.06);
     display: grid;
     gap: 0.85rem;
+    justify-self: center;
+    max-width: 34rem;
     padding: 1.15rem;
+    width: 100%;
 }
 
 .report-entry-form-header,
@@ -78,10 +81,12 @@
 }
 
 .report-entry-date-control {
+    align-items: stretch;
     display: grid;
     gap: 0.35rem;
-    grid-template-columns: 2.2rem minmax(0, 1fr) 2.2rem;
-    max-width: 18rem;
+    grid-template-columns: 2.35rem minmax(9rem, 13rem) 2.35rem;
+    justify-content: start;
+    max-width: max-content;
 }
 
 .report-entry-day-button {
@@ -91,15 +96,18 @@
     border-radius: 10px;
     color: var(--app-text);
     display: inline-flex;
-    font-size: 1.2rem;
-    font-weight: 500;
-    justify-content: center;
-    min-height: 2.55rem;
-}
-
-.report-entry-day-button {
     font-size: 0.9rem;
+    font-weight: 500;
+    height: 2.55rem;
+    justify-content: center;
+    justify-self: stretch;
+    line-height: 1;
     min-height: 2.55rem;
+    min-width: 0;
+    overflow: hidden;
+    padding: 0;
+    position: relative;
+    width: 2.35rem;
 }
 
 .report-entry-day-button:focus-visible {
