@@ -1,0 +1,87 @@
+@page "/weekly-reports/vertical"
+@attribute [Authorize(Policy = "ConfirmedEmail")]
+@inject IStringLocalizer<SharedResource> Localizer
+
+<PageTitle>@Localizer["WeeklyOverviewVerticalPageTitle"]</PageTitle>
+
+@if (Overview is null)
+{
+    <div class="weekly-vertical-loading">@Localizer["WeeklyOverviewLoading"]</div>
+}
+else
+{
+    <div class="weekly-vertical-page">
+        <header class="weekly-vertical-header">
+            <div>
+                <p>@Localizer["WeeklyOverviewEyebrow"]</p>
+                <h1>@Localizer["WeeklyOverviewVerticalPageTitle"]</h1>
+                <span>@Localizer["WeeklyOverviewPageIntro"]</span>
+            </div>
+            <section class="weekly-vertical-navigation" aria-label="@Localizer["WeeklyOverviewNavigation"]">
+                <button class="weekly-vertical-nav-button" type="button" title="@Localizer["WeeklyOverviewPreviousWeek"]" aria-label="@Localizer["WeeklyOverviewPreviousWeek"]" @onclick="GoToPreviousWeek">
+                    &lt;
+                </button>
+                <label class="weekly-vertical-date-picker">
+                    <span class="visually-hidden">@Localizer["WeeklyOverviewJumpToWeek"]</span>
+                    <input class="form-control" type="date" value="@SelectedDateString" @onchange="HandleDateChangedAsync" />
+                </label>
+                <button class="weekly-vertical-nav-button" type="button" title="@Localizer["WeeklyOverviewNextWeek"]" aria-label="@Localizer["WeeklyOverviewNextWeek"]" @onclick="GoToNextWeek">
+                    &gt;
+                </button>
+            </section>
+        </header>
+
+        <section class="weekly-vertical-total">
+            <span>@Localizer["WeeklyOverviewTitle"] @Overview.CalendarWeek</span>
+            <strong>@Overview.RecordedHours.ToString("0.##") h</strong>
+        </section>
+
+        <section class="weekly-vertical-days">
+            @foreach (var day in Overview.Days)
+            {
+                <article class="weekly-vertical-day">
+                    <header class="weekly-vertical-day-header">
+                        <a href="@($"report-entries/new?date={day.Date:yyyy-MM-dd}")">
+                            <span>@Localizer[day.DayKey]</span>
+                            <strong>@day.Date.ToString("dd.MM.yyyy")</strong>
+                        </a>
+                        <div>
+                            <strong>@day.TotalHours.ToString("0.##") h</strong>
+                            <span>@day.EntryCount @Localizer["WeeklyOverviewEntries"]</span>
+                        </div>
+                    </header>
+
+                    @if (day.Entries.Count == 0)
+                    {
+                        <p class="weekly-vertical-empty">@Localizer["WeeklyOverviewNoEntries"]</p>
+                    }
+                    else
+                    {
+                        <div class="weekly-vertical-entry-list">
+                            @foreach (var entry in day.Entries)
+                            {
+                                <a class="weekly-vertical-entry" href="@($"report-entries/{entry.Id}")">
+                                    <div class="weekly-vertical-entry-main">
+                                        <span>@entry.TimeRange</span>
+                                        <strong>@entry.Title</strong>
+                                        @if (!string.IsNullOrWhiteSpace(entry.DescriptionPreview))
+                                        {
+                                            <p>@entry.DescriptionPreview</p>
+                                        }
+                                    </div>
+                                    <div class="weekly-vertical-entry-meta">
+                                        <span>@entry.CategoryName</span>
+                                        @if (!string.IsNullOrWhiteSpace(entry.OrderNumber))
+                                        {
+                                            <span>@entry.OrderNumber</span>
+                                        }
+                                    </div>
+                                </a>
+                            }
+                        </div>
+                    }
+                </article>
+            }
+        </section>
+    </div>
+}

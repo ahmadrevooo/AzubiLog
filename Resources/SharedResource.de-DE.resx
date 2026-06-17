@@ -24,6 +24,9 @@
   <data name="NavWeeklyReportsGrid" xml:space="preserve">
     <value>Wochenraster</value>
   </data>
+  <data name="NavWeeklyReportsVertical" xml:space="preserve">
+    <value>Wochenliste</value>
+  </data>
   <data name="NavTodos" xml:space="preserve">
     <value>Aufgaben</value>
   </data>
@@ -215,6 +218,9 @@
   </data>
   <data name="WeeklyOverviewGridPageTitle" xml:space="preserve">
     <value>Wochenübersicht Raster</value>
+  </data>
+  <data name="WeeklyOverviewVerticalPageTitle" xml:space="preserve">
+    <value>Wochenübersicht Liste</value>
   </data>
   <data name="WeeklyOverviewLoading" xml:space="preserve">
     <value>Wochenübersicht wird geladen...</value>
