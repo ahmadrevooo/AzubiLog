@@ -613,6 +613,6 @@
     <value>Entfernen</value>
   </data>
   <data name="ReportEntryPrepareDailyEmail" xml:space="preserve">
-    <value>Tagesbericht per E-Mail vorbereiten</value>
+    <value>Tagesbericht per E-Mail senden</value>
   </data>
 </root>
