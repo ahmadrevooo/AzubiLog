@@ -69,11 +69,6 @@
                 </label>
             </div>
 
-            <div class="report-entry-hours">
-                <span>@Localizer["ReportEntryCalculatedHours"]</span>
-                <strong>@LocalCalculatedHours.ToString("0.##") h</strong>
-            </div>
-
             <label>
                 <span>@Localizer["ReportEntryNotes"]</span>
                 <InputText class="form-control" @bind-Value="Model.Notes" @bind-Value:after="FieldChangedAsync" />
@@ -118,12 +113,10 @@
 
     private static readonly IReadOnlyList<string> BaseTimeOptions = CreateTimeOptions();
 
-    private decimal LocalCalculatedHours { get; set; }
     private IReadOnlyList<string> TimeOptions { get; set; } = BaseTimeOptions;
 
     protected override void OnParametersSet()
     {
-        LocalCalculatedHours = CalculateHours(Model.StartTime, Model.EndTime);
         TimeOptions = GetTimeOptions(Model.StartTime, Model.EndTime);
     }
 
@@ -134,7 +127,7 @@
 
     private void TimeChanged()
     {
-        LocalCalculatedHours = CalculateHours(Model.StartTime, Model.EndTime);
+        TimeOptions = GetTimeOptions(Model.StartTime, Model.EndTime);
     }
 
     private Task HandleDraftRequestedAsync()
@@ -184,15 +177,4 @@
             && parsed < TimeSpan.FromDays(1);
     }
 
-    private static decimal CalculateHours(string startTime, string endTime)
-    {
-        if (!TimeSpan.TryParse(startTime, System.Globalization.CultureInfo.InvariantCulture, out var start)
-            || !TimeSpan.TryParse(endTime, System.Globalization.CultureInfo.InvariantCulture, out var end)
-            || end <= start)
-        {
-            return 0m;
-        }
-
-        return Math.Round((decimal)(end - start).TotalHours, 2, MidpointRounding.AwayFromZero);
-    }
 }

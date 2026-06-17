@@ -1,32 +1,52 @@
 :root,
 [data-theme="light"] {
     color-scheme: light;
-    --app-bg: #f5f7fb;
-    --app-surface: #ffffff;
-    --app-surface-muted: #eef2f7;
-    --app-text: #172033;
-    --app-text-muted: #64748b;
-    --app-border: #d8e0ec;
-    --app-primary: #2563eb;
+    --background: #F9FAF7;
+    --surface: #FFFFFF;
+    --primary: #2F855A;
+    --primary-hover: #276749;
+    --accent: #EAB308;
+    --text-main: #1F2937;
+    --text-muted: #6B7280;
+    --border: #E5E7EB;
+    --app-bg: var(--background);
+    --app-surface: var(--surface);
+    --app-surface-muted: color-mix(in srgb, var(--background) 72%, var(--surface));
+    --app-text: var(--text-main);
+    --app-text-muted: var(--text-muted);
+    --app-border: var(--border);
+    --app-primary: var(--primary);
+    --app-primary-hover: var(--primary-hover);
+    --app-accent: var(--accent);
     --app-primary-contrast: #ffffff;
     --app-danger: #b42318;
-    --app-sidebar-start: #12213b;
-    --app-sidebar-end: #172554;
+    --app-sidebar-start: #1F2937;
+    --app-sidebar-end: #2F855A;
 }
 
 [data-theme="dark"] {
     color-scheme: dark;
-    --app-bg: #101624;
-    --app-surface: #172033;
-    --app-surface-muted: #202b3f;
-    --app-text: #e5edf7;
-    --app-text-muted: #9caec6;
-    --app-border: #334155;
-    --app-primary: #60a5fa;
-    --app-primary-contrast: #08111f;
+    --background: #111827;
+    --surface: #1F2937;
+    --primary: #4ADE80;
+    --primary-hover: #22C55E;
+    --accent: #FACC15;
+    --text-main: #F9FAFB;
+    --text-muted: #D1D5DB;
+    --border: #374151;
+    --app-bg: var(--background);
+    --app-surface: var(--surface);
+    --app-surface-muted: color-mix(in srgb, var(--surface) 82%, var(--background));
+    --app-text: var(--text-main);
+    --app-text-muted: var(--text-muted);
+    --app-border: var(--border);
+    --app-primary: var(--primary);
+    --app-primary-hover: var(--primary-hover);
+    --app-accent: var(--accent);
+    --app-primary-contrast: #111827;
     --app-danger: #f87171;
-    --app-sidebar-start: #0b1120;
-    --app-sidebar-end: #111827;
+    --app-sidebar-start: #111827;
+    --app-sidebar-end: #1F2937;
 }
 
 html, body {
@@ -39,14 +59,25 @@ a, .btn-link {
     color: var(--app-primary);
 }
 
+a:hover, .btn-link:hover {
+    color: var(--app-primary-hover);
+}
+
 .btn-primary {
     color: var(--app-primary-contrast);
     background-color: var(--app-primary);
     border-color: var(--app-primary);
 }
 
+.btn-primary:hover,
+.btn-primary:focus {
+    color: var(--app-primary-contrast);
+    background-color: var(--app-primary-hover);
+    border-color: var(--app-primary-hover);
+}
+
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+  box-shadow: 0 0 0 0.1rem var(--app-surface), 0 0 0 0.25rem color-mix(in srgb, var(--app-primary) 38%, transparent);
 }
 
 .content {
@@ -58,11 +89,11 @@ h1:focus {
 }
 
 .valid.modified:not([type=checkbox]) {
-    outline: 1px solid #26b050;
+    outline: 1px solid var(--app-primary);
 }
 
 .invalid {
-    outline: 1px solid #e50000;
+    outline: 1px solid var(--app-danger);
 }
 
 .validation-message {
@@ -80,7 +111,7 @@ h1:focus {
     }
 
 .darker-border-checkbox.form-check-input {
-    border-color: #929292;
+    border-color: var(--app-border);
 }
 
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
