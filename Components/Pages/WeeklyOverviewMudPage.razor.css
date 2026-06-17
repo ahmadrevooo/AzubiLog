@@ -1,19 +1,20 @@
 .weekly-mud-page {
-    max-width: 1520px;
-    padding: 0.25rem 0 2.5rem;
+    max-width: 1540px;
+    padding: 0 0 2.5rem;
 }
 
 .weekly-mud-hero,
 .weekly-mud-metric,
 .weekly-mud-day-card {
-    background: var(--app-surface);
-    border-color: color-mix(in srgb, var(--app-border) 68%, transparent);
+    background:
+        linear-gradient(180deg, color-mix(in srgb, var(--app-surface) 97%, var(--app-accent) 3%), var(--app-surface));
+    border: 1px solid color-mix(in srgb, var(--app-border) 48%, transparent);
     border-radius: 8px;
     color: var(--app-text);
 }
 
 .weekly-mud-hero {
-    padding: 1.1rem 1.25rem;
+    padding: 1.15rem 1.35rem;
 }
 
 .weekly-mud-hero-stack,
@@ -24,7 +25,11 @@
 }
 
 .weekly-mud-controls {
+    background: color-mix(in srgb, var(--app-bg) 72%, var(--app-surface));
+    border: 1px solid color-mix(in srgb, var(--app-border) 35%, transparent);
+    border-radius: 8px;
     justify-content: flex-end;
+    padding: 0.45rem;
 }
 
 .weekly-mud-date-picker {
@@ -36,16 +41,28 @@
 }
 
 .weekly-mud-metric {
+    min-height: 5.4rem;
     padding: 0.9rem 1rem;
 }
 
 .weekly-mud-days {
-    margin-top: 0.5rem;
+    margin-top: 0.65rem;
 }
 
 .weekly-mud-day-card {
+    box-shadow: 0 12px 34px color-mix(in srgb, var(--app-text) 6%, transparent);
     height: 100%;
     min-height: 26rem;
+    overflow: hidden;
+}
+
+.weekly-mud-day-card .mud-card-header {
+    border-bottom: 1px solid color-mix(in srgb, var(--app-border) 42%, transparent);
+    padding-bottom: 0.8rem;
+}
+
+.weekly-mud-day-card .mud-card-content {
+    padding-top: 0.9rem;
 }
 
 .weekly-mud-day-title,
@@ -57,35 +74,55 @@
     overflow-wrap: anywhere;
 }
 
+.weekly-mud-entry-title {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.weekly-mud-entry-count {
+    margin-top: 0.1rem;
+}
+
 .weekly-mud-entry-list {
-    margin-top: 0.75rem;
+    margin-top: 0.85rem;
     min-width: 0;
 }
 
 .weekly-mud-entry {
-    background: var(--app-bg);
-    border-color: color-mix(in srgb, var(--app-border) 58%, transparent);
+    background: color-mix(in srgb, var(--app-bg) 74%, var(--app-surface));
+    border: 1px solid color-mix(in srgb, var(--app-border) 40%, transparent);
     border-radius: 8px;
     display: grid;
-    gap: 0.35rem;
+    gap: 0.4rem;
     min-width: 0;
-    padding: 0.7rem;
+    padding: 0.72rem;
 }
 
 .weekly-mud-entry-meta {
     flex-wrap: wrap;
 }
 
+.weekly-mud-entry-meta .mud-chip {
+    max-width: 100%;
+}
+
 .weekly-mud-empty {
     background: color-mix(in srgb, var(--app-bg) 72%, transparent);
-    border: 1px dashed color-mix(in srgb, var(--app-border) 80%, transparent);
+    border: 1px dashed color-mix(in srgb, var(--app-border) 70%, transparent);
     border-radius: 8px;
     margin-top: 0.85rem;
-    padding: 1rem;
+    padding: 1.2rem 1rem;
     text-align: center;
 }
 
 @media (max-width: 960px) {
+    .weekly-mud-hero,
+    .weekly-mud-metric {
+        padding: 1rem;
+    }
+
     .weekly-mud-hero-stack,
     .weekly-mud-controls {
         align-items: stretch !important;

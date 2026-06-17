@@ -103,6 +103,16 @@ public partial class ReportEntryMudPage : ComponentBase
         return HandleDateChangedAsync(DateTime.Today);
     }
 
+    protected Task MoveToPreviousDay()
+    {
+        return HandleDateChangedAsync((ViewModel?.Entry.Date ?? DateTime.Today).AddDays(-1));
+    }
+
+    protected Task MoveToNextDay()
+    {
+        return HandleDateChangedAsync((ViewModel?.Entry.Date ?? DateTime.Today).AddDays(1));
+    }
+
     protected async Task ApplySchoolDayTemplateAsync()
     {
         if (ViewModel?.SchoolDaySuggestion is null)

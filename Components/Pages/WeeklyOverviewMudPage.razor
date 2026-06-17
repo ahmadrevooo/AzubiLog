@@ -11,7 +11,7 @@
 else
 {
     <MudContainer MaxWidth="MaxWidth.False" Class="weekly-mud-page">
-        <MudPaper Elevation="0" Outlined="true" Class="weekly-mud-hero">
+        <MudPaper Elevation="0" Class="weekly-mud-hero">
             <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="weekly-mud-hero-stack">
                 <MudStack Spacing="1">
                     <MudText Typo="Typo.overline" Color="Color.Primary">@Localizer["WeeklyOverviewEyebrow"]</MudText>
@@ -29,21 +29,21 @@ else
             </MudStack>
         </MudPaper>
 
-        <MudGrid Spacing="3" Class="weekly-mud-metrics">
+        <MudGrid Spacing="2" Class="weekly-mud-metrics">
             <MudItem xs="12" md="4">
-                <MudPaper Elevation="0" Outlined="true" Class="weekly-mud-metric">
+                <MudPaper Elevation="0" Class="weekly-mud-metric">
                     <MudText Typo="Typo.caption" Color="Color.Secondary">@Localizer["WeeklyOverviewTitle"]</MudText>
                     <MudText Typo="Typo.h5">@Overview.CalendarWeek</MudText>
                 </MudPaper>
             </MudItem>
             <MudItem xs="12" md="4">
-                <MudPaper Elevation="0" Outlined="true" Class="weekly-mud-metric">
+                <MudPaper Elevation="0" Class="weekly-mud-metric">
                     <MudText Typo="Typo.caption" Color="Color.Secondary">@Localizer["WeeklyOverviewRecorded"]</MudText>
                     <MudText Typo="Typo.h5">@Overview.RecordedHours.ToString("0.##") h</MudText>
                 </MudPaper>
             </MudItem>
             <MudItem xs="12" md="4">
-                <MudPaper Elevation="0" Outlined="true" Class="weekly-mud-metric">
+                <MudPaper Elevation="0" Class="weekly-mud-metric">
                     <MudText Typo="Typo.caption" Color="Color.Secondary">@Localizer["DashboardRemainingHours"]</MudText>
                     <MudText Typo="Typo.h5">@Overview.RemainingHours.ToString("0.##") h</MudText>
                 </MudPaper>
@@ -54,7 +54,7 @@ else
             @foreach (var day in Overview.Days)
             {
                 <MudItem xs="12" md="6" xl="2">
-                    <MudCard Elevation="0" Outlined="true" Class="weekly-mud-day-card">
+                    <MudCard Elevation="0" Class="weekly-mud-day-card">
                         <MudCardHeader>
                             <CardHeaderContent>
                                 <MudLink Href="@($"report-entries/new?date={day.Date:yyyy-MM-dd}")" Typo="Typo.h6" Class="weekly-mud-day-title">@Localizer[day.DayKey]</MudLink>
@@ -65,7 +65,7 @@ else
                             </CardHeaderActions>
                         </MudCardHeader>
                         <MudCardContent>
-                            <MudText Typo="Typo.caption" Color="Color.Secondary">@day.EntryCount @Localizer["WeeklyOverviewEntries"]</MudText>
+                            <MudChip T="string" Size="Size.Small" Variant="Variant.Outlined" Class="weekly-mud-entry-count">@day.EntryCount @Localizer["WeeklyOverviewEntries"]</MudChip>
 
                             @if (day.Entries.Count == 0)
                             {
@@ -78,7 +78,7 @@ else
                                 <MudStack Spacing="1" Class="weekly-mud-entry-list">
                                     @foreach (var entry in day.Entries)
                                     {
-                                        <MudPaper Elevation="0" Outlined="true" Class="weekly-mud-entry">
+                                        <MudPaper Elevation="0" Class="weekly-mud-entry">
                                             <MudText Typo="Typo.caption" Color="Color.Secondary">@entry.TimeRange</MudText>
                                             <MudLink Href="@($"report-entries/{entry.Id}")" Typo="Typo.subtitle2" Class="weekly-mud-entry-title">@entry.Title</MudLink>
                                             <MudStack Row="true" Spacing="1" Class="weekly-mud-entry-meta">
