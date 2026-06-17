@@ -37,10 +37,6 @@ main {
     text-decoration: none;
 }
 
-.app-shell-account-link:hover {
-    text-decoration: underline;
-}
-
 .app-shell-control span {
     color: var(--app-text-muted);
     font-size: 0.8rem;
@@ -60,14 +56,18 @@ main {
         text-decoration: none;
     }
 
-    .top-row ::deep a:hover, .top-row ::deep .btn-link:hover {
-        text-decoration: underline;
-    }
-
     .top-row ::deep a:first-child {
         overflow: hidden;
         text-overflow: ellipsis;
     }
+
+@media (hover: hover) and (pointer: fine) {
+    .app-shell-account-link:hover,
+    .top-row ::deep a:hover,
+    .top-row ::deep .btn-link:hover {
+        text-decoration: underline;
+    }
+}
 
 @media (max-width: 640.98px) {
     .top-row {

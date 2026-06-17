@@ -89,8 +89,14 @@
     width: 2.15rem;
 }
 
-.weekly-overview-nav-button:hover {
-    background: color-mix(in srgb, var(--app-primary) 8%, var(--app-surface));
+.weekly-overview-nav-button:focus-visible {
+    box-shadow: 0 0 0 0.18rem color-mix(in srgb, var(--app-primary) 22%, transparent);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .weekly-overview-nav-button:hover {
+        background: color-mix(in srgb, var(--app-primary) 8%, var(--app-surface));
+    }
 }
 
 @media (max-width: 700px) {

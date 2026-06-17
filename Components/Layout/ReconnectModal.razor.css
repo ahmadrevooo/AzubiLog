@@ -97,13 +97,20 @@
     border-radius: 4px;
 }
 
+#components-reconnect-modal button:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--app-primary) 45%, white);
+    outline-offset: 2px;
+}
+
+@media (hover: hover) and (pointer: fine) {
     #components-reconnect-modal button:hover {
         filter: brightness(0.95);
     }
+}
 
-    #components-reconnect-modal button:active {
-        filter: brightness(0.9);
-    }
+#components-reconnect-modal button:active {
+    filter: brightness(0.9);
+}
 
 .components-rejoining-animation {
     position: relative;

@@ -53,8 +53,14 @@
     min-height: 2.55rem;
 }
 
-.report-entry-icon-button:hover {
-    background: color-mix(in srgb, var(--app-primary) 10%, var(--app-surface-muted));
+.report-entry-icon-button:focus-visible {
+    box-shadow: 0 0 0 0.18rem color-mix(in srgb, var(--app-primary) 22%, transparent);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .report-entry-icon-button:hover {
+        background: color-mix(in srgb, var(--app-primary) 10%, var(--app-surface-muted));
+    }
 }
 
 .report-entry-category-popover {

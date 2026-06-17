@@ -76,9 +76,11 @@
     color: white;
 }
 
-.nav-item ::deep .nav-link:hover {
-    background-color: rgba(255,255,255,0.1);
-    color: white;
+@media (hover: hover) and (pointer: fine) {
+    .nav-item ::deep .nav-link:hover {
+        background-color: rgba(255,255,255,0.1);
+        color: white;
+    }
 }
 
 .nav-scrollable {

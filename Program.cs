@@ -87,25 +87,12 @@ namespace AzubiLog
 
             builder.Services.Configure<RequestLocalizationOptions>(options =>
             {
-                var supportedCultures = new[]
-                {
-                    new CultureInfo("de-DE"),
-                    new CultureInfo("en-US")
-                };
+                var supportedCultures = new[] { new CultureInfo("de-DE") };
 
                 options.DefaultRequestCulture = new RequestCulture("de-DE");
                 options.SupportedCultures = supportedCultures;
                 options.SupportedUICultures = supportedCultures;
-                options.RequestCultureProviders.Insert(0, new CustomRequestCultureProvider(context =>
-                {
-                    var culture = context.Request.Cookies["AzubiLog.Culture"];
-                    var isSupported = supportedCultures.Any(supportedCulture =>
-                        string.Equals(supportedCulture.Name, culture, StringComparison.OrdinalIgnoreCase));
-
-                    return Task.FromResult(isSupported
-                        ? new ProviderCultureResult(culture!)
-                        : null);
-                }));
+                options.RequestCultureProviders.Clear();
             });
 
             var app = builder.Build();

@@ -59,25 +59,60 @@ a, .btn-link {
     color: var(--app-primary);
 }
 
-a:hover, .btn-link:hover {
-    color: var(--app-primary-hover);
-}
-
 .btn-primary {
     color: var(--app-primary-contrast);
     background-color: var(--app-primary);
     border-color: var(--app-primary);
 }
 
-.btn-primary:hover,
-.btn-primary:focus {
+.btn-primary:focus-visible {
     color: var(--app-primary-contrast);
     background-color: var(--app-primary-hover);
     border-color: var(--app-primary-hover);
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem var(--app-surface), 0 0 0 0.25rem color-mix(in srgb, var(--app-primary) 38%, transparent);
+.btn-outline-secondary {
+    color: var(--app-text);
+    border-color: color-mix(in srgb, var(--app-border) 78%, transparent);
+}
+
+.btn-outline-secondary:focus-visible,
+.btn-outline-secondary:active {
+    color: var(--app-text);
+    background-color: color-mix(in srgb, var(--app-primary) 10%, var(--app-surface));
+    border-color: color-mix(in srgb, var(--app-primary) 36%, var(--app-border));
+}
+
+.btn:focus:not(:focus-visible),
+.btn-link.nav-link:focus:not(:focus-visible) {
+    box-shadow: none;
+}
+
+.btn:focus-visible,
+.btn:active:focus-visible,
+.btn-link.nav-link:focus-visible,
+.form-control:focus,
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem var(--app-surface), 0 0 0 0.25rem color-mix(in srgb, var(--app-primary) 38%, transparent);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    a:hover,
+    .btn-link:hover {
+        color: var(--app-primary-hover);
+    }
+
+    .btn-primary:hover {
+        color: var(--app-primary-contrast);
+        background-color: var(--app-primary-hover);
+        border-color: var(--app-primary-hover);
+    }
+
+    .btn-outline-secondary:hover {
+        color: var(--app-text);
+        background-color: color-mix(in srgb, var(--app-primary) 8%, var(--app-surface));
+        border-color: color-mix(in srgb, var(--app-primary) 32%, var(--app-border));
+    }
 }
 
 .content {
@@ -216,6 +251,8 @@ h1:focus {
     text-decoration: none;
 }
 
-.account-links a:hover {
-    text-decoration: underline;
+@media (hover: hover) and (pointer: fine) {
+    .account-links a:hover {
+        text-decoration: underline;
+    }
 }

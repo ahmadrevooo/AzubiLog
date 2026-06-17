@@ -2,7 +2,7 @@
     display: grid;
     gap: 1.15rem;
     margin-inline: auto;
-    max-width: 78rem;
+    max-width: 72rem;
     padding: 1.4rem 0 2.5rem;
 }
 
@@ -38,7 +38,7 @@
     align-items: stretch;
     display: grid;
     gap: 1rem;
-    grid-template-columns: minmax(11rem, 13.5rem) minmax(0, 48rem) minmax(17rem, 21rem);
+    grid-template-columns: minmax(10.5rem, 12.5rem) minmax(0, 40rem) minmax(16rem, 19rem);
     justify-content: center;
 }
 
