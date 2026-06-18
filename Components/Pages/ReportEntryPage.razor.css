@@ -15,7 +15,7 @@
     align-items: stretch;
     display: grid;
     gap: 1rem;
-    grid-template-columns: minmax(34rem, 48rem) minmax(18rem, 24rem);
+    grid-template-columns: minmax(34rem, 55rem) minmax(18rem, 24rem);
     justify-content: center;
 }
 
@@ -25,17 +25,21 @@
     min-width: 0;
 }
 
+.report-entry-workspace.has-school-hint {
+    align-items: start;
+    grid-template-columns: minmax(10rem, 12rem) minmax(0, 48rem);
+}
+
 .report-entry-school-hint {
-    align-items: center;
+    align-items: start;
     background: color-mix(in srgb, var(--app-primary) 8%, var(--app-surface-muted));
     border: 1px solid color-mix(in srgb, var(--app-primary) 18%, var(--app-border));
     border-radius: 8px;
     color: var(--app-text);
-    display: flex;
-    gap: 0.75rem;
-    justify-content: space-between;
+    display: grid;
+    gap: 0.55rem;
     min-width: 0;
-    padding: 0.7rem;
+    padding: 0.65rem;
 }
 
 .report-entry-school-hint span {
@@ -49,15 +53,14 @@
     .report-entry-main {
         grid-template-columns: 1fr;
     }
+
+    .report-entry-workspace.has-school-hint {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media (max-width: 640px) {
     .report-entry-page {
         padding-top: 0.5rem;
-    }
-
-    .report-entry-school-hint {
-        align-items: stretch;
-        flex-direction: column;
     }
 }

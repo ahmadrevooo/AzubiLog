@@ -41,12 +41,24 @@
                 <div class="report-entry-time-grid">
                     <label>
                         <span>@Localizer["ReportEntryStartTime"]</span>
-                        <InputText class="form-control report-entry-time-input" type="text" inputmode="numeric" maxlength="5" placeholder="08:00" @bind-Value="Model.StartTime" @bind-Value:after="FieldChangedAsync" />
+                        <input class="form-control report-entry-time-input" type="text" inputmode="numeric" maxlength="5" placeholder="08:00" value="@Model.StartTime" @oninput="HandleStartTimeInputAsync" />
+                        @if (!IsStartTimeValid)
+                        {
+                            <span class="report-entry-field-hint">Bitte im Format HH:mm eingeben.</span>
+                        }
                     </label>
 
                     <label>
                         <span>@Localizer["ReportEntryEndTime"]</span>
-                        <InputText class="form-control report-entry-time-input" type="text" inputmode="numeric" maxlength="5" placeholder="16:00" @bind-Value="Model.EndTime" @bind-Value:after="FieldChangedAsync" />
+                        <input class="form-control report-entry-time-input" type="text" inputmode="numeric" maxlength="5" placeholder="16:00" value="@Model.EndTime" @oninput="HandleEndTimeInputAsync" />
+                        @if (!IsEndTimeValid)
+                        {
+                            <span class="report-entry-field-hint">Bitte im Format HH:mm eingeben.</span>
+                        }
+                        else if (!HasChronologicalTimes)
+                        {
+                            <span class="report-entry-field-hint">Endzeit muss nach Startzeit liegen.</span>
+                        }
                     </label>
 
                     <div class="report-entry-duration">
@@ -217,6 +229,25 @@
 
     private static readonly CultureInfo GermanCulture = CultureInfo.GetCultureInfo("de-DE");
 
+    private bool IsStartTimeValid => TryParseTime(Model.StartTime, out _);
+
+    private bool IsEndTimeValid => TryParseTime(Model.EndTime, out _);
+
+    private bool HasChronologicalTimes
+    {
+        get
+        {
+            if (!TryParseTime(Model.StartTime, out var start) || !TryParseTime(Model.EndTime, out var end))
+            {
+                return true;
+            }
+
+            return end > start;
+        }
+    }
+
+    private bool HasValidTimeRange => IsStartTimeValid && IsEndTimeValid && HasChronologicalTimes;
+
     protected override void OnParametersSet()
     {
         if (!ReferenceEquals(PreviousModel, Model))
@@ -235,6 +266,18 @@
     private Task FieldChangedAsync()
     {
         return OnFieldChanged.InvokeAsync(Model);
+    }
+
+    private Task HandleStartTimeInputAsync(ChangeEventArgs args)
+    {
+        Model.StartTime = args.Value?.ToString() ?? string.Empty;
+        return FieldChangedAsync();
+    }
+
+    private Task HandleEndTimeInputAsync(ChangeEventArgs args)
+    {
+        Model.EndTime = args.Value?.ToString() ?? string.Empty;
+        return FieldChangedAsync();
     }
 
     private Task CategoryChangedAsync()
@@ -278,6 +321,11 @@
 
     private Task HandleSaveRequestedAsync()
     {
+        if (!HasValidTimeRange)
+        {
+            return Task.CompletedTask;
+        }
+
         return OnSave.InvokeAsync(Model);
     }
 
@@ -335,6 +383,12 @@
         }
 
         return "BETRIEB";
+    }
+
+    private static bool TryParseTime(string value, out TimeSpan time)
+    {
+        return TimeSpan.TryParseExact(value, "hh\\:mm", CultureInfo.InvariantCulture, out time)
+            && time < TimeSpan.FromDays(1);
     }
 
     private sealed record OrderNumberOption(string Code, string Label);

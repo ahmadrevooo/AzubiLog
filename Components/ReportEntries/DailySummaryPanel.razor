@@ -25,10 +25,6 @@
                     <div class="daily-summary-entry-text">
                         <span class="daily-summary-entry-meta">@FormatCompactTimeRange(entry.TimeRange) · @entry.Hours.ToString("0.##") h</span>
                         <strong>@entry.Title</strong>
-                        @if (!string.IsNullOrWhiteSpace(entry.DescriptionPreview))
-                        {
-                            <span>@entry.DescriptionPreview</span>
-                        }
                         <span class="daily-summary-entry-category">@entry.CategoryName</span>
                     </div>
                 </a>
