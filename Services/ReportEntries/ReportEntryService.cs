@@ -40,6 +40,18 @@ public class ReportEntryService(
         return await BuildEditorAsync(form, categories, trainers, restoredDraft, cancellationToken);
     }
 
+    public async Task<ReportEntryEditorViewModel> GetFreshEditorAsync(
+        DateTime date,
+        CancellationToken cancellationToken = default)
+    {
+        var user = await currentUserService.GetRequiredUserAsync(cancellationToken);
+        var categories = await GetCategoryOptionsAsync(user.Id, cancellationToken);
+        var trainers = await GetTrainerOptionsAsync(user.Id, user.TrainerName, cancellationToken);
+        var form = CreateNewForm(date, categories.FirstOrDefault()?.Id);
+
+        return await BuildEditorAsync(form, categories, trainers, false, cancellationToken);
+    }
+
     public async Task<ReportEntryEditorViewModel> RefreshEditorAsync(
         ReportEntryFormModel form,
         CancellationToken cancellationToken = default)
@@ -370,7 +382,10 @@ public class ReportEntryService(
                 string.IsNullOrWhiteSpace(entry.Title) ? "(Draft)" : entry.Title,
                 entry.Category == null ? "-" : GetCategoryDisplayName(entry.Category.Name),
                 entry.Duration ?? 0m,
-                entry.Status))
+                entry.Status,
+                FormatTimeRange(entry),
+                entry.OrderNumber ?? string.Empty,
+                CreateDescriptionPreview(entry.Description)))
             .ToListAsync(cancellationToken);
 
         return new DailySummaryViewModel

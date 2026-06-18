@@ -30,6 +30,13 @@ public partial class ReportEntryPage : ComponentBase
             return;
         }
 
+        if (EntryId is null
+            && Date.HasValue
+            && ViewModel?.Entry.Date.Date == Date.Value.Date)
+        {
+            return;
+        }
+
         ViewModel = await ReportEntryService.GetEditorAsync(EntryId, Date);
     }
 
@@ -61,14 +68,19 @@ public partial class ReportEntryPage : ComponentBase
             return;
         }
 
-        var entryId = await ReportEntryService.SaveEntryAsync(form);
-        ViewModel = await ReportEntryService.GetEditorAsync(entryId, null);
+        var selectedDate = form.Date.Date;
+        await ReportEntryService.SaveEntryAsync(form);
+        ViewModel = await ReportEntryService.GetFreshEditorAsync(selectedDate);
         SubmittedEntry = null;
+        Navigation.NavigateTo($"report-entries/new?date={selectedDate:yyyy-MM-dd}", replace: true);
+    }
 
-        if (EntryId != entryId)
-        {
-            Navigation.NavigateTo($"report-entries/{entryId}", replace: true);
-        }
+    protected async Task HandleDateChangedAsync(DateTime date)
+    {
+        var selectedDate = date.Date;
+        ViewModel = await ReportEntryService.GetFreshEditorAsync(selectedDate);
+        SubmittedEntry = null;
+        Navigation.NavigateTo($"report-entries/new?date={selectedDate:yyyy-MM-dd}", replace: true);
     }
 
     protected async Task HandleDeleteAsync()
@@ -91,6 +103,33 @@ public partial class ReportEntryPage : ComponentBase
 
         var categoryId = await ReportEntryService.CreateCategoryAsync(name);
         ViewModel.Entry.CategoryId = categoryId;
+        ViewModel = await ReportEntryService.RefreshEditorAsync(ViewModel.Entry);
+    }
+
+    protected async Task HandleApplySchoolDayAsync()
+    {
+        if (ViewModel?.SchoolDaySuggestion is not { IsSchoolDay: true } suggestion)
+        {
+            return;
+        }
+
+        ViewModel.Entry.IsVocationalSchoolDay = true;
+
+        if (suggestion.VocationalSchoolCategoryId is int categoryId)
+        {
+            ViewModel.Entry.CategoryId = categoryId;
+        }
+
+        if (!ViewModel.Entry.IsOrderNumberOverridden)
+        {
+            ViewModel.Entry.OrderNumber = "SCHULE";
+        }
+
+        if (string.IsNullOrWhiteSpace(ViewModel.Entry.Description))
+        {
+            ViewModel.Entry.Description = suggestion.SubjectsText;
+        }
+
         ViewModel = await ReportEntryService.RefreshEditorAsync(ViewModel.Entry);
     }
 }
