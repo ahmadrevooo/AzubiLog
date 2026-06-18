@@ -1,19 +1,29 @@
+@using System.Globalization
 @inject IStringLocalizer<SharedResource> Localizer
 
 <EditForm Model="Model" FormName="report-entry-form" OnValidSubmit="HandleSaveRequestedAsync">
     <DataAnnotationsValidator />
 
     <div class="report-entry-form-card">
+        <div class="report-entry-date-control" aria-label="@Localizer["ReportEntryDate"]">
+            <button class="report-entry-day-button" type="button" title="@Localizer["ReportEntryPreviousDay"]" aria-label="@Localizer["ReportEntryPreviousDay"]" @onclick="MoveToPreviousDay">
+                <span aria-hidden="true">&lt;</span>
+            </button>
+            <span class="report-entry-date-text">@FormattedSelectedDate</span>
+            <button class="report-entry-today-button" type="button" @onclick="MoveToToday">
+                @Localizer["ReportEntryToday"]
+            </button>
+            <button class="report-entry-day-button" type="button" title="@Localizer["ReportEntryNextDay"]" aria-label="@Localizer["ReportEntryNextDay"]" @onclick="MoveToNextDay">
+                <span aria-hidden="true">&gt;</span>
+            </button>
+        </div>
+
         <div class="report-entry-form-header">
-            <div>
-                <p>@Localizer["ReportEntryFormEyebrow"]</p>
-                <h1>@Localizer[Model.Id.HasValue ? "ReportEntryEditTitle" : "ReportEntryCreateTitle"]</h1>
-            </div>
+            <h1>@Localizer[Model.Id.HasValue ? "ReportEntryEditTitle" : "ReportEntryCreateTitle"]</h1>
         </div>
 
         <div class="report-entry-main-fields">
             <section class="report-entry-section">
-                <h2>Was hast du gemacht?</h2>
                 <label>
                     <span>@Localizer["ReportEntryTitle"] *</span>
                     <InputText class="form-control" @bind-Value="Model.Title" @bind-Value:after="FieldChangedAsync" />
@@ -28,39 +38,24 @@
             </section>
 
             <section class="report-entry-section">
-                <h2>Wann?</h2>
-                <div class="report-entry-date-control" aria-label="@Localizer["ReportEntryDate"]">
-                    <button class="report-entry-day-button" type="button" title="@Localizer["ReportEntryPreviousDay"]" aria-label="@Localizer["ReportEntryPreviousDay"]" @onclick="MoveToPreviousDay">
-                        <span aria-hidden="true">&lt;</span>
-                    </button>
-                    <button class="report-entry-date-button" type="button" @onclick="MoveToToday">
-                        @FormattedSelectedDate
-                    </button>
-                    <button class="report-entry-day-button" type="button" title="@Localizer["ReportEntryNextDay"]" aria-label="@Localizer["ReportEntryNextDay"]" @onclick="MoveToNextDay">
-                        <span aria-hidden="true">&gt;</span>
-                    </button>
-                </div>
-
                 <div class="report-entry-time-grid">
                     <label>
                         <span>@Localizer["ReportEntryStartTime"]</span>
-                        <InputText class="form-control report-entry-time-input" type="time" step="900" @bind-Value="Model.StartTime" @bind-Value:after="FieldChangedAsync" />
+                        <InputText class="form-control report-entry-time-input" type="text" inputmode="numeric" maxlength="5" placeholder="08:00" @bind-Value="Model.StartTime" @bind-Value:after="FieldChangedAsync" />
                     </label>
 
                     <label>
                         <span>@Localizer["ReportEntryEndTime"]</span>
-                        <InputText class="form-control report-entry-time-input" type="time" step="900" @bind-Value="Model.EndTime" @bind-Value:after="FieldChangedAsync" />
+                        <InputText class="form-control report-entry-time-input" type="text" inputmode="numeric" maxlength="5" placeholder="16:00" @bind-Value="Model.EndTime" @bind-Value:after="FieldChangedAsync" />
                     </label>
 
                     <div class="report-entry-duration">
-                        <span>@Localizer["ReportEntryCalculatedHours"]</span>
-                        <strong>@CalculatedHours.ToString("0.##") h</strong>
+                        <span>@Localizer["ReportEntryCalculatedHours"]: @CalculatedHours.ToString("0.##") h</span>
                     </div>
                 </div>
             </section>
 
             <section class="report-entry-section">
-                <h2>Zusatzinfos</h2>
                 <div class="report-entry-info-grid">
                     <label>
                         <span>@Localizer["ReportEntryCategory"] *</span>
@@ -216,12 +211,11 @@
     {
         get
         {
-            var formattedDate = Model.Date.ToString("dd.MM.yyyy");
-            return Model.Date.Date == DateTime.Today
-                ? $"{Localizer["ReportEntryToday"]}, {formattedDate}"
-                : formattedDate;
+            return Model.Date.ToString("dddd, dd.MM.yyyy", GermanCulture);
         }
     }
+
+    private static readonly CultureInfo GermanCulture = CultureInfo.GetCultureInfo("de-DE");
 
     protected override void OnParametersSet()
     {

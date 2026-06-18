@@ -7,14 +7,6 @@
             <p>@Localizer["DailySummaryEyebrow"]</p>
             <h2>@Summary.Date.ToString("dddd, dd.MM.yyyy", GermanCulture)</h2>
         </div>
-        <strong>@Summary.TotalHours.ToString("0.##") h</strong>
-    </div>
-
-    <a class="daily-summary-email-button" href="@DailyReportEmailHref" data-enhance-nav="false">@Localizer["ReportEntryPrepareDailyEmail"]</a>
-
-    <div class="daily-summary-total daily-summary-total-top">
-        <span>@Localizer["DailySummaryTotal"]</span>
-        <strong>@Summary.TotalHours.ToString("0.##") h</strong>
     </div>
 
     @if (Summary.Entries.Count == 0)
@@ -44,9 +36,12 @@
         </div>
     }
 
-    <div class="daily-summary-total">
-        <span>@Localizer["DailySummaryTotal"]</span>
-        <strong>@Summary.TotalHours.ToString("0.##") h</strong>
+    <div class="daily-summary-footer">
+        <a class="daily-summary-email-button" href="@DailyReportEmailHref" data-enhance-nav="false">@Localizer["ReportEntryPrepareDailyEmail"]</a>
+        <div class="daily-summary-total">
+            <span>@Localizer["DailySummaryTotal"]</span>
+            <strong>@Summary.TotalHours.ToString("0.##") h</strong>
+        </div>
     </div>
 </aside>
 
