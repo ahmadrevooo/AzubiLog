@@ -4,20 +4,19 @@
     border-radius: 8px;
     box-shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
     display: grid;
-    gap: 0.9rem;
-    grid-template-rows: auto minmax(0, 1fr) auto;
+    gap: 0.75rem;
+    grid-template-rows: auto auto auto minmax(0, 1fr) auto;
     min-height: 100%;
     min-width: 0;
     overflow: hidden;
-    padding: 1.15rem;
+    padding: 1rem;
 }
 
 .daily-summary-header,
-.daily-summary-total,
-.daily-summary-entry {
+.daily-summary-total {
     align-items: center;
     display: flex;
-    gap: 1rem;
+    gap: 0.8rem;
     justify-content: space-between;
     min-width: 0;
 }
@@ -32,13 +31,12 @@
     font-size: 0.78rem;
     font-weight: 700;
     letter-spacing: 0;
-    margin: 0 0 0.35rem;
-    text-transform: none;
+    margin: 0 0 0.3rem;
 }
 
 .daily-summary-header h2 {
     color: var(--app-text);
-    font-size: 1.05rem;
+    font-size: 1rem;
     font-weight: 800;
     margin: 0;
     max-width: 100%;
@@ -46,14 +44,28 @@
 }
 
 .daily-summary-header > strong {
-    align-items: center;
-    background: var(--app-primary);
+    background: color-mix(in srgb, var(--app-primary) 12%, var(--app-surface-muted));
+    border: 1px solid color-mix(in srgb, var(--app-primary) 22%, var(--app-border));
     border-radius: 999px;
-    color: var(--app-primary-contrast);
-    display: inline-flex;
-    height: 2.25rem;
-    justify-content: center;
-    width: 2.25rem;
+    color: var(--app-text);
+    flex: 0 0 auto;
+    font-size: 0.9rem;
+    font-weight: 850;
+    padding: 0.3rem 0.65rem;
+    white-space: nowrap;
+}
+
+.daily-summary-email-button {
+    background: color-mix(in srgb, var(--app-primary) 10%, var(--app-surface-muted));
+    border: 1px solid color-mix(in srgb, var(--app-primary) 24%, var(--app-border));
+    border-radius: 8px;
+    color: var(--app-text);
+    font-size: 0.88rem;
+    font-weight: 750;
+    min-width: 0;
+    padding: 0.5rem 0.65rem;
+    text-align: center;
+    text-decoration: none;
 }
 
 .daily-summary-empty {
@@ -62,7 +74,7 @@
     border-radius: 8px;
     display: grid;
     gap: 0.35rem;
-    padding: 1rem;
+    padding: 0.85rem;
 }
 
 .daily-summary-empty strong,
@@ -75,13 +87,13 @@
 .daily-summary-entry span,
 .daily-summary-total span {
     color: var(--app-text-muted);
-    font-size: 0.88rem;
+    font-size: 0.86rem;
 }
 
 .daily-summary-list {
     align-self: start;
     display: grid;
-    gap: 0.75rem;
+    gap: 0.55rem;
     min-width: 0;
     overflow: auto;
 }
@@ -90,16 +102,17 @@
     background: var(--app-bg);
     border: 1px solid var(--app-border);
     border-radius: 8px;
-    padding: 0.85rem;
-    text-decoration: none;
+    display: block;
     max-width: 100%;
     min-width: 0;
     overflow: hidden;
+    padding: 0.7rem;
+    text-decoration: none;
 }
 
 .daily-summary-entry-text {
     display: grid;
-    gap: 0.2rem;
+    gap: 0.18rem;
     min-width: 0;
     overflow: hidden;
 }
@@ -113,7 +126,10 @@
 }
 
 .daily-summary-entry-text strong {
+    color: var(--app-text);
     display: -webkit-box;
+    font-size: 0.94rem;
+    line-height: 1.25;
     line-clamp: 2;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -122,24 +138,39 @@
 
 .daily-summary-entry-text span {
     display: block;
+}
+
+.daily-summary-entry-meta {
     white-space: nowrap;
 }
 
-.daily-summary-entry-hours {
-    flex: 0 0 auto;
-    white-space: nowrap;
+.daily-summary-entry-category {
+    font-weight: 700;
 }
 
 .daily-summary-total {
-    align-self: end;
     border-top: 1px solid var(--app-border);
     margin-top: 0;
-    padding-top: 1rem;
-    min-width: 0;
+    padding-top: 0.75rem;
+}
+
+.daily-summary-total-top {
+    background: var(--app-bg);
+    border: 1px solid var(--app-border);
+    border-radius: 8px;
+    padding: 0.55rem 0.65rem;
 }
 
 .daily-summary-total strong {
-    font-size: 1.4rem;
+    font-size: 1.1rem;
     flex: 0 0 auto;
     white-space: nowrap;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .daily-summary-email-button:hover,
+    .daily-summary-entry:hover {
+        background: color-mix(in srgb, var(--app-primary) 10%, var(--app-surface));
+        border-color: color-mix(in srgb, var(--app-primary) 28%, var(--app-border));
+    }
 }

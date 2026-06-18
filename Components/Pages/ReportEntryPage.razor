@@ -19,25 +19,34 @@ else
         </header>
 
         <section class="report-entry-main">
-            <ReportEntrySideRail
-                Model="ViewModel.Entry"
-                Categories="ViewModel.Categories"
-                Trainers="ViewModel.Trainers"
-                OnFieldChanged="HandleFieldChangedAsync"
-                OnCreateCategory="HandleCreateCategoryAsync" />
+            <div class="report-entry-workspace">
+                @if (ViewModel.SchoolDaySuggestion?.IsSchoolDay == true)
+                {
+                    <div class="report-entry-school-hint">
+                        <span>@Localizer["ReportEntrySchoolDayHint"]</span>
+                        <button class="btn btn-outline-secondary btn-sm" type="button" @onclick="HandleApplySchoolDayAsync">
+                            @Localizer["ReportEntryApplySchoolDay"]
+                        </button>
+                    </div>
+                }
 
-            <ReportEntryForm
-                Model="ViewModel.Entry"
-                CalculatedHours="ViewModel.CalculatedHours"
-                RestoredDraft="ViewModel.RestoredDraft"
-                SchoolDaySuggestion="ViewModel.SchoolDaySuggestion"
-                DailyReportEmailHref="@ViewModel.DailyReportEmailHref"
-                OnFieldChanged="HandleFieldChangedAsync"
-                OnDraft="HandleDraftAsync"
-                OnSave="HandleSaveAsync"
-                OnDelete="HandleDeleteAsync" />
+                <ReportEntryForm
+                    Model="ViewModel.Entry"
+                    Categories="ViewModel.Categories"
+                    Trainers="ViewModel.Trainers"
+                    CalculatedHours="ViewModel.CalculatedHours"
+                    RestoredDraft="ViewModel.RestoredDraft"
+                    OnFieldChanged="HandleFieldChangedAsync"
+                    OnDateChanged="HandleDateChangedAsync"
+                    OnCreateCategory="HandleCreateCategoryAsync"
+                    OnDraft="HandleDraftAsync"
+                    OnSave="HandleSaveAsync"
+                    OnDelete="HandleDeleteAsync" />
+            </div>
 
-            <DailySummaryPanel Summary="ViewModel.DailySummary" />
+            <DailySummaryPanel
+                Summary="ViewModel.DailySummary"
+                DailyReportEmailHref="@ViewModel.DailyReportEmailHref" />
         </section>
     </div>
 }

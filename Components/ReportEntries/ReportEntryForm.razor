@@ -12,93 +12,147 @@
         </div>
 
         <div class="report-entry-main-fields">
-            <label>
-                <span>@Localizer["ReportEntryDate"] *</span>
-                <button class="report-entry-today-button" type="button" @onclick="MoveToToday">
-                    @Localizer["ReportEntryToday"]
-                </button>
-                <div class="report-entry-date-control">
+            <section class="report-entry-section">
+                <h2>Was hast du gemacht?</h2>
+                <label>
+                    <span>@Localizer["ReportEntryTitle"] *</span>
+                    <InputText class="form-control" @bind-Value="Model.Title" @bind-Value:after="FieldChangedAsync" />
+                    <ValidationMessage For="() => Model.Title" />
+                </label>
+
+                <label>
+                    <span>@Localizer["ReportEntryDescription"]</span>
+                    <InputTextArea class="form-control report-entry-description" @bind-Value="Model.Description" @bind-Value:after="FieldChangedAsync" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'" />
+                    <ValidationMessage For="() => Model.Description" />
+                </label>
+            </section>
+
+            <section class="report-entry-section">
+                <h2>Wann?</h2>
+                <div class="report-entry-date-control" aria-label="@Localizer["ReportEntryDate"]">
                     <button class="report-entry-day-button" type="button" title="@Localizer["ReportEntryPreviousDay"]" aria-label="@Localizer["ReportEntryPreviousDay"]" @onclick="MoveToPreviousDay">
                         <span aria-hidden="true">&lt;</span>
                     </button>
-                    <InputDate class="form-control" @bind-Value="Model.Date" @bind-Value:after="FieldChangedAsync" />
+                    <button class="report-entry-date-button" type="button" @onclick="MoveToToday">
+                        @FormattedSelectedDate
+                    </button>
                     <button class="report-entry-day-button" type="button" title="@Localizer["ReportEntryNextDay"]" aria-label="@Localizer["ReportEntryNextDay"]" @onclick="MoveToNextDay">
                         <span aria-hidden="true">&gt;</span>
                     </button>
                 </div>
-            </label>
 
-            <label>
-                <span>@Localizer["ReportEntryTitle"] *</span>
-                <InputText class="form-control" @bind-Value="Model.Title" @bind-Value:after="FieldChangedAsync" />
-                <ValidationMessage For="() => Model.Title" />
-            </label>
+                <div class="report-entry-time-grid">
+                    <label>
+                        <span>@Localizer["ReportEntryStartTime"]</span>
+                        <InputText class="form-control report-entry-time-input" type="time" step="900" @bind-Value="Model.StartTime" @bind-Value:after="FieldChangedAsync" />
+                    </label>
 
-            @if (SchoolDaySuggestion?.IsSchoolDay == true)
-            {
-                <div class="report-entry-school-hint">
-                    <span>@Localizer["ReportEntrySchoolDayHint"]</span>
-                    <button class="btn btn-outline-secondary btn-sm" type="button" @onclick="ApplySchoolDayTemplateAsync">
-                        @Localizer["ReportEntryApplySchoolDay"]
-                    </button>
+                    <label>
+                        <span>@Localizer["ReportEntryEndTime"]</span>
+                        <InputText class="form-control report-entry-time-input" type="time" step="900" @bind-Value="Model.EndTime" @bind-Value:after="FieldChangedAsync" />
+                    </label>
+
+                    <div class="report-entry-duration">
+                        <span>@Localizer["ReportEntryCalculatedHours"]</span>
+                        <strong>@CalculatedHours.ToString("0.##") h</strong>
+                    </div>
                 </div>
-            }
+            </section>
 
-            <label>
-                <span>@Localizer["ReportEntryDescription"]</span>
-                <InputTextArea class="form-control report-entry-description" @bind-Value="Model.Description" @bind-Value:after="FieldChangedAsync" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'" />
-                <ValidationMessage For="() => Model.Description" />
-            </label>
+            <section class="report-entry-section">
+                <h2>Zusatzinfos</h2>
+                <div class="report-entry-info-grid">
+                    <label>
+                        <span>@Localizer["ReportEntryCategory"] *</span>
+                        <div class="report-entry-category-control">
+                            <InputSelect class="form-select" TValue="int?" @bind-Value="Model.CategoryId" @bind-Value:after="CategoryChangedAsync">
+                                <option value="">@Localizer["ReportEntrySelectCategory"]</option>
+                                @foreach (var category in Categories)
+                                {
+                                    <option value="@category.Id">@category.Name</option>
+                                }
+                            </InputSelect>
+                            <button class="report-entry-icon-button" type="button" title="@Localizer["ReportEntryAddCategory"]" @onclick="ToggleCategoryCreator">
+                                +
+                            </button>
+                        </div>
+                    </label>
 
-            <label class="report-entry-check">
-                <InputCheckbox @bind-Value="Model.IsVocationalSchoolDay" @bind-Value:after="FieldChangedAsync" />
-                <span>@Localizer["ReportEntryVocationalSchoolDay"]</span>
-            </label>
+                    <label>
+                        <span>@Localizer["ReportEntryTrainer"]</span>
+                        <InputSelect class="form-select" TValue="int?" @bind-Value="Model.TrainerId" @bind-Value:after="FieldChangedAsync">
+                            <option value="">@Localizer["ReportEntryNoTrainer"]</option>
+                            @foreach (var trainer in Trainers)
+                            {
+                                <option value="@trainer.Id">@trainer.Name</option>
+                            }
+                        </InputSelect>
+                    </label>
+                </div>
 
-            @if (Model.IsVocationalSchoolDay)
-            {
-                <label>
-                    <span>@Localizer["ReportEntrySubject"]</span>
-                    <InputText class="form-control" @bind-Value="Model.Subject" @bind-Value:after="FieldChangedAsync" />
-                    <ValidationMessage For="() => Model.Subject" />
+                @if (IsCategoryCreatorOpen)
+                {
+                    <div class="report-entry-category-popover">
+                        <InputText class="form-control" @bind-Value="NewCategoryName" placeholder="@Localizer["ReportEntryNewCategory"]" />
+                        <button class="btn btn-primary btn-sm" type="button" @onclick="CreateCategoryAsync">
+                            @Localizer["ReportEntryAddCategory"]
+                        </button>
+                    </div>
+                }
+
+                <label class="report-entry-check">
+                    <InputCheckbox @bind-Value="Model.IsVocationalSchoolDay" @bind-Value:after="FieldChangedAsync" />
+                    <span>@Localizer["ReportEntryVocationalSchoolDay"]</span>
                 </label>
-            }
 
-            <div class="report-entry-time-grid">
+                @if (Model.IsVocationalSchoolDay)
+                {
+                    <label>
+                        <span>@Localizer["ReportEntrySubject"]</span>
+                        <InputText class="form-control" @bind-Value="Model.Subject" @bind-Value:after="FieldChangedAsync" />
+                        <ValidationMessage For="() => Model.Subject" />
+                    </label>
+                }
+
                 <label>
-                    <span>@Localizer["ReportEntryStartTime"]</span>
-                    <InputText class="form-control report-entry-time-input" type="time" step="900" @bind-Value="Model.StartTime" @bind-Value:after="FieldChangedAsync" />
+                    <span>@Localizer["ReportEntryOrderNumber"]</span>
+                    <InputText class="form-control" list="report-entry-order-codes" @bind-Value="Model.OrderNumber" @bind-Value:after="OrderNumberChangedAsync" />
+                    <datalist id="report-entry-order-codes">
+                        @foreach (var option in OrderNumberOptions)
+                        {
+                            <option value="@option.Code">@option.Label</option>
+                        }
+                    </datalist>
+                    <ValidationMessage For="() => Model.OrderNumber" />
                 </label>
 
-                <label>
-                    <span>@Localizer["ReportEntryEndTime"]</span>
-                    <InputText class="form-control report-entry-time-input" type="time" step="900" @bind-Value="Model.EndTime" @bind-Value:after="FieldChangedAsync" />
-                </label>
-            </div>
+                @if (IsNoteOpen || !string.IsNullOrWhiteSpace(Model.Notes))
+                {
+                    <label>
+                        <span>@Localizer["ReportEntryNotes"]</span>
+                        <InputText class="form-control" @bind-Value="Model.Notes" @bind-Value:after="FieldChangedAsync" />
+                        <ValidationMessage For="() => Model.Notes" />
+                    </label>
 
-            <label>
-                <span>@Localizer["ReportEntryOrderNumber"]</span>
-                <InputText class="form-control" list="report-entry-order-codes" @bind-Value="Model.OrderNumber" @bind-Value:after="OrderNumberChangedAsync" />
-                <datalist id="report-entry-order-codes">
-                    @foreach (var option in OrderNumberOptions)
+                    @if (string.IsNullOrWhiteSpace(Model.Notes))
                     {
-                        <option value="@option.Code">@option.Label</option>
+                        <button class="report-entry-note-toggle" type="button" @onclick="HideNote">
+                            Notiz ausblenden
+                        </button>
                     }
-                </datalist>
-                <ValidationMessage For="() => Model.OrderNumber" />
-            </label>
-
-            <label>
-                <span>@Localizer["ReportEntryNotes"]</span>
-                <InputText class="form-control" @bind-Value="Model.Notes" @bind-Value:after="FieldChangedAsync" />
-                <ValidationMessage For="() => Model.Notes" />
-            </label>
+                }
+                else
+                {
+                    <button class="report-entry-note-toggle" type="button" @onclick="ShowNote">
+                        + Notiz hinzufügen
+                    </button>
+                }
+            </section>
         </div>
 
         <ValidationSummary />
 
         <div class="report-entry-actions">
-            <a class="report-entry-email-button" href="@DailyReportEmailHref" data-enhance-nav="false">@Localizer["ReportEntryPrepareDailyEmail"]</a>
             <button class="btn btn-outline-secondary" type="button" @onclick="HandleDraftRequestedAsync">@Localizer["ReportEntrySaveDraft"]</button>
             <button class="btn btn-primary" type="submit">@Localizer["ReportEntrySave"]</button>
             @if (Model.Id.HasValue)
@@ -120,13 +174,19 @@
     public bool RestoredDraft { get; set; }
 
     [Parameter]
-    public SchoolDaySuggestionViewModel? SchoolDaySuggestion { get; set; }
+    public IReadOnlyList<ReportEntryOption> Categories { get; set; } = [];
 
     [Parameter]
-    public string DailyReportEmailHref { get; set; } = string.Empty;
+    public IReadOnlyList<ReportEntryOption> Trainers { get; set; } = [];
 
     [Parameter]
     public EventCallback<ReportEntryFormModel> OnFieldChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<DateTime> OnDateChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnCreateCategory { get; set; }
 
     [Parameter]
     public EventCallback<ReportEntryFormModel> OnDraft { get; set; }
@@ -147,9 +207,51 @@
         new("SONSTIGES", "Sonstiges")
     ];
 
+    private string NewCategoryName { get; set; } = string.Empty;
+    private bool IsCategoryCreatorOpen { get; set; }
+    private bool IsNoteOpen { get; set; }
+    private ReportEntryFormModel? PreviousModel { get; set; }
+
+    private string FormattedSelectedDate
+    {
+        get
+        {
+            var formattedDate = Model.Date.ToString("dd.MM.yyyy");
+            return Model.Date.Date == DateTime.Today
+                ? $"{Localizer["ReportEntryToday"]}, {formattedDate}"
+                : formattedDate;
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (!ReferenceEquals(PreviousModel, Model))
+        {
+            IsNoteOpen = !string.IsNullOrWhiteSpace(Model.Notes);
+            PreviousModel = Model;
+            return;
+        }
+
+        if (!IsNoteOpen && !string.IsNullOrWhiteSpace(Model.Notes))
+        {
+            IsNoteOpen = true;
+        }
+    }
+
     private Task FieldChangedAsync()
     {
         return OnFieldChanged.InvokeAsync(Model);
+    }
+
+    private Task CategoryChangedAsync()
+    {
+        if (!Model.IsOrderNumberOverridden)
+        {
+            var categoryName = Categories.FirstOrDefault(category => category.Id == Model.CategoryId)?.Name;
+            Model.OrderNumber = GetDefaultOrderNumber(categoryName);
+        }
+
+        return FieldChangedAsync();
     }
 
     private Task OrderNumberChangedAsync()
@@ -158,26 +260,21 @@
         return FieldChangedAsync();
     }
 
-    private Task ApplySchoolDayTemplateAsync()
+    private void ToggleCategoryCreator()
     {
-        Model.IsVocationalSchoolDay = true;
+        IsCategoryCreatorOpen = !IsCategoryCreatorOpen;
+    }
 
-        if (SchoolDaySuggestion?.VocationalSchoolCategoryId is int categoryId)
+    private async Task CreateCategoryAsync()
+    {
+        if (string.IsNullOrWhiteSpace(NewCategoryName))
         {
-            Model.CategoryId = categoryId;
+            return;
         }
 
-        if (!Model.IsOrderNumberOverridden)
-        {
-            Model.OrderNumber = "SCHULE";
-        }
-
-        if (string.IsNullOrWhiteSpace(Model.Description) && SchoolDaySuggestion is not null)
-        {
-            Model.Description = SchoolDaySuggestion.SubjectsText;
-        }
-
-        return FieldChangedAsync();
+        await OnCreateCategory.InvokeAsync(NewCategoryName);
+        NewCategoryName = string.Empty;
+        IsCategoryCreatorOpen = false;
     }
 
     private Task HandleDraftRequestedAsync()
@@ -192,20 +289,58 @@
 
     private Task MoveToPreviousDay()
     {
-        Model.Date = Model.Date.AddDays(-1);
-        return FieldChangedAsync();
+        return OnDateChanged.InvokeAsync(Model.Date.AddDays(-1));
     }
 
     private Task MoveToNextDay()
     {
-        Model.Date = Model.Date.AddDays(1);
-        return FieldChangedAsync();
+        return OnDateChanged.InvokeAsync(Model.Date.AddDays(1));
     }
 
     private Task MoveToToday()
     {
-        Model.Date = DateTime.Today;
-        return FieldChangedAsync();
+        return OnDateChanged.InvokeAsync(DateTime.Today);
+    }
+
+    private void ShowNote()
+    {
+        IsNoteOpen = true;
+    }
+
+    private void HideNote()
+    {
+        if (string.IsNullOrWhiteSpace(Model.Notes))
+        {
+            IsNoteOpen = false;
+        }
+    }
+
+    private static string GetDefaultOrderNumber(string? categoryName)
+    {
+        var normalizedName = (categoryName ?? string.Empty).Trim().ToLowerInvariant();
+
+        if (normalizedName.Contains("berufsschule", StringComparison.Ordinal))
+        {
+            return "SCHULE";
+        }
+
+        if (normalizedName.Contains("urlaub", StringComparison.Ordinal))
+        {
+            return "URLAUB";
+        }
+
+        if (normalizedName.Contains("krank", StringComparison.Ordinal))
+        {
+            return "KRANK";
+        }
+
+        if (normalizedName.Contains("überstunden", StringComparison.Ordinal)
+            || normalizedName.Contains("overtime", StringComparison.Ordinal))
+        {
+            return "ÜBERSTUNDEN";
+        }
+
+        return "BETRIEB";
     }
 
     private sealed record OrderNumberOption(string Code, string Label);

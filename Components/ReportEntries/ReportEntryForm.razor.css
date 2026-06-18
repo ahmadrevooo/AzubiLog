@@ -1,13 +1,12 @@
 .report-entry-form-card {
     background: var(--app-surface);
     border: 1px solid color-mix(in srgb, var(--app-border) 62%, transparent);
-    border-radius: 12px;
+    border-radius: 8px;
     box-shadow: 0 18px 44px rgba(15, 23, 42, 0.06);
     display: grid;
-    gap: 0.85rem;
-    justify-self: center;
-    max-width: 34rem;
-    padding: 1.15rem;
+    gap: 0.75rem;
+    max-width: 48rem;
+    padding: 1rem;
     width: 100%;
 }
 
@@ -15,52 +14,64 @@
 .report-entry-actions {
     align-items: center;
     display: flex;
-    gap: 1rem;
+    gap: 0.75rem;
     justify-content: space-between;
 }
 
 .report-entry-form-header p,
-.report-entry-form-card label > span {
+.report-entry-form-card label > span,
+.report-entry-duration span {
     color: var(--app-text-muted);
-    font-size: 0.82rem;
+    font-size: 0.78rem;
     font-weight: 650;
     letter-spacing: 0;
-    margin: 0 0 0.35rem;
-    text-transform: none;
+    margin: 0 0 0.28rem;
 }
 
 .report-entry-form-header h1 {
     color: var(--app-text);
-    font-size: 1.35rem;
+    font-size: 1.2rem;
     font-weight: 850;
     margin: 0;
 }
 
-.report-entry-grid {
+.report-entry-main-fields,
+.report-entry-section {
     display: grid;
-    gap: 1rem;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.7rem;
 }
 
-.report-entry-main-fields {
-    display: grid;
-    gap: 0.85rem;
+.report-entry-section {
+    border-top: 1px solid color-mix(in srgb, var(--app-border) 54%, transparent);
+    padding-top: 0.75rem;
 }
 
-.report-entry-compact-grid {
+.report-entry-section:first-child {
+    border-top: 0;
+    padding-top: 0;
+}
+
+.report-entry-section h2 {
+    color: var(--app-text);
+    font-size: 0.98rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin: 0;
+}
+
+.report-entry-time-grid,
+.report-entry-info-grid {
     display: grid;
-    gap: 0.9rem;
-    grid-template-columns: minmax(10rem, 1fr) minmax(6.5rem, 0.55fr) minmax(6.5rem, 0.55fr);
+    gap: 0.75rem;
 }
 
 .report-entry-time-grid {
-    display: grid;
-    gap: 0.9rem;
-    grid-template-columns: repeat(2, minmax(0, 10rem));
+    align-items: end;
+    grid-template-columns: repeat(2, minmax(0, 8.5rem)) minmax(6.5rem, 1fr);
 }
 
-.report-entry-time-input {
-    max-width: 10rem;
+.report-entry-info-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .report-entry-form-card label {
@@ -72,9 +83,9 @@
 .report-entry-form-card .form-select {
     background-color: var(--app-bg);
     border-color: color-mix(in srgb, var(--app-border) 70%, transparent);
-    border-radius: 10px;
+    border-radius: 8px;
     color: var(--app-text);
-    min-height: 2.55rem;
+    min-height: 2.35rem;
     transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
 }
 
@@ -84,100 +95,123 @@
     box-shadow: 0 0 0 0.18rem color-mix(in srgb, var(--app-primary) 16%, transparent);
 }
 
+.report-entry-description {
+    min-height: 7.5rem;
+    overflow: hidden;
+    resize: vertical;
+}
+
 .report-entry-date-control {
     align-items: stretch;
     display: grid;
     gap: 0.35rem;
-    grid-template-columns: 2.35rem minmax(9rem, 13rem) 2.35rem;
+    grid-template-columns: 2.35rem minmax(11rem, 16rem) 2.35rem;
     justify-content: start;
-    max-width: max-content;
 }
 
-.report-entry-today-button {
-    background: var(--app-surface-muted);
+.report-entry-date-button,
+.report-entry-day-button,
+.report-entry-icon-button,
+.report-entry-note-toggle {
     border: 1px solid color-mix(in srgb, var(--app-border) 70%, transparent);
     border-radius: 8px;
     color: var(--app-text);
-    font-size: 0.84rem;
-    font-weight: 680;
-    justify-self: start;
-    margin-bottom: 0.4rem;
-    min-height: 2.05rem;
-    padding: 0.25rem 0.65rem;
+}
+
+.report-entry-date-button {
+    background: var(--app-bg);
+    font-size: 0.92rem;
+    font-weight: 750;
+    min-height: 2.35rem;
+    padding: 0.35rem 0.7rem;
 }
 
 .report-entry-day-button {
     align-items: center;
     background: linear-gradient(180deg, var(--app-surface), var(--app-surface-muted));
-    border: 1px solid color-mix(in srgb, var(--app-border) 70%, transparent);
-    border-radius: 8px;
     box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
-    color: var(--app-text);
     display: inline-flex;
     font-size: 1rem;
     font-weight: 750;
-    height: 2.55rem;
+    height: 2.35rem;
     justify-content: center;
-    justify-self: stretch;
     line-height: 1;
-    min-height: 2.55rem;
-    min-width: 0;
-    overflow: hidden;
+    min-height: 2.35rem;
     padding: 0;
-    position: relative;
     width: 2.35rem;
 }
 
 .report-entry-day-button span {
     pointer-events: none;
-    transform: translateY(-0.02rem);
 }
 
-.report-entry-day-button:focus-visible {
-    box-shadow: 0 0 0 0.18rem color-mix(in srgb, var(--app-primary) 22%, transparent);
+.report-entry-time-input {
+    max-width: 8.5rem;
 }
 
-.report-entry-school-hint {
-    align-items: center;
-    background: color-mix(in srgb, var(--app-primary) 8%, var(--app-surface-muted));
-    border: 1px solid color-mix(in srgb, var(--app-primary) 18%, var(--app-border));
+.report-entry-duration {
+    align-self: stretch;
+    background: var(--app-bg);
+    border: 1px solid color-mix(in srgb, var(--app-border) 68%, transparent);
     border-radius: 8px;
-    color: var(--app-text);
-    display: flex;
-    gap: 0.75rem;
-    justify-content: space-between;
-    min-width: 0;
-    padding: 0.7rem;
+    display: grid;
+    min-height: 2.35rem;
+    padding: 0.32rem 0.65rem;
 }
 
-.report-entry-school-hint span {
+.report-entry-duration strong {
     color: var(--app-text);
-    font-size: 0.88rem;
-    font-weight: 620;
-    overflow-wrap: anywhere;
+    font-size: 1rem;
+    line-height: 1.1;
 }
 
-.report-entry-description {
-    min-height: 14rem;
-    overflow: hidden;
-    resize: vertical;
+.report-entry-category-control {
+    display: grid;
+    gap: 0.4rem;
+    grid-template-columns: minmax(0, 1fr) 2.35rem;
+}
+
+.report-entry-icon-button {
+    align-items: center;
+    background: var(--app-bg);
+    display: inline-flex;
+    font-size: 1.1rem;
+    font-weight: 800;
+    justify-content: center;
+    min-height: 2.35rem;
+}
+
+.report-entry-category-popover {
+    align-items: center;
+    display: grid;
+    gap: 0.5rem;
+    grid-template-columns: minmax(0, 1fr) auto;
 }
 
 .report-entry-check {
     align-items: center;
     display: flex !important;
-    gap: 0.65rem;
+    gap: 0.6rem;
 }
 
 .report-entry-check span {
     margin: 0 !important;
 }
 
+.report-entry-note-toggle {
+    background: var(--app-surface-muted);
+    font-size: 0.88rem;
+    font-weight: 700;
+    justify-self: start;
+    min-height: 2.2rem;
+    padding: 0.35rem 0.7rem;
+}
+
 .report-entry-actions {
     border-top: 1px solid color-mix(in srgb, var(--app-border) 58%, transparent);
     justify-content: flex-end;
-    margin-top: 0.15rem;
-    padding-top: 0.95rem;
+    margin-top: 0.1rem;
+    padding-top: 0.75rem;
 }
 
 .report-entry-delete-link {
@@ -188,51 +222,34 @@
     padding: 0.375rem 0.25rem;
 }
 
-.report-entry-delete-link:focus-visible {
-    border-radius: 6px;
-    outline: 2px solid color-mix(in srgb, var(--app-danger) 45%, transparent);
-    outline-offset: 2px;
-}
-
-.report-entry-email-button {
-    background: color-mix(in srgb, var(--app-primary) 10%, var(--app-surface-muted));
-    border: 1px solid color-mix(in srgb, var(--app-primary) 24%, var(--app-border));
-    border-radius: 8px;
-    color: var(--app-text);
-    font-size: 0.9rem;
-    font-weight: 700;
-    padding: 0.38rem 0.65rem;
-    text-decoration: none;
-}
-
-.report-entry-email-button:focus-visible {
+.report-entry-delete-link:focus-visible,
+.report-entry-date-button:focus-visible,
+.report-entry-day-button:focus-visible,
+.report-entry-icon-button:focus-visible,
+.report-entry-note-toggle:focus-visible {
     box-shadow: 0 0 0 0.18rem color-mix(in srgb, var(--app-primary) 22%, transparent);
+    outline: 0;
 }
 
 @media (hover: hover) and (pointer: fine) {
-    .report-entry-day-button:hover {
+    .report-entry-date-button:hover,
+    .report-entry-day-button:hover,
+    .report-entry-icon-button:hover,
+    .report-entry-note-toggle:hover {
         background: color-mix(in srgb, var(--app-primary) 10%, var(--app-surface));
         border-color: color-mix(in srgb, var(--app-primary) 34%, var(--app-border));
     }
 
-    .report-entry-today-button:hover {
-        background: color-mix(in srgb, var(--app-primary) 10%, var(--app-surface-muted));
-    }
-
     .report-entry-delete-link:hover {
         text-decoration: underline;
-    }
-
-    .report-entry-email-button:hover {
-        background: color-mix(in srgb, var(--app-primary) 16%, var(--app-surface-muted));
     }
 }
 
 .validation-message,
 .validation-errors {
     color: var(--app-danger);
-    font-size: 0.84rem;
-    margin-top: 0.35rem;
+    font-size: 0.82rem;
+    margin-top: 0.3rem;
 }
 
 @media (max-width: 760px) {
@@ -242,19 +259,20 @@
         flex-direction: column;
     }
 
-    .report-entry-grid,
-    .report-entry-compact-grid,
-    .report-entry-time-grid {
+    .report-entry-date-control,
+    .report-entry-time-grid,
+    .report-entry-info-grid,
+    .report-entry-category-popover {
         grid-template-columns: 1fr;
     }
 
-    .report-entry-school-hint {
-        align-items: stretch;
-        flex-direction: column;
+    .report-entry-day-button,
+    .report-entry-time-input {
+        max-width: none;
+        width: 100%;
     }
 
-    .report-entry-actions .btn,
-    .report-entry-email-button {
+    .report-entry-actions .btn {
         width: 100%;
     }
 }

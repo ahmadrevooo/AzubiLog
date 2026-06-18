@@ -1,12 +1,20 @@
+@using System.Globalization
 @inject IStringLocalizer<SharedResource> Localizer
 
 <aside class="daily-summary-card">
     <div class="daily-summary-header">
         <div>
             <p>@Localizer["DailySummaryEyebrow"]</p>
-            <h2>@Summary.Date.ToString("d")</h2>
+            <h2>@Summary.Date.ToString("dddd, dd.MM.yyyy", GermanCulture)</h2>
         </div>
-        <strong>@Summary.EntryCount</strong>
+        <strong>@Summary.TotalHours.ToString("0.##") h</strong>
+    </div>
+
+    <a class="daily-summary-email-button" href="@DailyReportEmailHref" data-enhance-nav="false">@Localizer["ReportEntryPrepareDailyEmail"]</a>
+
+    <div class="daily-summary-total daily-summary-total-top">
+        <span>@Localizer["DailySummaryTotal"]</span>
+        <strong>@Summary.TotalHours.ToString("0.##") h</strong>
     </div>
 
     @if (Summary.Entries.Count == 0)
@@ -23,10 +31,14 @@
             {
                 <a class="daily-summary-entry" href="@($"report-entries/{entry.Id}")">
                     <div class="daily-summary-entry-text">
+                        <span class="daily-summary-entry-meta">@FormatCompactTimeRange(entry.TimeRange) · @entry.Hours.ToString("0.##") h</span>
                         <strong>@entry.Title</strong>
-                        <span>@entry.CategoryName</span>
+                        @if (!string.IsNullOrWhiteSpace(entry.DescriptionPreview))
+                        {
+                            <span>@entry.DescriptionPreview</span>
+                        }
+                        <span class="daily-summary-entry-category">@entry.CategoryName</span>
                     </div>
-                    <span class="daily-summary-entry-hours">@entry.Hours.ToString("0.##") h</span>
                 </a>
             }
         </div>
@@ -41,4 +53,14 @@
 @code {
     [Parameter, EditorRequired]
     public DailySummaryViewModel Summary { get; set; } = null!;
+
+    [Parameter]
+    public string DailyReportEmailHref { get; set; } = string.Empty;
+
+    private static readonly CultureInfo GermanCulture = CultureInfo.GetCultureInfo("de-DE");
+
+    private static string FormatCompactTimeRange(string timeRange)
+    {
+        return timeRange.Replace(" - ", "–", StringComparison.Ordinal);
+    }
 }
