@@ -83,6 +83,19 @@ public partial class ReportEntryPage : ComponentBase
         Navigation.NavigateTo($"report-entries/new?date={selectedDate:yyyy-MM-dd}", replace: true);
     }
 
+    protected async Task HandleNewEntryAsync()
+    {
+        if (ViewModel is null)
+        {
+            return;
+        }
+
+        var selectedDate = ViewModel.Entry.Date.Date;
+        ViewModel = await ReportEntryService.GetFreshEditorAsync(selectedDate);
+        SubmittedEntry = null;
+        Navigation.NavigateTo($"report-entries/new?date={selectedDate:yyyy-MM-dd}", replace: true);
+    }
+
     protected async Task HandleDeleteAsync()
     {
         if (ViewModel?.Entry.Id is null)

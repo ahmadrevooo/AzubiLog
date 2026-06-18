@@ -133,10 +133,6 @@
     white-space: nowrap;
 }
 
-.daily-summary-entry-category {
-    font-weight: 700;
-}
-
 .daily-summary-total {
     border-top: 1px solid var(--app-border);
     margin-top: 0;

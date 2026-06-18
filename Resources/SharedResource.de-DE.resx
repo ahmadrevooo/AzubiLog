@@ -201,6 +201,9 @@
   <data name="ReportEntrySave" xml:space="preserve">
     <value>Eintrag speichern</value>
   </data>
+  <data name="ReportEntryNewEntry" xml:space="preserve">
+    <value>Neuer Eintrag</value>
+  </data>
   <data name="DailySummaryEyebrow" xml:space="preserve">
     <value>Tagesübersicht</value>
   </data>

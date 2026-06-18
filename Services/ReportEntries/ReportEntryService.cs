@@ -195,7 +195,7 @@ public class ReportEntryService(
             DailySummary = summary,
             WeeklyOverview = weeklyOverview,
             SchoolDaySuggestion = schoolDaySuggestion,
-            DailyReportEmailHref = BuildDailyReportEmailHref(form, trainers, CalculateHours(form.StartTime, form.EndTime)),
+            DailyReportEmailHref = BuildDailyReportEmailHref(form, trainers, summary),
             CalculatedHours = CalculateHours(form.StartTime, form.EndTime),
             RestoredDraft = restoredDraft
         };
@@ -723,23 +723,28 @@ public class ReportEntryService(
     private static string BuildDailyReportEmailHref(
         ReportEntryFormModel form,
         IReadOnlyList<ReportEntryOption> trainers,
-        decimal calculatedHours)
+        DailySummaryViewModel summary)
     {
         var trainerEmail = trainers.FirstOrDefault(trainer => trainer.Id == form.TrainerId)?.Email ?? string.Empty;
         var subject = $"Tagesbericht vom {form.Date:dd.MM.yyyy}";
-        var body = string.Join(
-            Environment.NewLine,
-            [
-                $"Datum: {form.Date:dddd, dd.MM.yyyy}",
-                $"Startzeit: {form.StartTime}",
-                $"Endzeit: {form.EndTime}",
-                $"Arbeitszeit: {calculatedHours:0.##} h",
-                string.Empty,
-                $"Titel: {form.Title}",
-                string.Empty,
-                "Beschreibung:",
-                form.Description
-            ]);
+        var lines = new List<string>
+        {
+            $"Datum: {summary.Date:dddd, dd.MM.yyyy}",
+            $"Gesamte Arbeitszeit: {summary.TotalHours:0.##} h",
+            string.Empty,
+            "EintrÃ¤ge:"
+        };
+
+        if (summary.Entries.Count == 0)
+        {
+            lines.Add("Keine EintrÃ¤ge vorhanden.");
+        }
+        else
+        {
+            lines.AddRange(summary.Entries.Select(entry => $"{entry.TimeRange} Â· {entry.Hours:0.##} h - {entry.Title}"));
+        }
+
+        var body = string.Join(Environment.NewLine, lines);
 
         return $"mailto:{Uri.EscapeDataString(trainerEmail)}?subject={Uri.EscapeDataString(subject)}&body={Uri.EscapeDataString(body)}";
     }

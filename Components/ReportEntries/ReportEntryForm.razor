@@ -20,6 +20,9 @@
 
         <div class="report-entry-form-header">
             <h1>@Localizer[Model.Id.HasValue ? "ReportEntryEditTitle" : "ReportEntryCreateTitle"]</h1>
+            <button class="btn btn-outline-secondary btn-sm" type="button" @onclick="OnNewEntry">
+                @Localizer["ReportEntryNewEntry"]
+            </button>
         </div>
 
         @if (ShowSchoolDayHint)
@@ -51,7 +54,13 @@
                 <div class="report-entry-time-grid">
                     <label>
                         <span>@Localizer["ReportEntryStartTime"]</span>
-                        <input class="form-control report-entry-time-input" type="text" inputmode="numeric" maxlength="5" placeholder="08:00" value="@Model.StartTime" @oninput="HandleStartTimeInputAsync" />
+                        <div class="report-entry-time-control">
+                            <input class="form-control report-entry-time-input" type="text" inputmode="numeric" maxlength="5" placeholder="08:00" value="@Model.StartTime" @oninput="HandleStartTimeInputAsync" />
+                            <div class="report-entry-time-stepper">
+                                <button type="button" title="Startzeit erhÃ¶hen" aria-label="Startzeit erhÃ¶hen" @onclick="IncreaseStartTimeAsync">+</button>
+                                <button type="button" title="Startzeit verringern" aria-label="Startzeit verringern" @onclick="DecreaseStartTimeAsync">-</button>
+                            </div>
+                        </div>
                         @if (!IsStartTimeValid)
                         {
                             <span class="report-entry-field-hint">Bitte im Format HH:mm eingeben.</span>
@@ -60,7 +69,13 @@
 
                     <label>
                         <span>@Localizer["ReportEntryEndTime"]</span>
-                        <input class="form-control report-entry-time-input" type="text" inputmode="numeric" maxlength="5" placeholder="16:00" value="@Model.EndTime" @oninput="HandleEndTimeInputAsync" />
+                        <div class="report-entry-time-control">
+                            <input class="form-control report-entry-time-input" type="text" inputmode="numeric" maxlength="5" placeholder="16:00" value="@Model.EndTime" @oninput="HandleEndTimeInputAsync" />
+                            <div class="report-entry-time-stepper">
+                                <button type="button" title="Endzeit erhÃ¶hen" aria-label="Endzeit erhÃ¶hen" @onclick="IncreaseEndTimeAsync">+</button>
+                                <button type="button" title="Endzeit verringern" aria-label="Endzeit verringern" @onclick="DecreaseEndTimeAsync">-</button>
+                            </div>
+                        </div>
                         @if (!IsEndTimeValid)
                         {
                             <span class="report-entry-field-hint">Bitte im Format HH:mm eingeben.</span>
@@ -117,11 +132,6 @@
                     </div>
                 }
 
-                <label class="report-entry-check">
-                    <InputCheckbox @bind-Value="Model.IsVocationalSchoolDay" @bind-Value:after="FieldChangedAsync" />
-                    <span>@Localizer["ReportEntryVocationalSchoolDay"]</span>
-                </label>
-
                 @if (Model.IsVocationalSchoolDay)
                 {
                     <label>
@@ -141,6 +151,11 @@
                         }
                     </datalist>
                     <ValidationMessage For="() => Model.OrderNumber" />
+                </label>
+
+                <label class="report-entry-check">
+                    <InputCheckbox @bind-Value="Model.IsVocationalSchoolDay" @bind-Value:after="FieldChangedAsync" />
+                    <span>@Localizer["ReportEntryVocationalSchoolDay"]</span>
                 </label>
 
                 @if (IsNoteOpen || !string.IsNullOrWhiteSpace(Model.Notes))
@@ -210,6 +225,9 @@
 
     [Parameter]
     public EventCallback OnApplySchoolDay { get; set; }
+
+    [Parameter]
+    public EventCallback OnNewEntry { get; set; }
 
     [Parameter]
     public EventCallback<ReportEntryFormModel> OnDraft { get; set; }
@@ -293,6 +311,30 @@
     private Task HandleEndTimeInputAsync(ChangeEventArgs args)
     {
         Model.EndTime = args.Value?.ToString() ?? string.Empty;
+        return FieldChangedAsync();
+    }
+
+    private Task IncreaseStartTimeAsync()
+    {
+        Model.StartTime = StepTime(Model.StartTime, "08:00", 15);
+        return FieldChangedAsync();
+    }
+
+    private Task DecreaseStartTimeAsync()
+    {
+        Model.StartTime = StepTime(Model.StartTime, "08:00", -15);
+        return FieldChangedAsync();
+    }
+
+    private Task IncreaseEndTimeAsync()
+    {
+        Model.EndTime = StepTime(Model.EndTime, "16:00", 15);
+        return FieldChangedAsync();
+    }
+
+    private Task DecreaseEndTimeAsync()
+    {
+        Model.EndTime = StepTime(Model.EndTime, "16:00", -15);
         return FieldChangedAsync();
     }
 
@@ -405,6 +447,26 @@
     {
         return TimeSpan.TryParseExact(value, "hh\\:mm", CultureInfo.InvariantCulture, out time)
             && time < TimeSpan.FromDays(1);
+    }
+
+    private static string StepTime(string value, string fallback, int minutes)
+    {
+        if (!TryParseTime(value, out var time))
+        {
+            TryParseTime(fallback, out time);
+        }
+
+        var stepped = time.Add(TimeSpan.FromMinutes(minutes));
+        if (stepped < TimeSpan.Zero)
+        {
+            stepped = TimeSpan.Zero;
+        }
+        else if (stepped >= TimeSpan.FromDays(1))
+        {
+            stepped = TimeSpan.FromDays(1).Subtract(TimeSpan.FromMinutes(1));
+        }
+
+        return stepped.ToString("hh\\:mm", CultureInfo.InvariantCulture);
     }
 
     private sealed record OrderNumberOption(string Code, string Label);
