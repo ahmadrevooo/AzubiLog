@@ -4,6 +4,15 @@
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">@Localizer["AppName"]</a>
+        <div class="nav-user-dropdown ms-auto">
+    <div class="user-avatar" tabindex="0">
+        <span class="bi bi-person-circle"></span>
+    </div>
+    <div class="dropdown-menu">
+        <a class="dropdown-item" href="/account">@Localizer["AccountOverview"]</a>
+        <a class="dropdown-item" href="/logout">@Localizer["Logout"]</a>
+    </div>
+</div>
     </div>
 </div>
 
@@ -41,3 +50,60 @@
             : NavLinkMatch.Prefix;
     }
 }
+
+<style>
+.nav-user-dropdown {
+    position: relative;
+    display: inline-block;
+    float: right;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    background: #343a40;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.user-avatar:focus,
+.user-avatar:hover {
+    background: #495057;
+}
+
+.nav-user-dropdown .dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 48px;
+    background: #fff;
+    min-width: 160px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    border-radius: 0.25rem;
+    z-index: 1000;
+}
+
+.nav-user-dropdown:hover .dropdown-menu,
+.nav-user-dropdown:focus-within .dropdown-menu {
+    display: block;
+}
+
+.dropdown-item {
+    padding: 0.5rem 1rem;
+    color: #212529;
+    text-decoration: none;
+    display: block;
+    white-space: nowrap;
+}
+
+.dropdown-item:hover {
+    background: #f8f9fa;
+    color: #16181b;
+}
+</style>
