@@ -22,6 +22,16 @@
             <h1>@Localizer[Model.Id.HasValue ? "ReportEntryEditTitle" : "ReportEntryCreateTitle"]</h1>
         </div>
 
+        @if (ShowSchoolDayHint)
+        {
+            <div class="report-entry-school-hint">
+                <span>@Localizer["ReportEntrySchoolDayHint"]</span>
+                <button class="btn btn-outline-secondary btn-sm" type="button" @onclick="OnApplySchoolDay">
+                    @Localizer["ReportEntryApplySchoolDay"]
+                </button>
+            </div>
+        }
+
         <div class="report-entry-main-fields">
             <section class="report-entry-section">
                 <label>
@@ -194,6 +204,12 @@
 
     [Parameter]
     public EventCallback<string> OnCreateCategory { get; set; }
+
+    [Parameter]
+    public bool ShowSchoolDayHint { get; set; }
+
+    [Parameter]
+    public EventCallback OnApplySchoolDay { get; set; }
 
     [Parameter]
     public EventCallback<ReportEntryFormModel> OnDraft { get; set; }

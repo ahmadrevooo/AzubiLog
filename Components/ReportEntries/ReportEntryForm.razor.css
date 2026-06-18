@@ -34,6 +34,27 @@
     margin: 0;
 }
 
+.report-entry-school-hint {
+    align-items: center;
+    background: color-mix(in srgb, var(--app-primary) 6%, var(--app-surface-muted));
+    border: 1px solid color-mix(in srgb, var(--app-primary) 16%, var(--app-border));
+    border-radius: 8px;
+    color: var(--app-text);
+    display: flex;
+    gap: 0.65rem;
+    justify-content: space-between;
+    min-width: 0;
+    padding: 0.55rem 0.65rem;
+}
+
+.report-entry-school-hint span {
+    color: var(--app-text-muted);
+    font-size: 0.84rem;
+    font-weight: 620;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
 .report-entry-main-fields,
 .report-entry-section {
     display: grid;
@@ -263,7 +284,8 @@
 
 @media (max-width: 760px) {
     .report-entry-form-header,
-    .report-entry-actions {
+    .report-entry-actions,
+    .report-entry-school-hint {
         align-items: stretch;
         flex-direction: column;
     }

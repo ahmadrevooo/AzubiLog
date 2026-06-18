@@ -13,26 +13,18 @@ else
 {
     <div class="report-entry-page">
         <section class="report-entry-main">
-            <div class="report-entry-workspace @(ViewModel.SchoolDaySuggestion?.IsSchoolDay == true ? "has-school-hint" : string.Empty)">
-                @if (ViewModel.SchoolDaySuggestion?.IsSchoolDay == true)
-                {
-                    <aside class="report-entry-school-hint">
-                        <span>@Localizer["ReportEntrySchoolDayHint"]</span>
-                        <button class="btn btn-outline-secondary btn-sm" type="button" @onclick="HandleApplySchoolDayAsync">
-                            @Localizer["ReportEntryApplySchoolDay"]
-                        </button>
-                    </aside>
-                }
-
+            <div class="report-entry-workspace">
                 <ReportEntryForm
                     Model="ViewModel.Entry"
                     Categories="ViewModel.Categories"
                     Trainers="ViewModel.Trainers"
                     CalculatedHours="ViewModel.CalculatedHours"
                     RestoredDraft="ViewModel.RestoredDraft"
+                    ShowSchoolDayHint="ViewModel.SchoolDaySuggestion?.IsSchoolDay == true"
                     OnFieldChanged="HandleFieldChangedAsync"
                     OnDateChanged="HandleDateChangedAsync"
                     OnCreateCategory="HandleCreateCategoryAsync"
+                    OnApplySchoolDay="HandleApplySchoolDayAsync"
                     OnDraft="HandleDraftAsync"
                     OnSave="HandleSaveAsync"
                     OnDelete="HandleDeleteAsync" />
