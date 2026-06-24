@@ -48,7 +48,17 @@ namespace AzubiLog
             builder.Services.AddScoped<ApplicationDataInitializer>();
             builder.Services.AddScoped<DefaultUserData>();
             builder.Services.AddScoped<AccountFlowService>();
-            builder.Services.AddScoped<IAccountEmailSender, DevelopmentAccountEmailSender>();
+            builder.Services.AddHttpClient();
+            builder.Services.Configure<BrevoSettings>(options =>
+            {
+                builder.Configuration.GetSection("Brevo").Bind(options);
+                var envKey = Environment.GetEnvironmentVariable("BREVO_API_KEY");
+                if (!string.IsNullOrWhiteSpace(envKey))
+                {
+                    options.ApiKey = envKey;
+                }
+            });
+            builder.Services.AddScoped<IAccountEmailSender, BrevoEmailSender>();
             builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
             builder.Services.AddScoped<IDashboardService, DashboardService>();
             builder.Services.AddScoped<IApprenticeProfileService, ApprenticeProfileService>();
