@@ -58,11 +58,6 @@ public static class AccountEndpointExtensions
                 return Results.Redirect("/account/login?error=invalid");
             }
 
-            if (!await userManager.IsEmailConfirmedAsync(user))
-            {
-                return Results.Redirect($"/account/email-confirmation-notice?email={Uri.EscapeDataString(email)}");
-            }
-
             await signInManager.SignInAsync(user, rememberMe);
             return Results.Redirect(returnUrl);
         }).AllowAnonymous().DisableAntiforgery();
@@ -82,7 +77,7 @@ public static class AccountEndpointExtensions
             var email = form["email"].ToString();
             var user = await userManager.FindByEmailAsync(email);
 
-            if (user is not null && await userManager.IsEmailConfirmedAsync(user))
+            if (user is not null)
             {
                 await accountFlow.SendPasswordResetLinkAsync(user);
             }
