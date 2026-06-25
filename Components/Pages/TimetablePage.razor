@@ -1,0 +1,135 @@
+@page "/timetable"
+@attribute [Authorize(Policy = "ConfirmedEmail")]
+@inject IStringLocalizer<SharedResource> Localizer
+@inject ITimetableService TimetableService
+@inject ICurrentUserService CurrentUserService
+
+<PageTitle>@Localizer["TimetableManagementTitle"]</PageTitle>
+
+@if (CurrentUser is null)
+{
+    <div class="profile-loading">Laden...</div>
+}
+else if (CurrentUser.Role != UserRole.Klassensprecher)
+{
+    <div class="profile-page">
+        <header class="profile-page-header">
+            <p>@Localizer["TimetableNavItem"]</p>
+            <h1>@Localizer["TimetableManagementTitle"]</h1>
+            <span>Du bist als Azubi registriert. Nur Klassensprecher können den Stundenplan verwalten.</span>
+        </header>
+    </div>
+}
+else
+{
+    <div class="profile-page">
+        <header class="profile-page-header">
+            <p>@Localizer["TimetableNavItem"]</p>
+            <h1>@Localizer["TimetableManagementTitle"]</h1>
+            <span>@Localizer["TimetableManagementIntro"]</span>
+            <div class="timetable-class-info">
+                <strong>@CurrentUser.School</strong> &mdash; @CurrentUser.ClassName
+            </div>
+        </header>
+
+        @if (!string.IsNullOrWhiteSpace(StatusMessage))
+        {
+            <div class="profile-status">@StatusMessage</div>
+        }
+
+        <section class="profile-card">
+            <div class="profile-card-header">
+                <div>
+                    <p>@Localizer["TimetableNavItem"]</p>
+                    <h2>Wochenplan</h2>
+                </div>
+            </div>
+
+            <div class="timetable-grid">
+                @foreach (var dayEntry in DayEntries)
+                {
+                    <div class="timetable-day-card">
+                        <label>
+                            <span class="timetable-day-label">@GetDayName(dayEntry.DayOfWeek)</span>
+                            <input class="form-control"
+                                   type="text"
+                                   value="@dayEntry.SubjectsText"
+                                   @onchange="(e) => OnSubjectsChanged(dayEntry.DayOfWeek, e.Value?.ToString())"
+                                   placeholder="@Localizer["TimetableSubjectsPlaceholder"]" />
+                        </label>
+                    </div>
+                }
+            </div>
+
+            <div class="timetable-actions">
+                <button class="btn btn-primary" @onclick="SaveTimetableAsync" disabled="@IsSaving">
+                    @if (IsSaving)
+                    {
+                        <span>Wird gespeichert...</span>
+                    }
+                    else
+                    {
+                        @Localizer["TimetableSave"]
+                    }
+                </button>
+            </div>
+        </section>
+
+        <section class="profile-card">
+            <div class="profile-card-header">
+                <div>
+                    <p>@Localizer["TimetableCancellations"]</p>
+                    <h2>@Localizer["TimetableCancellations"]</h2>
+                </div>
+            </div>
+
+            <div class="timetable-cancellation-form">
+                <div class="profile-grid">
+                    <label>
+                        <span>Tag</span>
+                        <select class="form-control" @bind="SelectedCancellationDay">
+                            @foreach (var dayEntry in DayEntries.Where(d => !string.IsNullOrWhiteSpace(d.SubjectsText)))
+                            {
+                                <option value="@((int)dayEntry.DayOfWeek)">@GetDayName(dayEntry.DayOfWeek)</option>
+                            }
+                        </select>
+                    </label>
+                    <label>
+                        <span>@Localizer["TimetableCancellationDate"]</span>
+                        <input class="form-control" type="date" @bind="CancellationDate" />
+                    </label>
+                    <label>
+                        <span>@Localizer["TimetableCancelReason"]</span>
+                        <input class="form-control" type="text" @bind="CancellationReason" />
+                    </label>
+                </div>
+                <button class="btn btn-secondary" @onclick="AddCancellationAsync" disabled="@IsSaving">
+                    @Localizer["TimetableCancellationAdd"]
+                </button>
+            </div>
+
+            @if (Cancellations.Count > 0)
+            {
+                <div class="timetable-cancellation-list">
+                    @foreach (var cancellation in Cancellations)
+                    {
+                        <div class="timetable-cancellation-item">
+                            <span>
+                                <strong>@GetDayName(cancellation.ClassTimetableEntry.DayOfWeek)</strong>
+                                @cancellation.Date.ToString("dd.MM.yyyy") &mdash;
+                                @cancellation.ClassTimetableEntry.SubjectsText
+                                @if (!string.IsNullOrWhiteSpace(cancellation.Reason))
+                                {
+                                    <em>(@cancellation.Reason)</em>
+                                }
+                            </span>
+                            <button class="btn btn-sm btn-outline-danger" @onclick="() => RemoveCancellationAsync(cancellation.Id)">
+                                @Localizer["TimetableCancellationRemove"]
+                            </button>
+                        </div>
+                    }
+                </div>
+            }
+        </section>
+    </div>
+}

@@ -17,14 +17,24 @@ public sealed class AccountFlowService(
         string lastName,
         string email,
         string password,
+        string role,
+        string school,
+        string className,
         CancellationToken cancellationToken = default)
     {
+        var validRole = role == UserRole.Klassensprecher
+            ? UserRole.Klassensprecher
+            : UserRole.Azubi;
+
         var user = new ApplicationUser
         {
             UserName = email.Trim(),
             Email = email.Trim(),
             FirstName = firstName.Trim(),
             LastName = lastName.Trim(),
+            Role = validRole,
+            School = school.Trim(),
+            ClassName = className.Trim(),
             WeeklyTargetHours = 40,
             AnnualVacationDays = 30,
             IsActive = true
