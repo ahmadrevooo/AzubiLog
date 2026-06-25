@@ -1,0 +1,76 @@
+@page "/class-members"
+@attribute [Authorize(Policy = "ConfirmedEmail")]
+@inject IStringLocalizer<SharedResource> Localizer
+@inject ICurrentUserService CurrentUserService
+@inject ApplicationDbContext DbContext
+
+<PageTitle>@Localizer["ClassMembersTitle"]</PageTitle>
+
+@if (CurrentUser is null)
+{
+    <div class="profile-loading">Laden...</div>
+}
+else if (CurrentUser.Role != UserRole.Klassensprecher)
+{
+    <div class="profile-page">
+        <header class="profile-page-header">
+            <p>@Localizer["ClassMembersNavItem"]</p>
+            <h1>@Localizer["ClassMembersTitle"]</h1>
+            <span>Du bist als Azubi registriert. Nur Klassensprecher können die Klassenmitglieder einsehen.</span>
+        </header>
+    </div>
+}
+else
+{
+    <div class="class-members-page">
+        <header class="class-members-header">
+            <p>@Localizer["ClassMembersNavItem"]</p>
+            <h1>@Localizer["ClassMembersTitle"]</h1>
+            <span>@Localizer["ClassMembersIntro"]</span>
+            <div class="class-members-class-info">
+                <strong>@CurrentUser.School</strong> &mdash; @CurrentUser.ClassName
+            </div>
+        </header>
+
+        <section class="class-members-card">
+            <div class="class-members-card-header">
+                <div>
+                    <h2>@Localizer["ClassMembersTitle"]</h2>
+                    <span class="class-members-count">@Members.Count</span>
+                </div>
+            </div>
+
+            @if (Members.Count == 0)
+            {
+                <p class="class-members-empty">@Localizer["ClassMembersNoMembers"]</p>
+            }
+            else
+            {
+                <div class="class-members-list">
+                    @foreach (var member in Members)
+                    {
+                        <div class="class-member-item">
+                            <div class="class-member-avatar">
+                                @GetInitials(member)
+                            </div>
+                            <div class="class-member-info">
+                                <strong>@member.FirstName @member.LastName</strong>
+                                <span>@member.CompanyName</span>
+                            </div>
+                            <div class="class-member-role">
+                                @if (member.Role == UserRole.Klassensprecher)
+                                {
+                                    <span class="class-member-badge badge-primary">@Localizer["RoleKlassensprecher"]</span>
+                                }
+                                else
+                                {
+                                    <span class="class-member-badge badge-default">@Localizer["RoleAzubi"]</span>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </section>
+    </div>
+}

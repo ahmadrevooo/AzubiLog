@@ -265,6 +265,10 @@ h1, h2, h3, h4, h5, h6 {
     width: auto;
 }
 
+[data-theme="dark"] .account-logo img {
+    filter: brightness(0) invert(1);
+}
+
 .account-card h1 {
     color: var(--app-text);
     font-size: 1.5rem;

@@ -690,4 +690,22 @@
   <data name="TimetableCancellationRemove" xml:space="preserve">
     <value>Ausfall entfernen</value>
   </data>
+  <data name="ClassMembersNavItem" xml:space="preserve">
+    <value>Klassenmitglieder</value>
+  </data>
+  <data name="ClassMembersTitle" xml:space="preserve">
+    <value>Klassenmitglieder</value>
+  </data>
+  <data name="ClassMembersIntro" xml:space="preserve">
+    <value>Alle Mitglieder deiner Klasse auf einen Blick.</value>
+  </data>
+  <data name="ClassMembersNoMembers" xml:space="preserve">
+    <value>Noch keine Mitglieder in dieser Klasse registriert.</value>
+  </data>
+  <data name="ClassMembersRole" xml:space="preserve">
+    <value>Rolle</value>
+  </data>
+  <data name="ClassMembersCompany" xml:space="preserve">
+    <value>Betrieb</value>
+  </data>
 </root>

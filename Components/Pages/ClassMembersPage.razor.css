@@ -1,0 +1,187 @@
+.class-members-page {
+    display: grid;
+    gap: 1.25rem;
+    margin-inline: auto;
+    max-width: 52rem;
+    padding: 0.75rem 0 2.5rem;
+}
+
+.class-members-header p {
+    color: var(--app-primary);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    margin: 0 0 0.35rem;
+    text-transform: uppercase;
+}
+
+.class-members-header h1 {
+    color: var(--app-text);
+    font-size: 1.75rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin: 0;
+    letter-spacing: -0.03em;
+}
+
+.class-members-header > span {
+    color: var(--app-text-muted);
+    display: block;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+
+.class-members-class-info {
+    background: var(--app-primary-light);
+    border: 1px solid color-mix(in srgb, var(--app-primary) 16%, transparent);
+    border-radius: var(--app-radius);
+    color: var(--app-text);
+    display: inline-flex;
+    font-size: 0.85rem;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    padding: 0.5rem 0.85rem;
+}
+
+.class-members-card {
+    background: var(--app-surface);
+    border: 1px solid var(--app-border);
+    border-radius: var(--app-radius-lg);
+    box-shadow: var(--app-shadow);
+    display: grid;
+    gap: 1rem;
+    padding: 1.25rem;
+}
+
+.class-members-card-header {
+    align-items: center;
+    display: flex;
+    gap: 0.75rem;
+    justify-content: space-between;
+}
+
+.class-members-card-header h2 {
+    color: var(--app-text);
+    display: inline;
+    font-size: 1.1rem;
+    font-weight: 800;
+    margin: 0;
+}
+
+.class-members-count {
+    align-items: center;
+    background: var(--app-primary-light);
+    border-radius: 999px;
+    color: var(--app-primary);
+    display: inline-flex;
+    font-size: 0.78rem;
+    font-weight: 700;
+    height: 1.65rem;
+    justify-content: center;
+    margin-left: 0.5rem;
+    min-width: 1.65rem;
+    padding: 0 0.4rem;
+    vertical-align: middle;
+}
+
+.class-members-empty {
+    color: var(--app-text-muted);
+    font-size: 0.9rem;
+    margin: 0;
+    padding: 1rem 0;
+    text-align: center;
+}
+
+.class-members-list {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.class-member-item {
+    align-items: center;
+    background: var(--app-surface-muted);
+    border: 1px solid color-mix(in srgb, var(--app-border) 50%, transparent);
+    border-radius: var(--app-radius);
+    display: flex;
+    gap: 0.85rem;
+    padding: 0.85rem;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.class-member-item:hover {
+    background: var(--app-bg);
+    border-color: var(--app-border);
+}
+
+.class-member-avatar {
+    align-items: center;
+    background: var(--app-primary);
+    border-radius: 999px;
+    color: #fff;
+    display: flex;
+    flex-shrink: 0;
+    font-size: 0.78rem;
+    font-weight: 700;
+    height: 2.5rem;
+    justify-content: center;
+    letter-spacing: 0.02em;
+    width: 2.5rem;
+}
+
+.class-member-info {
+    display: grid;
+    gap: 0.15rem;
+    min-width: 0;
+}
+
+.class-member-info strong {
+    color: var(--app-text);
+    font-size: 0.92rem;
+    font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.class-member-info span {
+    color: var(--app-text-muted);
+    font-size: 0.82rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.class-member-role {
+    flex-shrink: 0;
+    margin-left: auto;
+}
+
+.class-member-badge {
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.3rem 0.65rem;
+    white-space: nowrap;
+}
+
+.class-member-badge.badge-primary {
+    background: var(--app-primary-light);
+    color: var(--app-primary);
+}
+
+.class-member-badge.badge-default {
+    background: var(--app-surface-muted);
+    border: 1px solid color-mix(in srgb, var(--app-border) 50%, transparent);
+    color: var(--app-text-muted);
+}
+
+@media (max-width: 620px) {
+    .class-member-item {
+        flex-wrap: wrap;
+    }
+
+    .class-member-role {
+        margin-left: 0;
+        width: 100%;
+    }
+}
