@@ -41,7 +41,7 @@ public class WeeklyReportPdfService(
         var friday = monday.AddDays(4);
 
         var entries = await dbContext.ReportEntries
-            .Include(entry => entry.Category)
+            // .Include(entry => entry.Category)
             .Where(entry => entry.UserId == user.Id
                 && entry.Date.Date >= monday
                 && entry.Date.Date <= friday
@@ -58,7 +58,7 @@ public class WeeklyReportPdfService(
                     .Where(entry => entry.Date.Date == day)
                     .Select(entry => new WeeklyReportPdfEntry(
                         entry.Date,
-                        entry.Category?.Name ?? "-",
+                        entry.Category?.Name ?? "",
                         entry.Title,
                         entry.Description,
                         entry.Note,
