@@ -8,8 +8,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     : IdentityUserContext<ApplicationUser>(options)
 {
     public DbSet<Category> Categories => Set<Category>();
+    public DbSet<ClassTimetableEntry> ClassTimetableEntries => Set<ClassTimetableEntry>();
     public DbSet<ReportEntry> ReportEntries => Set<ReportEntry>();
     public DbSet<SchoolScheduleDay> SchoolScheduleDays => Set<SchoolScheduleDay>();
+    public DbSet<TimetableCancellation> TimetableCancellations => Set<TimetableCancellation>();
     public DbSet<TodoItem> Todos => Set<TodoItem>();
     public DbSet<Trainer> Trainers => Set<Trainer>();
     public DbSet<WeeklyReport> WeeklyReports => Set<WeeklyReport>();
@@ -24,6 +26,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         ConfigureWeeklyReport(builder);
         ConfigureReportEntry(builder);
         ConfigureSchoolScheduleDay(builder);
+        ConfigureClassTimetableEntry(builder);
+        ConfigureTimetableCancellation(builder);
         ConfigureTodoItem(builder);
     }
 
@@ -36,6 +40,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
             entity.Property(user => user.LastName)
                 .HasMaxLength(100);
+
+            entity.Property(user => user.Role)
+                .HasMaxLength(40)
+                .HasDefaultValue(UserRole.Azubi);
 
             entity.Property(user => user.CompanyName)
                 .HasMaxLength(150);
@@ -218,6 +226,57 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             entity.HasOne(scheduleDay => scheduleDay.User)
                 .WithMany(user => user.SchoolScheduleDays)
                 .HasForeignKey(scheduleDay => scheduleDay.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+    }
+
+    private static void ConfigureClassTimetableEntry(ModelBuilder builder)
+    {
+        builder.Entity<ClassTimetableEntry>(entity =>
+        {
+            entity.ToTable("ClassTimetableEntries");
+
+            entity.Property(entry => entry.School)
+                .HasMaxLength(150)
+                .IsRequired();
+
+            entity.Property(entry => entry.ClassName)
+                .HasMaxLength(80)
+                .IsRequired();
+
+            entity.Property(entry => entry.DayOfWeek)
+                .HasConversion<string>()
+                .HasMaxLength(20)
+                .IsRequired();
+
+            entity.Property(entry => entry.SubjectsText)
+                .HasMaxLength(1_000);
+
+            entity.HasIndex(entry => new { entry.School, entry.ClassName, entry.DayOfWeek })
+                .IsUnique();
+
+            entity.HasOne(entry => entry.CreatedByUser)
+                .WithMany(user => user.ClassTimetableEntries)
+                .HasForeignKey(entry => entry.CreatedByUserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+    }
+
+    private static void ConfigureTimetableCancellation(ModelBuilder builder)
+    {
+        builder.Entity<TimetableCancellation>(entity =>
+        {
+            entity.ToTable("TimetableCancellations");
+
+            entity.Property(cancellation => cancellation.Reason)
+                .HasMaxLength(500);
+
+            entity.HasIndex(cancellation => new { cancellation.ClassTimetableEntryId, cancellation.Date })
+                .IsUnique();
+
+            entity.HasOne(cancellation => cancellation.ClassTimetableEntry)
+                .WithMany(entry => entry.Cancellations)
+                .HasForeignKey(cancellation => cancellation.ClassTimetableEntryId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
     }

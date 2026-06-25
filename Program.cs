@@ -8,6 +8,7 @@ using AzubiLog.Services.Identity;
 using AzubiLog.Services.Pdf;
 using AzubiLog.Services.Profile;
 using AzubiLog.Services.ReportEntries;
+using AzubiLog.Services.Timetable;
 using AzubiLog.Services.Todos;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -54,6 +55,7 @@ namespace AzubiLog
             builder.Services.AddScoped<IApprenticeProfileService, ApprenticeProfileService>();
             builder.Services.AddScoped<IReportEntryService, ReportEntryService>();
             builder.Services.AddScoped<ITodoService, TodoService>();
+            builder.Services.AddScoped<ITimetableService, TimetableService>();
             builder.Services.AddScoped<IWeeklyReportPdfService, WeeklyReportPdfService>();
             builder.Services.AddScoped<IAuthorizationHandler, ConfirmedEmailHandler>();
 
