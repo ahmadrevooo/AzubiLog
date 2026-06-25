@@ -183,6 +183,17 @@ h1:focus {
     margin: 0;
 }
 
+.account-logo {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+}
+
+.account-logo img {
+    height: 4rem;
+    width: auto;
+}
+
 .account-card h1 {
     color: var(--app-text);
     font-size: 1.65rem;
