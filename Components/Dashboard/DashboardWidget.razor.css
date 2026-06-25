@@ -1,9 +1,10 @@
 .dashboard-widget {
     background: var(--app-surface);
     border: 1px solid var(--app-border);
-    border-radius: 8px;
+    border-radius: var(--app-radius-lg);
+    box-shadow: var(--app-shadow);
     min-height: 10rem;
-    padding: 1.1rem;
+    padding: 1.15rem;
 }
 
 .dashboard-widget-header {
@@ -15,15 +16,16 @@
 
 .dashboard-widget-header h2 {
     color: var(--app-text);
-    font-size: 1rem;
-    font-weight: 800;
+    font-size: 0.95rem;
+    font-weight: 700;
     margin: 0;
+    letter-spacing: -0.01em;
 }
 
 .dashboard-widget-header span,
 .dashboard-widget-empty {
     color: var(--app-text-muted);
-    font-size: 0.86rem;
+    font-size: 0.82rem;
 }
 
 .dashboard-widget-empty {
@@ -32,27 +34,34 @@
 
 .dashboard-widget-list {
     display: grid;
-    gap: 0.75rem;
-    margin-top: 1rem;
+    gap: 0.55rem;
+    margin-top: 0.85rem;
 }
 
 .dashboard-widget-item {
     align-items: center;
     background: var(--app-surface-muted);
-    border-radius: 8px;
+    border: 1px solid color-mix(in srgb, var(--app-border) 40%, transparent);
+    border-radius: var(--app-radius);
     display: flex;
     gap: 1rem;
     justify-content: space-between;
-    padding: 0.85rem;
+    padding: 0.75rem 0.85rem;
+    transition: background 0.15s ease;
+}
+
+.dashboard-widget-item:hover {
+    background: var(--app-bg);
 }
 
 .dashboard-widget-item strong {
     color: var(--app-text);
+    font-size: 0.875rem;
 }
 
 .dashboard-widget-item p,
 .dashboard-widget-item span {
     color: var(--app-text-muted);
-    font-size: 0.84rem;
+    font-size: 0.8rem;
     margin: 0;
 }

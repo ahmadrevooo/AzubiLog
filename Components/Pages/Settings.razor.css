@@ -13,31 +13,34 @@
 
 .profile-page-header p {
     color: var(--app-primary);
-    font-size: 0.82rem;
-    font-weight: 680;
-    letter-spacing: 0;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
     margin: 0 0 0.35rem;
+    text-transform: uppercase;
 }
 
 .profile-page-header h1 {
     color: var(--app-text);
-    font-size: 2rem;
-    font-weight: 850;
+    font-size: 1.75rem;
+    font-weight: 800;
     line-height: 1.1;
     margin: 0;
+    letter-spacing: -0.03em;
 }
 
 .profile-page-header span {
     color: var(--app-text-muted);
     display: block;
     margin-top: 0.5rem;
+    font-size: 0.9rem;
 }
 
 .profile-card {
     background: var(--app-surface);
-    border: 1px solid color-mix(in srgb, var(--app-border) 62%, transparent);
-    border-radius: 8px;
-    box-shadow: 0 18px 44px rgba(15, 23, 42, 0.06);
+    border: 1px solid var(--app-border);
+    border-radius: var(--app-radius-lg);
+    box-shadow: var(--app-shadow);
     display: grid;
     gap: 1rem;
     padding: 1.25rem;
@@ -54,37 +57,39 @@
 .profile-card label > span,
 .profile-readonly-field span {
     color: var(--app-text-muted);
-    font-size: 0.82rem;
-    font-weight: 650;
-    margin: 0 0 0.35rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin: 0 0 0.3rem;
 }
 
 .profile-card-header h2 {
     color: var(--app-text);
-    font-size: 1.28rem;
-    font-weight: 850;
+    font-size: 1.2rem;
+    font-weight: 800;
     margin: 0;
+    letter-spacing: -0.02em;
 }
 
 .profile-status {
-    background: color-mix(in srgb, var(--app-primary) 10%, var(--app-surface-muted));
-    border-radius: 8px;
+    background: var(--app-primary-light);
+    border: 1px solid color-mix(in srgb, var(--app-primary) 15%, transparent);
+    border-radius: var(--app-radius);
     color: var(--app-text);
-    font-size: 0.88rem;
-    padding: 0.45rem 0.6rem;
+    font-size: 0.85rem;
+    padding: 0.5rem 0.75rem;
 }
 
 .profile-readonly-field {
     background: var(--app-bg);
     border: 1px solid color-mix(in srgb, var(--app-border) 62%, transparent);
-    border-radius: 8px;
+    border-radius: var(--app-radius);
     display: grid;
     padding: 0.8rem;
 }
 
 .profile-readonly-field strong {
     color: var(--app-text);
-    font-size: 1rem;
+    font-size: 0.95rem;
 }
 
 .profile-grid {
@@ -103,22 +108,25 @@
 }
 
 .profile-section-heading {
-    border-top: 1px solid color-mix(in srgb, var(--app-border) 58%, transparent);
+    border-top: 1px solid var(--app-border);
     padding-top: 1rem;
 }
 
 .profile-section-heading p {
     color: var(--app-primary);
-    font-size: 0.78rem;
+    font-size: 0.72rem;
     font-weight: 700;
+    letter-spacing: 0.04em;
     margin: 0 0 0.25rem;
+    text-transform: uppercase;
 }
 
 .profile-section-heading h3 {
     color: var(--app-text);
-    font-size: 1.08rem;
-    font-weight: 820;
+    font-size: 1.05rem;
+    font-weight: 750;
     margin: 0;
+    letter-spacing: -0.01em;
 }
 
 .profile-schedule-section {
@@ -147,11 +155,16 @@
 .profile-schedule-day {
     background: var(--app-bg);
     border: 1px solid color-mix(in srgb, var(--app-border) 60%, transparent);
-    border-radius: 8px;
+    border-radius: var(--app-radius);
     display: grid;
     gap: 0.55rem;
     min-width: 0;
     padding: 0.8rem;
+    transition: border-color 0.15s ease;
+}
+
+.profile-schedule-day:focus-within {
+    border-color: color-mix(in srgb, var(--app-primary) 40%, var(--app-border));
 }
 
 .profile-schedule-check {
@@ -162,16 +175,17 @@
 
 .profile-schedule-check span {
     color: var(--app-text);
-    font-size: 0.9rem;
-    font-weight: 720;
+    font-size: 0.88rem;
+    font-weight: 700;
 }
 
 .profile-card .form-control {
     background-color: var(--app-bg);
     border-color: color-mix(in srgb, var(--app-border) 70%, transparent);
-    border-radius: 8px;
+    border-radius: var(--app-radius);
     color: var(--app-text);
     min-height: 2.5rem;
+    font-size: 0.875rem;
 }
 
 .profile-subjects {
@@ -202,7 +216,7 @@
     align-items: end;
     background: var(--app-bg);
     border: 1px solid color-mix(in srgb, var(--app-border) 60%, transparent);
-    border-radius: 8px;
+    border-radius: var(--app-radius);
     display: grid;
     gap: 0.75rem;
     grid-template-columns: minmax(10rem, 1.1fr) minmax(12rem, 1.1fr) minmax(9rem, 0.9fr) auto;
@@ -221,6 +235,7 @@
     font-size: 0.88rem;
     min-height: 2.5rem;
     padding: 0.2rem 0.35rem;
+    transition: color 0.15s ease;
 }
 
 .profile-trainer-remove:focus-visible {
@@ -230,7 +245,7 @@
 }
 
 .profile-actions {
-    border-top: 1px solid color-mix(in srgb, var(--app-border) 58%, transparent);
+    border-top: 1px solid var(--app-border);
     display: flex;
     justify-content: flex-end;
     padding-top: 1rem;

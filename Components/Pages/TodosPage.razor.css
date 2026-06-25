@@ -1,9 +1,9 @@
 .todos-page {
     display: grid;
-    gap: 1.35rem;
+    gap: 1.25rem;
     margin-inline: auto;
     max-width: 76rem;
-    padding: 1.4rem 0 2.5rem;
+    padding: 0.75rem 0 2.5rem;
 }
 
 .todos-page-loading {
@@ -13,25 +13,27 @@
 
 .todos-page-header p {
     color: var(--app-primary);
-    font-size: 0.78rem;
-    font-weight: 850;
-    letter-spacing: 0;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
     margin: 0 0 0.35rem;
     text-transform: uppercase;
 }
 
 .todos-page-header h1 {
     color: var(--app-text);
-    font-size: 2rem;
-    font-weight: 850;
+    font-size: 1.75rem;
+    font-weight: 800;
     line-height: 1.1;
     margin: 0;
+    letter-spacing: -0.03em;
 }
 
 .todos-page-header span {
     color: var(--app-text-muted);
     display: block;
     margin-top: 0.5rem;
+    font-size: 0.9rem;
 }
 
 .todos-grid {
@@ -43,7 +45,7 @@
 .todo-create-panel {
     background: var(--app-surface);
     border: 1px solid var(--app-border);
-    border-radius: 8px;
+    border-radius: var(--app-radius-lg);
     box-shadow: var(--app-shadow);
     display: grid;
     gap: 1rem;
@@ -53,7 +55,7 @@
 .todo-create-panel h2 {
     color: var(--app-text);
     font-size: 1rem;
-    font-weight: 850;
+    font-weight: 800;
     margin: 0;
 }
 
@@ -65,13 +67,13 @@
 .todo-field label {
     color: var(--app-text-muted);
     font-size: 0.78rem;
-    font-weight: 800;
-    letter-spacing: 0;
+    font-weight: 700;
+    letter-spacing: 0.04em;
     text-transform: uppercase;
 }
 
 .todo-field .validation-message {
-    color: var(--bs-danger);
+    color: var(--app-danger);
     font-size: 0.82rem;
 }
 

@@ -1,8 +1,8 @@
 .daily-summary-card {
     background: var(--app-surface);
     border: 1px solid var(--app-border);
-    border-radius: 8px;
-    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
+    border-radius: var(--app-radius-lg);
+    box-shadow: var(--app-shadow);
     display: grid;
     gap: 0.75rem;
     grid-template-rows: auto minmax(0, 1fr) auto;
@@ -45,22 +45,23 @@
 }
 
 .daily-summary-email-button {
-    background: color-mix(in srgb, var(--app-primary) 10%, var(--app-surface-muted));
+    background: var(--app-primary-light);
     border: 1px solid color-mix(in srgb, var(--app-primary) 24%, var(--app-border));
-    border-radius: 8px;
+    border-radius: var(--app-radius);
     color: var(--app-text);
-    font-size: 0.88rem;
-    font-weight: 750;
+    font-size: 0.85rem;
+    font-weight: 600;
     min-width: 0;
     padding: 0.5rem 0.65rem;
     text-align: center;
     text-decoration: none;
+    transition: all 0.15s ease;
 }
 
 .daily-summary-empty {
     align-self: start;
     border: 1px dashed var(--app-border);
-    border-radius: 8px;
+    border-radius: var(--app-radius);
     display: grid;
     gap: 0.35rem;
     padding: 0.85rem;
@@ -89,14 +90,15 @@
 
 .daily-summary-entry {
     background: var(--app-bg);
-    border: 1px solid var(--app-border);
-    border-radius: 8px;
+    border: 1px solid color-mix(in srgb, var(--app-border) 50%, transparent);
+    border-radius: var(--app-radius);
     display: block;
     max-width: 100%;
     min-width: 0;
     overflow: hidden;
     padding: 0.7rem;
     text-decoration: none;
+    transition: background 0.15s ease, border-color 0.15s ease;
 }
 
 .daily-summary-entry-text {
@@ -162,10 +164,14 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-    .daily-summary-email-button:hover,
+    .daily-summary-email-button:hover {
+        background: color-mix(in srgb, var(--app-primary) 16%, var(--app-surface));
+        border-color: color-mix(in srgb, var(--app-primary) 35%, var(--app-border));
+    }
+
     .daily-summary-entry:hover {
-        background: color-mix(in srgb, var(--app-primary) 10%, var(--app-surface));
-        border-color: color-mix(in srgb, var(--app-primary) 28%, var(--app-border));
+        background: var(--app-primary-light);
+        border-color: color-mix(in srgb, var(--app-primary) 20%, var(--app-border));
     }
 }
 

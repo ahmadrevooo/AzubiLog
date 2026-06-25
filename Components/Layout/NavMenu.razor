@@ -2,44 +2,43 @@
 @inject IStringLocalizer<SharedResource> Localizer
 @inject ICurrentUserService CurrentUserService
 
-<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">
-            <img src="images/logo.png" alt="AzubiLog" class="navbar-logo" />
-            @Localizer["AppName"]
-        </a>
-    </div>
+<div class="sidebar-brand">
+    <a class="navbar-brand" href="">
+        <img src="images/logo.png" alt="AzubiLog" class="navbar-logo" />
+        <span class="brand-text">@Localizer["AppName"]</span>
+    </a>
 </div>
 
 <input type="checkbox" title="Navigation menu" class="navbar-toggler" />
 
 <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
     <nav class="nav flex-column">
+        <div class="nav-section-label">MENU</div>
         @foreach (var item in Navigation.GetMainNavigation())
         {
-            <div class="nav-item px-3">
+            <div class="nav-item">
                 @if (item.IsEnabled)
                 {
                     <NavLink class="nav-link" href="@item.Href" Match="@GetMatch(item)">
-                        <span class="bi @item.IconCssClass" aria-hidden="true"></span>
-                        <span>@Localizer[item.ResourceKey]</span>
+                        <span class="nav-icon bi @item.IconCssClass" aria-hidden="true"></span>
+                        <span class="nav-label">@Localizer[item.ResourceKey]</span>
                     </NavLink>
                 }
                 else
                 {
                     <span class="nav-link nav-link-disabled" title="@Localizer["ComingSoon"]">
-                        <span class="bi @item.IconCssClass" aria-hidden="true"></span>
-                        <span>@Localizer[item.ResourceKey]</span>
+                        <span class="nav-icon bi @item.IconCssClass" aria-hidden="true"></span>
+                        <span class="nav-label">@Localizer[item.ResourceKey]</span>
                     </span>
                 }
             </div>
         }
         @if (IsKlassensprecher)
         {
-            <div class="nav-item px-3">
+            <div class="nav-item">
                 <NavLink class="nav-link" href="timetable" Match="NavLinkMatch.Prefix">
-                    <span class="bi bi-calendar-week-nav-menu" aria-hidden="true"></span>
-                    <span>@Localizer["TimetableNavItem"]</span>
+                    <span class="nav-icon bi bi-calendar-week-nav-menu" aria-hidden="true"></span>
+                    <span class="nav-label">@Localizer["TimetableNavItem"]</span>
                 </NavLink>
             </div>
         }

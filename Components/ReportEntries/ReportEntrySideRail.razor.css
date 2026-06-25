@@ -15,7 +15,7 @@
 .report-entry-side-field > span {
     color: var(--app-text-muted);
     font-size: 0.82rem;
-    font-weight: 650;
+    font-weight: 600;
     margin: 0 0 0.35rem;
 }
 
@@ -23,15 +23,16 @@
 .report-entry-side-rail .form-select {
     background-color: color-mix(in srgb, var(--app-surface) 62%, var(--app-bg));
     border-color: color-mix(in srgb, var(--app-border) 70%, transparent);
-    border-radius: 10px;
+    border-radius: var(--app-radius);
     color: var(--app-text);
     min-height: 2.55rem;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .report-entry-side-rail .form-control:focus,
 .report-entry-side-rail .form-select:focus {
-    border-color: color-mix(in srgb, var(--app-primary) 54%, var(--app-border));
-    box-shadow: 0 0 0 0.18rem color-mix(in srgb, var(--app-primary) 16%, transparent);
+    border-color: var(--app-primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--app-primary) 12%, transparent);
 }
 
 .report-entry-category-control {
@@ -44,29 +45,31 @@
     align-items: center;
     background: var(--app-surface-muted);
     border: 1px solid color-mix(in srgb, var(--app-border) 70%, transparent);
-    border-radius: 10px;
+    border-radius: var(--app-radius);
     color: var(--app-text);
     display: inline-flex;
     font-size: 1.2rem;
     font-weight: 500;
     justify-content: center;
     min-height: 2.55rem;
+    transition: all 0.15s ease;
 }
 
 .report-entry-icon-button:focus-visible {
-    box-shadow: 0 0 0 0.18rem color-mix(in srgb, var(--app-primary) 22%, transparent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--app-primary) 18%, transparent);
 }
 
 @media (hover: hover) and (pointer: fine) {
     .report-entry-icon-button:hover {
-        background: color-mix(in srgb, var(--app-primary) 10%, var(--app-surface-muted));
+        background: var(--app-primary-light);
+        border-color: color-mix(in srgb, var(--app-primary) 25%, var(--app-border));
     }
 }
 
 .report-entry-category-popover {
     background: color-mix(in srgb, var(--app-surface) 72%, var(--app-bg));
     border: 1px solid color-mix(in srgb, var(--app-border) 54%, transparent);
-    border-radius: 12px;
+    border-radius: var(--app-radius-lg);
     display: grid;
     gap: 0.55rem;
     padding: 0.65rem;

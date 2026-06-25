@@ -13,11 +13,11 @@
 
 .weekly-overview-page-header p {
     color: var(--app-primary);
-    font-size: 0.82rem;
-    font-weight: 680;
-    letter-spacing: 0;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
     margin: 0 0 0.35rem;
-    text-transform: none;
+    text-transform: uppercase;
 }
 
 .weekly-overview-page-header {
@@ -34,16 +34,18 @@
 
 .weekly-overview-page-header h1 {
     color: var(--app-text);
-    font-size: 2rem;
-    font-weight: 850;
+    font-size: 1.75rem;
+    font-weight: 800;
     line-height: 1.1;
     margin: 0;
+    letter-spacing: -0.03em;
 }
 
 .weekly-overview-page-header span {
     color: var(--app-text-muted);
     display: block;
     margin-top: 0.5rem;
+    font-size: 0.9rem;
 }
 
 .weekly-overview-page-actions {
@@ -69,9 +71,9 @@
 .weekly-overview-date-picker .form-control {
     background-color: var(--app-surface);
     border-color: color-mix(in srgb, var(--app-border) 70%, transparent);
-    border-radius: 8px;
+    border-radius: var(--app-radius);
     color: var(--app-text);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     min-height: 2.15rem;
     padding: 0.3rem 0.55rem;
 }
@@ -79,7 +81,7 @@
 .weekly-overview-nav-button {
     background: var(--app-surface);
     border: 1px solid color-mix(in srgb, var(--app-border) 64%, transparent);
-    border-radius: 8px;
+    border-radius: var(--app-radius);
     color: var(--app-text);
     font-size: 1rem;
     font-weight: 700;
@@ -87,16 +89,18 @@
     line-height: 1;
     padding: 0;
     width: 2.15rem;
+    transition: all 0.15s ease;
 }
 
 .weekly-overview-today-button,
 .weekly-overview-export-button {
-    border-radius: 8px;
-    font-size: 0.9rem;
-    font-weight: 720;
+    border-radius: var(--app-radius);
+    font-size: 0.85rem;
+    font-weight: 600;
     min-height: 2.15rem;
     padding: 0.3rem 0.7rem;
     text-decoration: none;
+    transition: all 0.15s ease;
 }
 
 .weekly-overview-today-button {
@@ -109,15 +113,25 @@
     background: var(--app-primary);
     border: 1px solid var(--app-primary);
     color: #fff;
+    box-shadow: var(--app-shadow-sm);
 }
 
 .weekly-overview-nav-button:focus-visible {
-    box-shadow: 0 0 0 0.18rem color-mix(in srgb, var(--app-primary) 22%, transparent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--app-primary) 18%, transparent);
 }
 
 @media (hover: hover) and (pointer: fine) {
-    .weekly-overview-nav-button:hover {
-        background: color-mix(in srgb, var(--app-primary) 8%, var(--app-surface));
+    .weekly-overview-nav-button:hover,
+    .weekly-overview-today-button:hover {
+        background: var(--app-primary-light);
+        border-color: color-mix(in srgb, var(--app-primary) 25%, var(--app-border));
+    }
+
+    .weekly-overview-export-button:hover {
+        background: var(--app-primary-hover);
+        border-color: var(--app-primary-hover);
+        box-shadow: var(--app-shadow);
+        transform: translateY(-1px);
     }
 }
 
