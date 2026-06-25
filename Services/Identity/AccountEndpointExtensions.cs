@@ -38,7 +38,7 @@ public static class AccountEndpointExtensions
                 return Results.Redirect("/account/register?error=failed");
             }
 
-            return Results.Redirect($"/account/email-confirmation-notice?email={Uri.EscapeDataString(email)}");
+            return Results.Redirect("/account/login?registered=true");
         }).AllowAnonymous().DisableAntiforgery();
 
         endpoints.MapPost("/account/login/submit", async (
