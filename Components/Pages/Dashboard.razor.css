@@ -1,7 +1,7 @@
 .dashboard-page {
     display: grid;
-    gap: 1.35rem;
-    padding: 0.3rem 0 2rem;
+    gap: 1rem;
+    padding: 0 0 2rem;
 }
 
 .dashboard-loading {
@@ -11,36 +11,34 @@
 
 .dashboard-hero {
     align-items: center;
-    background:
-        radial-gradient(circle at 92% 10%, rgba(37, 99, 235, 0.18), transparent 26rem),
-        var(--app-surface);
-    border: 1px solid var(--app-border);
-    border-radius: 8px;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
     display: flex;
     gap: 1.5rem;
-    min-height: 8rem;
-    padding: 1.45rem;
+    min-height: auto;
+    padding: 0.35rem 0 0.65rem;
 }
 
 .dashboard-eyebrow {
-    color: var(--app-primary);
-    font-size: 0.78rem;
-    font-weight: 800;
+    color: var(--app-text-muted);
+    font-size: 0.82rem;
+    font-weight: 500;
     letter-spacing: 0;
     margin: 0 0 0.35rem;
-    text-transform: uppercase;
+    text-transform: none;
 }
 
 .dashboard-hero h1 {
     color: var(--app-text);
-    font-size: 1.85rem;
-    font-weight: 850;
+    font-size: clamp(1.75rem, 3vw, 2rem);
+    font-weight: 600;
     line-height: 1.15;
     margin: 0;
 }
 
 .dashboard-hero p:not(.dashboard-eyebrow) {
-    color: var(--app-text-muted);
+    color: var(--app-text-secondary);
     margin: 0.45rem 0 0;
 }
 
@@ -48,7 +46,7 @@
 .dashboard-actions {
     display: grid;
     gap: 0.9rem;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .dashboard-widgets {
@@ -79,6 +77,6 @@
     }
 
     .dashboard-hero h1 {
-        font-size: 1.45rem;
+        font-size: 1.55rem;
     }
 }
