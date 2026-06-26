@@ -4,9 +4,10 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IApplicationNavigationService Navigation
 @inject UserManager<ApplicationUser> UserManager
+@inject NavigationManager NavigationManager
 
 <div class="page" @onkeydown="HandleShellKeyDown">
-    @if (IsProfileMenuOpen || IsMobileMenuOpen)
+    @if (IsProfileMenuOpen || IsMobileMenuOpen || IsMoreMenuOpen)
     {
         <button class="app-shell-scrim" type="button" aria-label="Menü schließen" @onclick="CloseMenus"></button>
     }
@@ -22,6 +23,25 @@
                         @GetNavigationText(item)
                     </NavLink>
                 }
+
+                <div class="app-more-nav">
+                    <button class="app-nav-link app-more-button @(IsSecondaryPageActive ? "active" : null)" type="button" aria-haspopup="menu" aria-expanded="@IsMoreMenuOpen" @onclick="ToggleMoreMenu">
+                        <span>Mehr</span>
+                        <span aria-hidden="true">▾</span>
+                    </button>
+
+                    @if (IsMoreMenuOpen)
+                    {
+                        <div class="app-more-menu" role="menu">
+                            @foreach (var item in SecondaryNavigation)
+                            {
+                                <NavLink class="app-more-menu-link" href="@item.Href" Match="@GetMatch(item)" @onclick="CloseMenus">
+                                    @Localizer[item.ResourceKey]
+                                </NavLink>
+                            }
+                        </div>
+                    }
+                </div>
             </nav>
 
             <div class="app-header-actions">
@@ -33,9 +53,18 @@
 
                 <AuthorizeView>
                     <Authorized>
+                        <button class="app-theme-switch" type="button" role="switch" aria-checked="@(CurrentTheme == "dark")" aria-label="Darstellung wechseln" @onclick="ToggleThemeAsync">
+                            <span class="app-theme-icon" aria-hidden="true">☀</span>
+                            <span class="app-theme-track">
+                                <span class="app-theme-thumb"></span>
+                            </span>
+                            <span class="app-theme-icon" aria-hidden="true">☾</span>
+                        </button>
+
                         <div class="app-profile">
                             <button class="app-avatar-button" type="button" aria-label="Profilmenü öffnen" aria-expanded="@IsProfileMenuOpen" @onclick="ToggleProfileMenu">
-                                @UserInitials
+                                <span class="app-avatar-initials">@UserInitials</span>
+                                <span class="app-avatar-arrow" aria-hidden="true">▾</span>
                             </button>
 
                             @if (IsProfileMenuOpen)
@@ -47,13 +76,6 @@
                                     </div>
                                     <a href="/settings" role="menuitem" @onclick="CloseMenus">Profil</a>
                                     <a href="/settings" role="menuitem" @onclick="CloseMenus">Einstellungen</a>
-                                    <label class="app-profile-theme">
-                                        <span>Darstellung</span>
-                                        <select class="form-select form-select-sm" value="@CurrentTheme" @onchange="HandleThemeChangedAsync">
-                                            <option value="light">@Localizer["ThemeLight"]</option>
-                                            <option value="dark">@Localizer["ThemeDark"]</option>
-                                        </select>
-                                    </label>
                                     <a href="/account/logout" role="menuitem">@Localizer["AccountLogoutAction"]</a>
                                 </div>
                             }
@@ -73,6 +95,14 @@
                 {
                     <NavLink class="app-mobile-nav-link" href="@item.Href" Match="@GetMatch(item)" @onclick="CloseMenus">
                         @GetNavigationText(item)
+                    </NavLink>
+                }
+
+                <div class="app-mobile-nav-section">Mehr</div>
+                @foreach (var item in SecondaryNavigation)
+                {
+                    <NavLink class="app-mobile-nav-link" href="@item.Href" Match="@GetMatch(item)" @onclick="CloseMenus">
+                        @Localizer[item.ResourceKey]
                     </NavLink>
                 }
             </nav>
@@ -107,9 +137,18 @@
     private string UserInitials { get; set; } = "AL";
     private bool IsProfileMenuOpen { get; set; }
     private bool IsMobileMenuOpen { get; set; }
+    private bool IsMoreMenuOpen { get; set; }
 
     private IEnumerable<NavigationItem> PrimaryNavigation =>
         Navigation.GetMainNavigation().Where(item => item.IsEnabled && PrimaryNavigationKeys.Contains(item.ResourceKey));
+
+    private IEnumerable<NavigationItem> SecondaryNavigation =>
+        Navigation.GetMainNavigation().Where(item => !string.IsNullOrWhiteSpace(item.Href)
+            && (!PrimaryNavigationKeys.Contains(item.ResourceKey) || item.ResourceKey == "NavWeeklyReports"));
+
+    private bool IsSecondaryPageActive =>
+        SecondaryNavigation.Any(item => IsCurrentPath(item.Href)
+            && (!PrimaryNavigationKeys.Contains(item.ResourceKey) || item.ResourceKey == "NavWeeklyReports"));
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -128,6 +167,12 @@
         CurrentTheme = args.Value?.ToString() == "dark" ? "dark" : "light";
         await JsRuntime.InvokeVoidAsync("azubiLogPreferences.setTheme", CurrentTheme);
         IsProfileMenuOpen = false;
+    }
+
+    private async Task ToggleThemeAsync()
+    {
+        CurrentTheme = CurrentTheme == "dark" ? "light" : "dark";
+        await JsRuntime.InvokeVoidAsync("azubiLogPreferences.setTheme", CurrentTheme);
     }
 
     private async Task LoadUserAsync()
@@ -156,18 +201,28 @@
     {
         IsProfileMenuOpen = !IsProfileMenuOpen;
         IsMobileMenuOpen = false;
+        IsMoreMenuOpen = false;
+    }
+
+    private void ToggleMoreMenu()
+    {
+        IsMoreMenuOpen = !IsMoreMenuOpen;
+        IsMobileMenuOpen = false;
+        IsProfileMenuOpen = false;
     }
 
     private void ToggleMobileMenu()
     {
         IsMobileMenuOpen = !IsMobileMenuOpen;
         IsProfileMenuOpen = false;
+        IsMoreMenuOpen = false;
     }
 
     private void CloseMenus()
     {
         IsProfileMenuOpen = false;
         IsMobileMenuOpen = false;
+        IsMoreMenuOpen = false;
     }
 
     private void HandleShellKeyDown(KeyboardEventArgs args)
@@ -180,6 +235,11 @@
 
     private static NavLinkMatch GetMatch(NavigationItem item)
     {
+        if (string.Equals(item.Href, "weekly-reports", StringComparison.Ordinal))
+        {
+            return NavLinkMatch.All;
+        }
+
         return string.IsNullOrWhiteSpace(item.Href)
             ? NavLinkMatch.All
             : NavLinkMatch.Prefix;
@@ -194,6 +254,14 @@
             "NavTodos" => "To-dos",
             _ => Localizer[item.ResourceKey]
         };
+    }
+
+    private bool IsCurrentPath(string href)
+    {
+        var currentPath = NavigationManager.ToBaseRelativePath(NavigationManager.Uri).TrimEnd('/');
+        var itemPath = href.Trim('/').TrimEnd('/');
+
+        return string.Equals(currentPath, itemPath, StringComparison.OrdinalIgnoreCase);
     }
 
     private static string GetInitials(string displayName, string email)
