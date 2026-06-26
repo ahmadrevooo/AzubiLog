@@ -16,6 +16,16 @@
             @foreach (var todo in Items)
             {
                 <article class="todo-list-item @(todo.IsCompleted ? "is-completed" : null)">
+                    <div class="todo-list-check">
+                        @if (ShowCompleteAction && !todo.IsCompleted)
+                        {
+                            <button type="button" aria-label="@Localizer["TodoComplete"]" @onclick="() => Complete.InvokeAsync(todo.Id)"></button>
+                        }
+                        else
+                        {
+                            <span aria-hidden="true"></span>
+                        }
+                    </div>
                     <div>
                         <strong>@todo.Title</strong>
                         @if (!string.IsNullOrWhiteSpace(todo.Description))
@@ -34,15 +44,12 @@
                         </span>
                     </div>
                     <div class="todo-list-actions">
-                        @if (ShowCompleteAction && !todo.IsCompleted)
-                        {
-                            <button class="btn btn-sm btn-success" type="button" @onclick="() => Complete.InvokeAsync(todo.Id)">
-                                @Localizer["TodoComplete"]
+                        <details>
+                            <summary aria-label="Aufgabenmenü">...</summary>
+                            <button type="button" @onclick="() => Delete.InvokeAsync(todo.Id)">
+                                @Localizer["TodoDelete"]
                             </button>
-                        }
-                        <button class="btn btn-sm btn-outline-danger" type="button" @onclick="() => Delete.InvokeAsync(todo.Id)">
-                            @Localizer["TodoDelete"]
-                        </button>
+                        </details>
                     </div>
                 </article>
             }
