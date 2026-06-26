@@ -91,7 +91,7 @@
 
 .weekly-overview-today-button,
 .weekly-overview-export-button {
-    border-radius: 8px;
+    border-radius: 6px;
     font-size: 0.9rem;
     font-weight: 500;
     min-height: 2.15rem;
@@ -108,7 +108,7 @@
 .weekly-overview-export-button {
     background: var(--app-primary);
     border: 1px solid var(--app-primary);
-    color: #fff;
+    color: var(--app-primary-contrast);
 }
 
 .weekly-overview-nav-button:focus-visible {
@@ -118,6 +118,18 @@
 @media (hover: hover) and (pointer: fine) {
     .weekly-overview-nav-button:hover {
         background: var(--app-surface-hover);
+    }
+
+    .weekly-overview-export-button:hover {
+        background: var(--app-primary-hover);
+        border-color: var(--app-primary-hover);
+        color: var(--app-primary-contrast);
+    }
+
+    .weekly-overview-today-button:hover {
+        background: var(--app-surface-hover);
+        border-color: var(--app-border-strong);
+        color: var(--app-text);
     }
 }
 
