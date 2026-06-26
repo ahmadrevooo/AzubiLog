@@ -37,6 +37,7 @@
 
         <div class="report-entry-main-fields">
             <section class="report-entry-section">
+                <div class="report-entry-section-heading">Allgemeine Angaben</div>
                 <label>
                     <span>@Localizer["ReportEntryTitle"] *</span>
                     <InputText class="form-control" @bind-Value="Model.Title" @bind-Value:after="FieldChangedAsync" />
@@ -51,6 +52,7 @@
             </section>
 
             <section class="report-entry-section">
+                <div class="report-entry-section-heading">Zeiterfassung</div>
                 <div class="report-entry-time-grid">
                     <label>
                         <span>@Localizer["ReportEntryStartTime"]</span>
@@ -93,6 +95,7 @@
             </section>
 
             <section class="report-entry-section">
+                <div class="report-entry-section-heading">Details</div>
                 <div class="report-entry-info-grid">
                     <label>
                         <span>@Localizer["ReportEntryCategory"] *</span>

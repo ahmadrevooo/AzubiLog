@@ -2,8 +2,8 @@
     display: grid;
     gap: 0;
     margin-inline: auto;
-    max-width: 72rem;
-    padding: 0.5rem 0 2.5rem;
+    max-width: 76rem;
+    padding: 0 0 2.5rem;
 }
 
 .report-entry-loading {
@@ -15,7 +15,7 @@
     align-items: stretch;
     display: grid;
     gap: 1rem;
-    grid-template-columns: minmax(34rem, 55rem) minmax(18rem, 24rem);
+    grid-template-columns: minmax(34rem, 54rem) minmax(18rem, 23rem);
     justify-content: center;
 }
 
