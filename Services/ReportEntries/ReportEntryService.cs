@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
+using System.Text.Json;
 using AzubiLog.Data;
 using AzubiLog.Models;
 using AzubiLog.Services.Identity;
@@ -670,6 +671,12 @@ public class ReportEntryService(
 
     private static string BuildSchoolDayDescription(string subjectsText)
     {
+        var structuredSubjects = TryParseStructuredSubjects(subjectsText);
+        if (structuredSubjects.Count > 0)
+        {
+            return "Berufsschultag: " + string.Join(", ", structuredSubjects.Select(FormatStructuredSubject));
+        }
+
         var subjects = subjectsText
             .Split(["\r\n", "\n", ","], StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
             .ToList();
@@ -685,6 +692,59 @@ public class ReportEntryService(
             + string.Join(
                 Environment.NewLine + Environment.NewLine,
                 subjects.Select(subject => $"{subject}:{Environment.NewLine}- "));
+    }
+
+    private static List<ClassTimetableEntry.StructuredSubjectEntry> TryParseStructuredSubjects(string subjectsText)
+    {
+        if (string.IsNullOrWhiteSpace(subjectsText))
+        {
+            return [];
+        }
+
+        var trimmedSubjectsText = subjectsText.Trim();
+        if (!trimmedSubjectsText.StartsWith("[", StringComparison.Ordinal))
+        {
+            return [];
+        }
+
+        try
+        {
+            var structuredSubjects = JsonSerializer.Deserialize<List<ClassTimetableEntry.StructuredSubjectEntry>>(
+                trimmedSubjectsText,
+                new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+
+            return structuredSubjects?
+                .Where(subject => !string.IsNullOrWhiteSpace(subject.Fach))
+                .ToList()
+                ?? [];
+        }
+        catch (JsonException)
+        {
+            return [];
+        }
+    }
+
+    private static string FormatStructuredSubject(ClassTimetableEntry.StructuredSubjectEntry subject)
+    {
+        var details = new List<string>();
+
+        if (!string.IsNullOrWhiteSpace(subject.Lehrer))
+        {
+            details.Add(subject.Lehrer.Trim());
+        }
+
+        if (!string.IsNullOrWhiteSpace(subject.Raum))
+        {
+            details.Add(subject.Raum.Trim());
+        }
+
+        var subjectName = subject.Fach.Trim();
+        return details.Count > 0
+            ? $"{subjectName} ({string.Join(", ", details)})"
+            : subjectName;
     }
 
     private static string NormalizeCategoryName(string? categoryName)

@@ -1,31 +1,10 @@
 @inherits LayoutComponentBase
 @inject IStringLocalizer<SharedResource> Localizer
-@inject IJSRuntime JsRuntime
 
 <div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+    <NavMenu />
 
     <main>
-        <div class="top-row px-4">
-            <AuthorizeView>
-                <Authorized>
-                    <a class="app-shell-account-link" href="/account/logout">@Localizer["AccountLogoutAction"]</a>
-                </Authorized>
-                <NotAuthorized>
-                    <a class="app-shell-account-link" href="/account/login">@Localizer["AccountLoginAction"]</a>
-                </NotAuthorized>
-            </AuthorizeView>
-            <label class="app-shell-control">
-                <span>@Localizer["ThemeLabel"]</span>
-                <select class="form-select form-select-sm" value="@CurrentTheme" @onchange="HandleThemeChangedAsync">
-                    <option value="light">@Localizer["ThemeLight"]</option>
-                    <option value="dark">@Localizer["ThemeDark"]</option>
-                </select>
-            </label>
-        </div>
-
         <article class="content px-4">
             @Body
         </article>
@@ -37,24 +16,3 @@
     <a href="." class="reload">@Localizer["Reload"]</a>
     <span class="dismiss">x</span>
 </div>
-
-@code {
-    private string CurrentTheme { get; set; } = "light";
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (!firstRender)
-        {
-            return;
-        }
-
-        CurrentTheme = await JsRuntime.InvokeAsync<string>("azubiLogPreferences.getTheme");
-        StateHasChanged();
-    }
-
-    private async Task HandleThemeChangedAsync(ChangeEventArgs args)
-    {
-        CurrentTheme = args.Value?.ToString() == "dark" ? "dark" : "light";
-        await JsRuntime.InvokeVoidAsync("azubiLogPreferences.setTheme", CurrentTheme);
-    }
-}
