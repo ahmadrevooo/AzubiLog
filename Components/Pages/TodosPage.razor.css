@@ -42,12 +42,17 @@
 
 .todo-create-panel {
     background: var(--app-surface);
-    border: 1px solid var(--app-border);
+    border: 1.5px solid color-mix(in srgb, var(--app-accent-green) 70%, var(--app-border));
     border-radius: 8px;
     box-shadow: var(--app-shadow);
     display: grid;
     gap: 1rem;
     padding: 1.15rem;
+    transition:
+        background-color 150ms ease,
+        border-color 150ms ease,
+        color 150ms ease,
+        box-shadow 150ms ease;
 }
 
 .todo-create-panel h2 {
@@ -75,12 +80,26 @@
     font-size: 0.82rem;
 }
 
-.todos-grid .todo-list-panel:first-of-type {
+.todos-grid ::deep .todo-list-panel {
+    --todo-panel-accent: var(--app-accent-blue);
+    --todo-panel-soft: var(--app-accent-blue-soft);
+}
+
+.todos-grid ::deep .todo-list-panel:first-of-type {
     grid-column: 2;
 }
 
-.todos-grid .todo-list-panel:last-of-type {
+.todos-grid ::deep .todo-list-panel:last-of-type {
+    --todo-panel-accent: var(--app-accent-orange);
+    --todo-panel-soft: var(--app-accent-orange-soft);
     grid-column: 1 / -1;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .todo-create-panel:hover {
+        background: color-mix(in srgb, var(--app-accent-green-soft) 46%, var(--app-surface));
+        border-color: var(--app-accent-green);
+    }
 }
 
 @media (max-width: 860px) {
@@ -88,8 +107,8 @@
         grid-template-columns: 1fr;
     }
 
-    .todos-grid .todo-list-panel:first-of-type,
-    .todos-grid .todo-list-panel:last-of-type {
+    .todos-grid ::deep .todo-list-panel:first-of-type,
+    .todos-grid ::deep .todo-list-panel:last-of-type {
         grid-column: auto;
     }
 }

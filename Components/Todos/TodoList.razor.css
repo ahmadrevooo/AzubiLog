@@ -1,11 +1,16 @@
 .todo-list-panel {
     background: var(--app-surface);
-    border: 1px solid var(--app-border);
+    border: 1.5px solid color-mix(in srgb, var(--todo-panel-accent, var(--app-accent-blue)) 68%, var(--app-border));
     border-radius: 8px;
     box-shadow: var(--app-shadow);
     display: grid;
     gap: 1rem;
     padding: 1.15rem;
+    transition:
+        background-color 150ms ease,
+        border-color 150ms ease,
+        color 150ms ease,
+        box-shadow 150ms ease;
 }
 
 .todo-list-panel header {
@@ -23,7 +28,8 @@
 
 .todo-list-panel header span {
     align-items: center;
-    background: var(--app-surface-muted);
+    background: color-mix(in srgb, var(--todo-panel-soft, var(--app-accent-blue-soft)) 65%, var(--app-surface-muted));
+    border: 1px solid color-mix(in srgb, var(--todo-panel-accent, var(--app-accent-blue)) 38%, var(--app-border));
     border-radius: 6px;
     color: var(--app-text-secondary);
     display: inline-flex;
@@ -47,7 +53,7 @@
 .todo-list-item {
     align-items: flex-start;
     background: transparent;
-    border-top: 1px solid var(--app-border);
+    border-top: 1px solid color-mix(in srgb, var(--todo-panel-accent, var(--app-border)) 24%, var(--app-border));
     border-radius: 0;
     display: grid;
     gap: 0.75rem;
@@ -94,7 +100,7 @@
 .todo-list-check button,
 .todo-list-check span {
     background: var(--app-surface);
-    border: 1px solid var(--app-border-strong);
+    border: 1px solid color-mix(in srgb, var(--todo-panel-accent, var(--app-border-strong)) 44%, var(--app-border-strong));
     border-radius: 4px;
     display: block;
     height: 1.05rem;
@@ -154,5 +160,17 @@
 @media (max-width: 620px) {
     .todo-list-item {
         grid-template-columns: auto minmax(0, 1fr) auto;
+    }
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .todo-list-panel:hover {
+        background: color-mix(in srgb, var(--todo-panel-soft, transparent) 44%, var(--app-surface));
+        border-color: var(--todo-panel-accent, var(--app-border-strong));
+    }
+
+    .todo-list-check button:hover {
+        background: color-mix(in srgb, var(--todo-panel-soft, transparent) 70%, var(--app-surface));
+        border-color: var(--todo-panel-accent, var(--app-border-strong));
     }
 }
