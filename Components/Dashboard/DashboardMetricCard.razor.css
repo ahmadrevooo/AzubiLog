@@ -3,13 +3,22 @@
     border: 1px solid var(--app-border);
     border-radius: 8px;
     box-shadow: var(--app-shadow);
+    transition:
+        background-color 150ms ease,
+        border-color 150ms ease,
+        color 150ms ease,
+        box-shadow 150ms ease;
 }
 
 .metric-card {
+    --metric-accent: var(--app-border);
+    --metric-soft: transparent;
+    border-color: color-mix(in srgb, var(--metric-accent) 76%, var(--app-border));
+    border-width: 1.5px;
     min-height: 6.75rem;
+    overflow: hidden;
     padding: 1rem;
     position: relative;
-    overflow: hidden;
 }
 
 .metric-card-label {
@@ -32,11 +41,39 @@
     margin-top: 0.4rem;
 }
 
+.metric-card::before {
+    background: var(--metric-soft);
+    content: "";
+    height: 3px;
+    inset: 0 0 auto;
+    position: absolute;
+}
+
+.metric-accent-green {
+    --metric-accent: var(--app-accent-green);
+    --metric-soft: var(--app-accent-green-soft);
+}
+
 .metric-accent-blue,
-.metric-accent-green,
-.metric-accent-cyan,
+.metric-accent-cyan {
+    --metric-accent: var(--app-accent-blue);
+    --metric-soft: var(--app-accent-blue-soft);
+}
+
 .metric-accent-orange,
-.metric-accent-purple,
+.metric-accent-purple {
+    --metric-accent: var(--app-accent-orange);
+    --metric-soft: var(--app-accent-orange-soft);
+}
+
 .metric-accent-red {
-    background: var(--app-surface);
+    --metric-accent: var(--app-accent-red);
+    --metric-soft: var(--app-accent-red-soft);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .metric-card:hover {
+        background: color-mix(in srgb, var(--metric-soft) 52%, var(--app-surface));
+        border-color: var(--metric-accent);
+    }
 }

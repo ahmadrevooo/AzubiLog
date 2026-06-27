@@ -1,9 +1,24 @@
 .dashboard-widget {
     background: var(--app-surface);
-    border: 1px solid var(--app-border);
+    border: 1.5px solid var(--widget-accent, var(--app-border));
     border-radius: 8px;
     min-height: 10rem;
     padding: 1.1rem;
+    transition:
+        background-color 150ms ease,
+        border-color 150ms ease,
+        color 150ms ease,
+        box-shadow 150ms ease;
+}
+
+.dashboard-widget:nth-child(1) {
+    --widget-accent: color-mix(in srgb, var(--app-accent-blue) 72%, var(--app-border));
+    --widget-soft: var(--app-accent-blue-soft);
+}
+
+.dashboard-widget:nth-child(2) {
+    --widget-accent: color-mix(in srgb, var(--app-accent-orange) 72%, var(--app-border));
+    --widget-soft: var(--app-accent-orange-soft);
 }
 
 .dashboard-widget-header {
@@ -18,6 +33,16 @@
     font-size: 1rem;
     font-weight: 600;
     margin: 0;
+}
+
+.dashboard-widget-header h2::before {
+    background: var(--widget-accent, var(--app-border));
+    border-radius: 999px;
+    content: "";
+    display: inline-block;
+    height: 0.55rem;
+    margin-right: 0.45rem;
+    width: 0.55rem;
 }
 
 .dashboard-widget-header span,
@@ -45,6 +70,13 @@
     gap: 1rem;
     justify-content: space-between;
     padding: 0.8rem 0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .dashboard-widget:hover {
+        background: color-mix(in srgb, var(--widget-soft, transparent) 46%, var(--app-surface));
+        border-color: var(--widget-accent, var(--app-border-strong));
+    }
 }
 
 .dashboard-widget-item strong {

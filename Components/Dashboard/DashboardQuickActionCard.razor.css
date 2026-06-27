@@ -1,6 +1,8 @@
 .quick-action-card {
+    --action-accent: var(--app-border);
+    --action-soft: transparent;
     background: var(--app-surface);
-    border: 1px solid var(--app-border);
+    border: 1.5px solid color-mix(in srgb, var(--action-accent) 74%, var(--app-border));
     border-radius: 8px;
     box-shadow: var(--app-shadow);
     color: var(--app-text);
@@ -11,6 +13,11 @@
     overflow: hidden;
     padding: 1.15rem;
     position: relative;
+    transition:
+        background-color 150ms ease,
+        border-color 150ms ease,
+        color 150ms ease,
+        box-shadow 150ms ease;
 }
 
 .quick-action-card h2 {
@@ -28,8 +35,8 @@
 
 .quick-action-button {
     align-self: flex-start;
-    background: var(--app-surface-muted);
-    border-color: var(--app-border);
+    background: color-mix(in srgb, var(--action-soft) 58%, var(--app-surface-muted));
+    border-color: color-mix(in srgb, var(--action-accent) 42%, var(--app-border));
     color: var(--app-text);
     font-weight: 500;
     margin-top: 1rem;
@@ -42,21 +49,40 @@
 
 .quick-action-icon {
     bottom: 1rem;
-    color: var(--app-text-muted);
+    background: var(--action-soft);
+    border: 1px solid color-mix(in srgb, var(--action-accent) 30%, transparent);
+    border-radius: 8px;
+    color: color-mix(in srgb, var(--action-accent) 72%, var(--app-text-muted));
     font-size: 2rem;
     font-weight: 800;
+    line-height: 1;
+    padding: 0.25rem 0.45rem;
     position: absolute;
     right: 1.1rem;
 }
 
 .action-green {
-    background: var(--app-surface);
+    --action-accent: var(--app-accent-green);
+    --action-soft: var(--app-accent-green-soft);
 }
 
 .action-blue {
-    background: var(--app-surface);
+    --action-accent: var(--app-accent-blue);
+    --action-soft: var(--app-accent-blue-soft);
 }
 
 .action-purple {
-    background: var(--app-surface);
+    --action-accent: var(--app-accent-orange);
+    --action-soft: var(--app-accent-orange-soft);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .quick-action-card:hover {
+        background: color-mix(in srgb, var(--action-soft) 48%, var(--app-surface));
+        border-color: var(--action-accent);
+    }
+
+    .quick-action-card:hover .quick-action-button {
+        border-color: color-mix(in srgb, var(--action-accent) 64%, var(--app-border));
+    }
 }
