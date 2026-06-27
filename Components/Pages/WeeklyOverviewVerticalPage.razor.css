@@ -108,7 +108,7 @@
 .weekly-vertical-total {
     align-items: center;
     background: var(--app-surface);
-    border: 1px solid color-mix(in srgb, var(--app-border) 58%, transparent);
+    border: 1.5px solid color-mix(in srgb, var(--app-accent-blue) 62%, var(--app-border));
     border-radius: 8px;
     display: flex;
     justify-content: space-between;
@@ -131,13 +131,40 @@
 }
 
 .weekly-vertical-day {
+    --day-accent: var(--app-border);
+    --day-soft: transparent;
     background: var(--app-surface);
-    border: 1px solid color-mix(in srgb, var(--app-border) 56%, transparent);
+    border: 1.5px solid color-mix(in srgb, var(--day-accent) 66%, var(--app-border));
     border-radius: 8px;
     display: grid;
     gap: 0.8rem;
     min-width: 0;
     padding: 1rem;
+    transition:
+        background-color 150ms ease,
+        border-color 150ms ease,
+        color 150ms ease,
+        box-shadow 150ms ease;
+}
+
+.weekly-vertical-day:nth-child(4n + 1) {
+    --day-accent: var(--app-accent-green);
+    --day-soft: var(--app-accent-green-soft);
+}
+
+.weekly-vertical-day:nth-child(4n + 2) {
+    --day-accent: var(--app-accent-blue);
+    --day-soft: var(--app-accent-blue-soft);
+}
+
+.weekly-vertical-day:nth-child(4n + 3) {
+    --day-accent: var(--app-accent-orange);
+    --day-soft: var(--app-accent-orange-soft);
+}
+
+.weekly-vertical-day:nth-child(4n) {
+    --day-accent: var(--app-accent-red);
+    --day-soft: var(--app-accent-red-soft);
 }
 
 .weekly-vertical-day-header {
@@ -181,7 +208,7 @@
 .weekly-vertical-entry {
     align-items: start;
     background: var(--app-bg);
-    border: 1px solid color-mix(in srgb, var(--app-border) 52%, transparent);
+    border: 1px solid color-mix(in srgb, var(--day-accent) 28%, var(--app-border));
     border-radius: 8px;
     display: grid;
     gap: 0.8rem;
@@ -225,7 +252,7 @@
 
 .weekly-vertical-entry-meta span {
     background: var(--app-surface);
-    border: 1px solid color-mix(in srgb, var(--app-border) 58%, transparent);
+    border: 1px solid color-mix(in srgb, var(--day-accent) 34%, var(--app-border));
     border-radius: 999px;
     color: var(--app-text-muted);
     font-size: 0.75rem;
@@ -239,6 +266,13 @@
 .weekly-vertical-empty {
     color: var(--app-text-muted);
     margin: 0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .weekly-vertical-day:hover {
+        background: color-mix(in srgb, var(--day-soft) 44%, var(--app-surface));
+        border-color: var(--day-accent);
+    }
 }
 
 @media (max-width: 760px) {

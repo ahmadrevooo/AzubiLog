@@ -1,6 +1,6 @@
 .daily-summary-card {
     background: var(--app-surface);
-    border: 1px solid var(--app-border);
+    border: 1.5px solid color-mix(in srgb, var(--app-accent-green) 70%, var(--app-border));
     border-radius: 8px;
     box-shadow: var(--app-shadow);
     display: grid;
@@ -10,6 +10,11 @@
     min-width: 0;
     overflow: hidden;
     padding: 1rem;
+    transition:
+        background-color 150ms ease,
+        border-color 150ms ease,
+        color 150ms ease,
+        box-shadow 150ms ease;
 }
 
 .daily-summary-header,
@@ -45,8 +50,8 @@
 }
 
 .daily-summary-email-button {
-    background: var(--app-surface-muted);
-    border: 1px solid var(--app-border);
+    background: color-mix(in srgb, var(--app-accent-green-soft) 58%, var(--app-surface-muted));
+    border: 1px solid color-mix(in srgb, var(--app-accent-green) 44%, var(--app-border));
     border-radius: 6px;
     color: var(--app-text);
     font-size: 0.88rem;
@@ -59,7 +64,7 @@
 
 .daily-summary-empty {
     align-self: start;
-    border: 1px dashed var(--app-border);
+    border: 1px dashed color-mix(in srgb, var(--app-accent-green) 46%, var(--app-border));
     border-radius: 8px;
     display: grid;
     gap: 0.35rem;
@@ -89,7 +94,7 @@
 
 .daily-summary-entry {
     background: var(--app-bg);
-    border: 1px solid var(--app-border);
+    border: 1px solid color-mix(in srgb, var(--app-accent-green) 34%, var(--app-border));
     border-radius: 8px;
     display: block;
     max-width: 100%;
@@ -134,7 +139,7 @@
 }
 
 .daily-summary-total {
-    border-top: 1px solid var(--app-border);
+    border-top: 1px solid color-mix(in srgb, var(--app-accent-green) 38%, var(--app-border));
     margin-top: 0;
     padding-top: 0.75rem;
 }
@@ -147,7 +152,7 @@
 
 .daily-summary-footer {
     align-self: end;
-    border-top: 1px solid var(--app-border);
+    border-top: 1px solid color-mix(in srgb, var(--app-accent-green) 38%, var(--app-border));
     padding-top: 0.75rem;
 }
 
@@ -162,10 +167,15 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
+    .daily-summary-card:hover {
+        background: color-mix(in srgb, var(--app-accent-green-soft) 44%, var(--app-surface));
+        border-color: var(--app-accent-green);
+    }
+
     .daily-summary-email-button:hover,
     .daily-summary-entry:hover {
         background: var(--app-surface-hover);
-        border-color: var(--app-border-strong);
+        border-color: color-mix(in srgb, var(--app-accent-green) 64%, var(--app-border-strong));
     }
 }
 

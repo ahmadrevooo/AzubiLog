@@ -1,6 +1,6 @@
 .weekly-overview-card {
     background: var(--app-surface);
-    border: 1px solid var(--app-border);
+    border: 1.5px solid color-mix(in srgb, var(--app-accent-blue) 62%, var(--app-border));
     border-radius: 8px;
     box-shadow: var(--app-shadow);
     display: grid;
@@ -62,8 +62,8 @@
 }
 
 .weekly-overview-summary {
-    background: var(--app-surface-muted);
-    border: 1px solid var(--app-border);
+    background: color-mix(in srgb, var(--app-accent-blue-soft) 56%, var(--app-surface-muted));
+    border: 1px solid color-mix(in srgb, var(--app-accent-blue) 44%, var(--app-border));
     border-radius: 8px;
     padding: 0.75rem 0.9rem;
 }
@@ -82,9 +82,10 @@
 }
 
 .weekly-overview-day {
+    --day-accent: var(--app-border);
     background: transparent;
     border: 0;
-    border-top: 1px solid var(--app-border);
+    border-top: 1px solid color-mix(in srgb, var(--day-accent) 42%, var(--app-border));
     border-radius: 0;
     display: grid;
     gap: 0.65rem;
@@ -97,6 +98,22 @@
 .weekly-overview-day:first-child {
     border-top: 0;
     padding-top: 0;
+}
+
+.weekly-overview-day:nth-child(4n + 1) {
+    --day-accent: var(--app-accent-green);
+}
+
+.weekly-overview-day:nth-child(4n + 2) {
+    --day-accent: var(--app-accent-blue);
+}
+
+.weekly-overview-day:nth-child(4n + 3) {
+    --day-accent: var(--app-accent-orange);
+}
+
+.weekly-overview-day:nth-child(4n) {
+    --day-accent: var(--app-accent-red);
 }
 
 .weekly-overview-day-link {
@@ -149,7 +166,7 @@
 
 .weekly-overview-categories span {
     background: var(--app-surface);
-    border: 1px solid var(--app-border);
+    border: 1px solid color-mix(in srgb, var(--day-accent, var(--app-border)) 36%, var(--app-border));
     border-radius: 6px;
     color: var(--app-text-muted);
     font-size: 0.75rem;
@@ -168,7 +185,7 @@
 
 .weekly-overview-entry-links a {
     background: transparent;
-    border-top: 1px solid color-mix(in srgb, var(--app-border) 70%, transparent);
+    border-top: 1px solid color-mix(in srgb, var(--day-accent, var(--app-border)) 24%, var(--app-border));
     border-radius: 0;
     font-size: 0.9rem;
     line-height: 1.25;

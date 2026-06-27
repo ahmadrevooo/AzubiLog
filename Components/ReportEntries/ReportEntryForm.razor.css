@@ -1,6 +1,6 @@
 .report-entry-form-card {
     background: var(--app-surface);
-    border: 1px solid var(--app-border);
+    border: 1px solid color-mix(in srgb, var(--app-border) 84%, var(--app-accent-green));
     border-radius: 8px;
     box-shadow: var(--app-shadow);
     display: grid;
@@ -36,8 +36,8 @@
 
 .report-entry-school-hint {
     align-items: center;
-    background: var(--app-surface-muted);
-    border: 1px solid var(--app-border);
+    background: color-mix(in srgb, var(--app-accent-orange-soft) 58%, var(--app-surface-muted));
+    border: 1px solid color-mix(in srgb, var(--app-accent-orange) 52%, var(--app-border));
     border-radius: 8px;
     color: var(--app-text);
     display: flex;
@@ -62,13 +62,31 @@
 }
 
 .report-entry-section {
-    border-top: 1px solid var(--app-border);
-    padding-top: 0.85rem;
+    --section-accent: var(--app-border);
+    --section-soft: transparent;
+    border: 1.5px solid color-mix(in srgb, var(--section-accent) 72%, var(--app-border));
+    border-radius: 8px;
+    padding: 0.85rem;
+    transition:
+        background-color 150ms ease,
+        border-color 150ms ease,
+        color 150ms ease,
+        box-shadow 150ms ease;
 }
 
 .report-entry-section:first-child {
-    border-top: 0;
-    padding-top: 0;
+    --section-accent: var(--app-accent-green);
+    --section-soft: var(--app-accent-green-soft);
+}
+
+.report-entry-section:nth-child(2) {
+    --section-accent: var(--app-accent-blue);
+    --section-soft: var(--app-accent-blue-soft);
+}
+
+.report-entry-section:nth-child(3) {
+    --section-accent: var(--app-accent-orange);
+    --section-soft: var(--app-accent-orange-soft);
 }
 
 .report-entry-time-grid,
@@ -207,13 +225,13 @@
 
 .report-entry-duration {
     align-self: end;
-    background: transparent;
-    border: 0;
-    border-radius: 0;
+    background: color-mix(in srgb, var(--app-accent-blue-soft) 64%, var(--app-surface-muted));
+    border: 1px solid color-mix(in srgb, var(--app-accent-blue) 42%, var(--app-border));
+    border-radius: 8px;
     display: inline-flex;
     justify-content: start;
     min-height: 2rem;
-    padding: 0.44rem 0;
+    padding: 0.44rem 0.65rem;
 }
 
 .report-entry-field-hint {
@@ -230,7 +248,8 @@
 
 .report-entry-icon-button {
     align-items: center;
-    background: var(--app-bg);
+    background: var(--app-accent-orange-soft);
+    border-color: color-mix(in srgb, var(--app-accent-orange) 48%, var(--app-border));
     display: inline-flex;
     font-size: 1.1rem;
     font-weight: 800;
@@ -316,6 +335,23 @@
     font-size: 0.9rem;
     font-weight: 600;
     margin-bottom: 0.1rem;
+}
+
+.report-entry-section-heading::before {
+    background: var(--section-accent);
+    border-radius: 999px;
+    content: "";
+    display: inline-block;
+    height: 0.5rem;
+    margin-right: 0.45rem;
+    width: 0.5rem;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .report-entry-section:hover {
+        background: color-mix(in srgb, var(--section-soft) 48%, var(--app-surface));
+        border-color: var(--section-accent);
+    }
 }
 
 @media (max-width: 760px) {
