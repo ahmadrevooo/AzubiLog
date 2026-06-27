@@ -50,14 +50,14 @@ else
                 </div>
                 <div class="timetable-header-badge">
                     <strong>@CurrentUser.ClassName</strong>
-                    <span>Freigabecode aktiv</span>
+                    <span>Beitrittscode aktiv</span>
                 </div>
             </div>
 
             <div class="timetable-share-grid">
                 <div class="timetable-share-card">
-                    <strong>Freigabecode deiner Klasse</strong>
-                    <span>Teile diesen Code mit anderen Azubis oder Klassensprechern deiner Klasse.</span>
+                    <strong>Beitrittscode deiner Klasse</strong>
+                    <span>Teile diesen kurzen Code mit anderen Azubis oder Klassensprechern deiner Klasse.</span>
                     <div class="timetable-share-code">@ShareCode</div>
                     <button class="btn btn-outline-primary" @onclick="CopyShareCodeAsync" disabled="@IsCopyingShareCode">
                         @(IsCopyingShareCode ? "Wird kopiert..." : "Code kopieren")
@@ -67,13 +67,13 @@ else
                 @if (CanManageTimetable)
                 {
                     <div class="timetable-share-card">
-                        <strong>Stundenplan aus anderem Code übernehmen</strong>
+                        <strong>Stundenplan per Beitrittscode übernehmen</strong>
                         <span>Vorhandene Einträge deiner Klasse werden durch den geteilten Stundenplan ersetzt.</span>
                         <label class="timetable-day-input">
-                            <span>Freigabecode</span>
+                            <span>Beitrittscode</span>
                             <InputText class="form-control"
                                        @bind-Value="ShareCodeInput"
-                                       placeholder="Schule|Klasse" />
+                                       placeholder="A7X3K2" />
                         </label>
                         <button class="btn btn-secondary" @onclick="ApplyShareCodeAsync" disabled="@IsSaving">
                             Stundenplan übernehmen
@@ -119,34 +119,55 @@ else
                                 <span class="timetable-day-label">@GetDayName(dayEntry.DayOfWeek)</span>
                                 <p>@GetDaySubtitle(dayEntry.SubjectsText)</p>
                             </div>
-                            <span class="timetable-day-state @(string.IsNullOrWhiteSpace(dayEntry.SubjectsText) ? "is-empty" : "is-filled")">
-                                @(string.IsNullOrWhiteSpace(dayEntry.SubjectsText) ? "Leer" : "Gefüllt")
+                            <span class="timetable-day-state @(dayEntry.SubjectRows.Count == 0 ? "is-empty" : "is-filled")">
+                                @(dayEntry.SubjectRows.Count == 0 ? "Leer" : "Gefüllt")
                             </span>
                         </div>
 
                         @if (CanManageTimetable)
                         {
-                            <label class="timetable-day-input">
-                                <span>Fächer & Reihenfolge</span>
-                                <InputTextArea class="form-control timetable-subjects-input"
-                                               value="@dayEntry.SubjectsText"
-                                               ValueChanged="(value) => OnSubjectsChanged(dayEntry.DayOfWeek, value)"
-                                               ValueExpression="() => dayEntry.SubjectsText"
-                                               placeholder="@Localizer["TimetableSubjectsPlaceholder"]" />
-                            </label>
+                            <div class="timetable-day-input">
+                                <span>Einträge</span>
+                                <div class="timetable-subject-rows">
+                                    @foreach (var subjectRow in dayEntry.SubjectRows)
+                                    {
+                                        <div class="timetable-subject-row">
+                                            <InputText class="form-control"
+                                                       @bind-Value="subjectRow.Fach"
+                                                       placeholder="Fach" />
+                                            <InputText class="form-control"
+                                                       @bind-Value="subjectRow.Lehrer"
+                                                       placeholder="Lehrer" />
+                                            <InputText class="form-control"
+                                                       @bind-Value="subjectRow.Raum"
+                                                       placeholder="Raum (optional)" />
+                                            <button type="button"
+                                                    class="btn btn-outline-danger timetable-row-remove"
+                                                    @onclick="() => RemoveSubjectRow(dayEntry.DayOfWeek, subjectRow)">
+                                                Entfernen
+                                            </button>
+                                        </div>
+                                    }
+                                </div>
+                                <button type="button"
+                                        class="btn btn-outline-primary timetable-row-add"
+                                        @onclick="() => AddSubjectRow(dayEntry.DayOfWeek)">
+                                    Zeile hinzufügen
+                                </button>
+                            </div>
                         }
                         else
                         {
                             <div class="timetable-day-input">
-                                <span>Fächer & Reihenfolge</span>
+                                <span>Einträge</span>
                                 <div class="timetable-readonly-subjects">
-                                    @(string.IsNullOrWhiteSpace(dayEntry.SubjectsText) ? "Keine Einträge vorhanden." : dayEntry.SubjectsText)
+                                    @FormatReadonlySubjects(dayEntry.SubjectsText)
                                 </div>
                             </div>
                         }
 
                         <div class="timetable-day-hint">
-                            Beispiel: LF1, LF2, Sport, Englisch
+                            Beispiel: Mathe · Hr. Müller · R201
                         </div>
                     </div>
                 }
@@ -188,7 +209,7 @@ else
                         <label>
                             <span>Tag</span>
                             <select class="form-control" @bind="SelectedCancellationDay">
-                                @foreach (var dayEntry in DayEntries.Where(d => !string.IsNullOrWhiteSpace(d.SubjectsText)))
+                                @foreach (var dayEntry in DayEntries.Where(d => d.SubjectRows.Count > 0))
                                 {
                                     <option value="@((int)dayEntry.DayOfWeek)">@GetDayName(dayEntry.DayOfWeek)</option>
                                 }
@@ -217,7 +238,7 @@ else
                                 <span>
                                     <strong>@GetDayName(cancellation.ClassTimetableEntry.DayOfWeek)</strong>
                                     @cancellation.Date.ToString("dd.MM.yyyy") &mdash;
-                                    @cancellation.ClassTimetableEntry.SubjectsText
+                                    @GetDaySubtitle(cancellation.ClassTimetableEntry.SubjectsText)
                                     @if (!string.IsNullOrWhiteSpace(cancellation.Reason))
                                     {
                                         <em>(@cancellation.Reason)</em>

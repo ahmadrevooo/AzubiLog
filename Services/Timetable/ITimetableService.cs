@@ -4,6 +4,12 @@ namespace AzubiLog.Services.Timetable;
 
 public interface ITimetableService
 {
+    string GenerateShareCode(string school, string className);
+
+    Task<(string School, string ClassName)?> ResolveShareCodeAsync(
+        string shareCode,
+        CancellationToken cancellationToken = default);
+
     Task<List<ClassTimetableEntry>> GetClassTimetableAsync(
         string school,
         string className,

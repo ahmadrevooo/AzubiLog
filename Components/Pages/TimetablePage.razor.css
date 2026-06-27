@@ -126,9 +126,21 @@
     gap: 0.35rem;
 }
 
-.timetable-subjects-input {
-    min-height: 7rem;
-    resize: vertical;
+.timetable-subject-rows {
+    display: grid;
+    gap: 0.65rem;
+}
+
+.timetable-subject-row {
+    display: grid;
+    gap: 0.5rem;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.2fr) minmax(0, 0.9fr) auto;
+    align-items: start;
+}
+
+.timetable-row-add,
+.timetable-row-remove {
+    justify-self: start;
 }
 
 .timetable-readonly-subjects {
@@ -213,5 +225,9 @@
     .timetable-cancellation-item {
         align-items: stretch;
         flex-direction: column;
+    }
+
+    .timetable-subject-row {
+        grid-template-columns: 1fr;
     }
 }

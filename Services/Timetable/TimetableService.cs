@@ -1,11 +1,54 @@
 using AzubiLog.Data;
 using AzubiLog.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace AzubiLog.Services.Timetable;
 
 public sealed class TimetableService(ApplicationDbContext dbContext) : ITimetableService
 {
+    public string GenerateShareCode(string school, string className)
+    {
+        var normalizedKey = BuildNormalizedClassKey(school, className);
+        var hashBytes = SHA256.HashData(Encoding.UTF8.GetBytes(normalizedKey));
+        var value = BitConverter.ToUInt64(hashBytes, 0);
+        const string alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        var buffer = new char[6];
+
+        for (var index = buffer.Length - 1; index >= 0; index--)
+        {
+            buffer[index] = alphabet[(int)(value % 36)];
+            value /= 36;
+        }
+
+        return new string(buffer);
+    }
+
+    public async Task<(string School, string ClassName)?> ResolveShareCodeAsync(
+        string shareCode,
+        CancellationToken cancellationToken = default)
+    {
+        var normalizedCode = shareCode.Trim().ToUpperInvariant();
+        if (normalizedCode.Length != 6)
+        {
+            return null;
+        }
+
+        var classPairs = await dbContext.ClassTimetableEntries
+            .Select(entry => new { entry.School, entry.ClassName })
+            .Distinct()
+            .ToListAsync(cancellationToken);
+
+        var match = classPairs.FirstOrDefault(pair =>
+            string.Equals(
+                GenerateShareCode(pair.School, pair.ClassName),
+                normalizedCode,
+                StringComparison.OrdinalIgnoreCase));
+
+        return match is null ? null : (match.School, match.ClassName);
+    }
+
     public async Task<List<ClassTimetableEntry>> GetClassTimetableAsync(
         string school,
         string className,
@@ -232,4 +275,7 @@ public sealed class TimetableService(ApplicationDbContext dbContext) : ITimetabl
         dbContext.ClassTimetableEntries.AddRange(clonedEntries);
         await dbContext.SaveChangesAsync(cancellationToken);
     }
+
+    private static string BuildNormalizedClassKey(string school, string className)
+        => $"{school.Trim().ToUpperInvariant()}|{className.Trim().ToUpperInvariant()}";
 }
