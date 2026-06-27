@@ -1,12 +1,14 @@
 .report-entry-form-card {
-    background: var(--app-surface);
-    border: 1px solid color-mix(in srgb, var(--app-border) 84%, var(--app-accent-green));
+    background:
+        linear-gradient(180deg, color-mix(in srgb, var(--app-accent-green-soft) 20%, var(--app-surface)), var(--app-surface) 38%),
+        var(--app-surface);
+    border: var(--app-accent-border-width) solid color-mix(in srgb, var(--app-border) 72%, var(--app-accent-green));
     border-radius: 8px;
     box-shadow: var(--app-shadow);
     display: grid;
-    gap: 0.75rem;
+    gap: 0.9rem;
     max-width: 48rem;
-    padding: 1.1rem 1.2rem;
+    padding: 1.15rem 1.2rem;
     width: 100%;
 }
 
@@ -24,7 +26,7 @@
     font-size: 0.78rem;
     font-weight: 500;
     letter-spacing: 0;
-    margin: 0 0 0.28rem;
+    margin: 0 0 0.34rem;
 }
 
 .report-entry-form-header h1 {
@@ -58,15 +60,18 @@
 .report-entry-main-fields,
 .report-entry-section {
     display: grid;
-    gap: 0.7rem;
+    gap: 0.85rem;
 }
 
 .report-entry-section {
     --section-accent: var(--app-border);
     --section-soft: transparent;
-    border: 1.5px solid color-mix(in srgb, var(--section-accent) 72%, var(--app-border));
+    background:
+        linear-gradient(180deg, color-mix(in srgb, var(--section-soft) 34%, var(--app-surface)), var(--app-surface) 50%),
+        var(--app-surface);
+    border: var(--app-accent-border-width) solid color-mix(in srgb, var(--section-accent) 78%, var(--app-border));
     border-radius: 8px;
-    padding: 0.85rem;
+    padding: 1rem;
     transition:
         background-color 150ms ease,
         border-color 150ms ease,
@@ -92,7 +97,7 @@
 .report-entry-time-grid,
 .report-entry-info-grid {
     display: grid;
-    gap: 0.75rem;
+    gap: 0.85rem;
 }
 
 .report-entry-time-grid {
@@ -225,13 +230,19 @@
 
 .report-entry-duration {
     align-self: end;
-    background: color-mix(in srgb, var(--app-accent-blue-soft) 64%, var(--app-surface-muted));
-    border: 1px solid color-mix(in srgb, var(--app-accent-blue) 42%, var(--app-border));
-    border-radius: 8px;
+    background: color-mix(in srgb, var(--app-accent-blue-soft) 76%, var(--app-surface-muted));
+    border: 1px solid color-mix(in srgb, var(--app-accent-blue) 52%, var(--app-border));
+    border-radius: 6px;
     display: inline-flex;
     justify-content: start;
     min-height: 2rem;
-    padding: 0.44rem 0.65rem;
+    padding: 0.46rem 0.7rem;
+}
+
+.report-entry-duration span {
+    color: color-mix(in srgb, var(--app-accent-blue) 54%, var(--app-text));
+    font-weight: 650;
+    margin: 0;
 }
 
 .report-entry-field-hint {
@@ -284,10 +295,12 @@
 }
 
 .report-entry-actions {
-    border-top: 1px solid var(--app-border);
+    background: color-mix(in srgb, var(--app-surface-muted) 54%, var(--app-surface));
+    border: 1px solid color-mix(in srgb, var(--app-border) 78%, transparent);
+    border-radius: 8px;
     justify-content: flex-end;
-    margin-top: 0.1rem;
-    padding-top: 0.75rem;
+    margin-top: 0.15rem;
+    padding: 0.75rem;
 }
 
 .report-entry-delete-link {
@@ -331,19 +344,23 @@
 }
 
 .report-entry-section-heading {
+    align-items: center;
     color: var(--app-text);
+    display: flex;
     font-size: 0.9rem;
-    font-weight: 600;
-    margin-bottom: 0.1rem;
+    font-weight: 700;
+    gap: 0.45rem;
+    margin-bottom: 0.05rem;
 }
 
 .report-entry-section-heading::before {
     background: var(--section-accent);
+    box-shadow: 0 0 0 4px var(--section-soft);
     border-radius: 999px;
     content: "";
-    display: inline-block;
+    display: inline-flex;
+    flex: 0 0 auto;
     height: 0.5rem;
-    margin-right: 0.45rem;
     width: 0.5rem;
 }
 
@@ -351,6 +368,7 @@
     .report-entry-section:hover {
         background: color-mix(in srgb, var(--section-soft) 48%, var(--app-surface));
         border-color: var(--section-accent);
+        box-shadow: 0 8px 22px color-mix(in srgb, var(--section-accent) 8%, transparent);
     }
 }
 
