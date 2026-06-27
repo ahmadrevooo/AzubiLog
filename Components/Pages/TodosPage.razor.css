@@ -41,13 +41,15 @@
 }
 
 .todo-create-panel {
-    background: var(--app-surface);
-    border: 1.5px solid color-mix(in srgb, var(--app-accent-green) 70%, var(--app-border));
+    background:
+        linear-gradient(180deg, color-mix(in srgb, var(--app-accent-green-soft) 28%, var(--app-surface)), var(--app-surface) 50%),
+        var(--app-surface);
+    border: var(--app-accent-border-width) solid color-mix(in srgb, var(--app-accent-green) 76%, var(--app-border));
     border-radius: 8px;
     box-shadow: var(--app-shadow);
     display: grid;
     gap: 1rem;
-    padding: 1.15rem;
+    padding: 1.2rem;
     transition:
         background-color 150ms ease,
         border-color 150ms ease,
@@ -57,8 +59,8 @@
 
 .todo-create-panel h2 {
     color: var(--app-text);
-    font-size: 1rem;
-    font-weight: 600;
+    font-size: 1.04rem;
+    font-weight: 700;
     margin: 0;
 }
 

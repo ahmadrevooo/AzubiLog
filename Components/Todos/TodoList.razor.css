@@ -1,16 +1,19 @@
 .todo-list-panel {
-    background: var(--app-surface);
-    border: 1.5px solid color-mix(in srgb, var(--todo-panel-accent, var(--app-accent-blue)) 68%, var(--app-border));
+    background:
+        linear-gradient(180deg, color-mix(in srgb, var(--todo-panel-soft, transparent) 24%, var(--app-surface)), var(--app-surface) 48%),
+        var(--app-surface);
+    border: var(--app-accent-border-width) solid color-mix(in srgb, var(--todo-panel-accent, var(--app-accent-blue)) 74%, var(--app-border));
     border-radius: 8px;
     box-shadow: var(--app-shadow);
     display: grid;
     gap: 1rem;
-    padding: 1.15rem;
+    padding: 1.2rem;
     transition:
         background-color 150ms ease,
         border-color 150ms ease,
         color 150ms ease,
-        box-shadow 150ms ease;
+        box-shadow 150ms ease,
+        transform 150ms ease;
 }
 
 .todo-list-panel header {
@@ -21,8 +24,8 @@
 
 .todo-list-panel h2 {
     color: var(--app-text);
-    font-size: 1rem;
-    font-weight: 600;
+    font-size: 1.04rem;
+    font-weight: 700;
     margin: 0;
 }
 
@@ -41,8 +44,13 @@
 }
 
 .todo-list-empty {
+    background: color-mix(in srgb, var(--todo-panel-soft, transparent) 58%, var(--app-surface-muted));
+    border: 1px dashed color-mix(in srgb, var(--todo-panel-accent, var(--app-border)) 42%, var(--app-border));
+    border-radius: 8px;
     color: var(--app-text-muted);
     margin: 0;
+    padding: 1rem;
+    text-align: center;
 }
 
 .todo-list {
@@ -157,6 +165,66 @@
     z-index: 2;
 }
 
+.todo-column {
+    --todo-column-accent: var(--app-accent-blue);
+    --todo-column-soft: var(--app-accent-blue-soft);
+    background:
+        linear-gradient(180deg, color-mix(in srgb, var(--todo-column-soft) 28%, var(--app-surface)), var(--app-surface) 48%),
+        var(--app-surface);
+    border: var(--app-accent-border-width) solid color-mix(in srgb, var(--todo-column-accent) 72%, var(--app-border));
+    border-radius: 8px;
+    display: grid;
+    gap: 0.75rem;
+    min-width: 0;
+    padding: 1rem;
+}
+
+.todo-column-open {
+    --todo-column-accent: var(--app-accent-green);
+    --todo-column-soft: var(--app-accent-green-soft);
+}
+
+.todo-column-progress {
+    --todo-column-accent: var(--app-accent-blue);
+    --todo-column-soft: var(--app-accent-blue-soft);
+}
+
+.todo-column-waiting {
+    --todo-column-accent: var(--app-accent-orange);
+    --todo-column-soft: var(--app-accent-orange-soft);
+}
+
+.todo-column-done {
+    --todo-column-accent: var(--app-border-strong);
+    --todo-column-soft: var(--app-accent);
+}
+
+.todo-card {
+    background: var(--app-surface);
+    border: 1px solid color-mix(in srgb, var(--todo-column-accent, var(--app-accent-blue)) 36%, var(--app-border));
+    border-radius: 8px;
+    color: var(--app-text);
+    padding: 0.75rem;
+    transition:
+        background-color 150ms ease,
+        border-color 150ms ease,
+        box-shadow 150ms ease,
+        transform 150ms ease;
+}
+
+.todo-card-dragging {
+    border-color: var(--todo-column-accent, var(--app-accent-blue));
+    box-shadow: 0 10px 26px color-mix(in srgb, var(--todo-column-accent, var(--app-accent-blue)) 16%, transparent);
+    transform: translateY(-1px);
+}
+
+.todo-drop-zone {
+    background: color-mix(in srgb, var(--todo-column-soft, transparent) 66%, var(--app-surface-muted));
+    border: 1px dashed color-mix(in srgb, var(--todo-column-accent, var(--app-accent-blue)) 52%, var(--app-border));
+    border-radius: 8px;
+    min-height: 3rem;
+}
+
 @media (max-width: 620px) {
     .todo-list-item {
         grid-template-columns: auto minmax(0, 1fr) auto;
@@ -167,6 +235,7 @@
     .todo-list-panel:hover {
         background: color-mix(in srgb, var(--todo-panel-soft, transparent) 44%, var(--app-surface));
         border-color: var(--todo-panel-accent, var(--app-border-strong));
+        transform: translateY(-1px);
     }
 
     .todo-list-check button:hover {
