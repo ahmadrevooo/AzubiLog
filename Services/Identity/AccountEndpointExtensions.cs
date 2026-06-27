@@ -1,10 +1,14 @@
 using AzubiLog.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
+using System.Text.Json;
 
 namespace AzubiLog.Services.Identity;
 
 public static class AccountEndpointExtensions
 {
+    private const string RegistrationErrorsQueryKey = "errors";
+
     public static IEndpointRouteBuilder MapAccountEndpoints(this IEndpointRouteBuilder endpoints)
     {
         endpoints.MapPost("/account/register/submit", async (
@@ -35,7 +39,8 @@ public static class AccountEndpointExtensions
             var result = await accountFlow.RegisterAsync(firstName, lastName, email, password, role, school, className, context.RequestAborted);
             if (!result.Succeeded)
             {
-                return Results.Redirect("/account/register?error=failed");
+                var encodedErrors = EncodeErrors(result.Errors.Select(static error => error.Description));
+                return Results.Redirect($"/account/register?error=failed&{RegistrationErrorsQueryKey}={Uri.EscapeDataString(encodedErrors)}");
             }
 
             return Results.Redirect("/account/login?registered=true");
@@ -132,5 +137,11 @@ public static class AccountEndpointExtensions
         return !string.IsNullOrWhiteSpace(returnUrl) && Uri.TryCreate(returnUrl, UriKind.Relative, out _)
             ? returnUrl
             : "/";
+    }
+
+    private static string EncodeErrors(IEnumerable<string> errors)
+    {
+        var json = JsonSerializer.Serialize(errors.Where(static error => !string.IsNullOrWhiteSpace(error)));
+        return WebEncoders.Base64UrlEncode(System.Text.Encoding.UTF8.GetBytes(json));
     }
 }

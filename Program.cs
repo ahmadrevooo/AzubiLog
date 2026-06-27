@@ -29,7 +29,6 @@ namespace AzubiLog
             builder.Logging.AddConsole();
             builder.Logging.AddDebug();
 
-            // Add services to the container.
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
             builder.Services.AddCascadingAuthenticationState();
@@ -37,7 +36,7 @@ namespace AzubiLog
             builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
             var dataProtectionKeysPath = Path.Combine(
                 builder.Environment.ContentRootPath,
-                "App_Data",
+                "..",
                 "DataProtectionKeys");
             Directory.CreateDirectory(dataProtectionKeysPath);
             builder.Services.AddDataProtection()
@@ -66,11 +65,13 @@ namespace AzubiLog
             builder.Services.AddScoped<IReportEntryService, ReportEntryService>();
             builder.Services.AddScoped<ITodoService, TodoService>();
             builder.Services.AddScoped<ITimetableService, TimetableService>();
+
             builder.Services.AddScoped<IWeeklyReportPdfService, WeeklyReportPdfService>();
             builder.Services.AddScoped<IAuthorizationHandler, ConfirmedEmailHandler>();
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"))
+                    .ConfigureWarnings(w => w.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning)));
 
             builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme)
                 .AddIdentityCookies();
@@ -114,17 +115,13 @@ namespace AzubiLog
 
             using (var scope = app.Services.CreateScope())
             {
-                // Database initialization happens once at startup:
-                // apply EF Core migrations, then seed the single apprentice defaults.
                 var initializer = scope.ServiceProvider.GetRequiredService<ApplicationDataInitializer>();
                 initializer.InitializeAsync().GetAwaiter().GetResult();
             }
 
-            // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
