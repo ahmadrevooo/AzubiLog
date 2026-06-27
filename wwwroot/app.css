@@ -79,10 +79,10 @@
     --accent-blue: #8bb3df;
     --accent-orange: #e3b16b;
     --accent-red: #df8d80;
-    --accent-green-soft: rgba(141, 185, 134, 0.13);
-    --accent-blue-soft: rgba(139, 179, 223, 0.13);
-    --accent-orange-soft: rgba(227, 177, 107, 0.13);
-    --accent-red-soft: rgba(223, 141, 128, 0.13);
+    --accent-green-soft: rgba(141, 185, 134, 0.10);
+    --accent-blue-soft: rgba(139, 179, 223, 0.10);
+    --accent-orange-soft: rgba(227, 177, 107, 0.10);
+    --accent-red-soft: rgba(223, 141, 128, 0.10);
     --accent-border-width: 1.5px;
     --accent-border-width-strong: 2px;
     --focus-ring: rgba(241, 241, 239, 0.18);
