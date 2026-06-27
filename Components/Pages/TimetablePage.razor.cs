@@ -7,6 +7,7 @@ namespace AzubiLog.Components.Pages;
 
 public partial class TimetablePage : ComponentBase
 {
+    private const string EmptyDaySubtitle = "Noch keine Fächer eingetragen";
     private ApplicationUser? CurrentUser { get; set; }
     private string? StatusMessage { get; set; }
     private bool IsSaving { get; set; }
@@ -17,6 +18,7 @@ public partial class TimetablePage : ComponentBase
     private int SelectedCancellationDay { get; set; } = (int)DayOfWeek.Monday;
     private DateTime CancellationDate { get; set; } = DateTime.Today;
     private string? CancellationReason { get; set; }
+    private int FilledDayCount => DayEntries.Count(entry => !string.IsNullOrWhiteSpace(entry.SubjectsText));
 
     protected override async Task OnInitializedAsync()
     {
@@ -70,6 +72,22 @@ public partial class TimetablePage : ComponentBase
         {
             entry.SubjectsText = value ?? string.Empty;
         }
+    }
+
+    private static string GetDaySubtitle(string? subjectsText)
+    {
+        if (string.IsNullOrWhiteSpace(subjectsText))
+            return EmptyDaySubtitle;
+
+        var subjects = subjectsText
+            .Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+
+        return subjects.Length switch
+        {
+            0 => EmptyDaySubtitle,
+            1 => $"{subjects[0]} geplant",
+            _ => $"{subjects.Length} Fächer geplant"
+        };
     }
 
     private async Task SaveTimetableAsync()

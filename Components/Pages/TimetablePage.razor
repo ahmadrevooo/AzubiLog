@@ -3,6 +3,7 @@
 @inject IStringLocalizer<SharedResource> Localizer
 @inject ITimetableService TimetableService
 @inject ICurrentUserService CurrentUserService
+@using Microsoft.AspNetCore.Components.Forms
 
 <PageTitle>@Localizer["TimetableManagementTitle"]</PageTitle>
 
@@ -43,20 +44,53 @@ else
                     <p>@Localizer["TimetableNavItem"]</p>
                     <h2>Wochenplan</h2>
                 </div>
+                <div class="timetable-header-badge">
+                    <strong>@FilledDayCount / @DayEntries.Count</strong>
+                    <span>Tage gepflegt</span>
+                </div>
+            </div>
+
+            <div class="timetable-overview">
+                <div class="timetable-overview-item">
+                    <strong>@CurrentUser.ClassName</strong>
+                    <span>Klasse</span>
+                </div>
+                <div class="timetable-overview-item">
+                    <strong>@CurrentUser.School</strong>
+                    <span>Schule</span>
+                </div>
+                <div class="timetable-overview-item">
+                    <strong>@FilledDayCount</strong>
+                    <span>Unterrichtstage mit Inhalt</span>
+                </div>
             </div>
 
             <div class="timetable-grid">
                 @foreach (var dayEntry in DayEntries)
                 {
                     <div class="timetable-day-card">
-                        <label>
-                            <span class="timetable-day-label">@GetDayName(dayEntry.DayOfWeek)</span>
-                            <input class="form-control"
-                                   type="text"
-                                   value="@dayEntry.SubjectsText"
-                                   @onchange="(e) => OnSubjectsChanged(dayEntry.DayOfWeek, e.Value?.ToString())"
-                                   placeholder="@Localizer["TimetableSubjectsPlaceholder"]" />
+                        <div class="timetable-day-card-header">
+                            <div>
+                                <span class="timetable-day-label">@GetDayName(dayEntry.DayOfWeek)</span>
+                                <p>@GetDaySubtitle(dayEntry.SubjectsText)</p>
+                            </div>
+                            <span class="timetable-day-state @(string.IsNullOrWhiteSpace(dayEntry.SubjectsText) ? "is-empty" : "is-filled")">
+                                @(string.IsNullOrWhiteSpace(dayEntry.SubjectsText) ? "Leer" : "Gefüllt")
+                            </span>
+                        </div>
+
+                        <label class="timetable-day-input">
+                            <span>Fächer & Reihenfolge</span>
+                            <InputTextArea class="form-control timetable-subjects-input"
+                                           value="@dayEntry.SubjectsText"
+                                           ValueChanged="(value) => OnSubjectsChanged(dayEntry.DayOfWeek, value)"
+                                           ValueExpression="() => dayEntry.SubjectsText"
+                                           placeholder="@Localizer["TimetableSubjectsPlaceholder"]" />
                         </label>
+
+                        <div class="timetable-day-hint">
+                            Beispiel: LF1, LF2, Sport, Englisch
+                        </div>
                     </div>
                 }
             </div>
@@ -80,6 +114,10 @@ else
                 <div>
                     <p>@Localizer["TimetableCancellations"]</p>
                     <h2>@Localizer["TimetableCancellations"]</h2>
+                </div>
+                <div class="timetable-header-badge">
+                    <strong>@Cancellations.Count</strong>
+                    <span>Aktuelle Ausfälle</span>
                 </div>
             </div>
 
