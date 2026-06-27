@@ -1,5 +1,7 @@
 .dashboard-card {
-    background: var(--app-surface);
+    background:
+        linear-gradient(180deg, color-mix(in srgb, var(--metric-soft, transparent) 28%, var(--app-surface)), var(--app-surface) 52%),
+        var(--app-surface);
     border: 1px solid var(--app-border);
     border-radius: 8px;
     box-shadow: var(--app-shadow);
@@ -7,46 +9,70 @@
         background-color 150ms ease,
         border-color 150ms ease,
         color 150ms ease,
-        box-shadow 150ms ease;
+        box-shadow 150ms ease,
+        transform 150ms ease;
 }
 
 .metric-card {
     --metric-accent: var(--app-border);
     --metric-soft: transparent;
-    border-color: color-mix(in srgb, var(--metric-accent) 76%, var(--app-border));
-    border-width: 1.5px;
-    min-height: 6.75rem;
+    border-color: color-mix(in srgb, var(--metric-accent) 84%, var(--app-border));
+    border-width: var(--app-accent-border-width-strong);
+    min-height: 7.25rem;
     overflow: hidden;
-    padding: 1rem;
+    padding: 1.05rem 4.6rem 1.05rem 1.05rem;
     position: relative;
 }
 
 .metric-card-label {
     color: var(--app-text-secondary);
-    font-size: 0.85rem;
-    font-weight: 500;
+    font-size: 0.82rem;
+    font-weight: 650;
+    line-height: 1.25;
+    max-width: 13rem;
 }
 
 .metric-card-value {
     color: var(--app-text);
-    font-size: 1.55rem;
-    font-weight: 600;
+    font-size: 1.85rem;
+    font-weight: 700;
     line-height: 1.1;
-    margin-top: 0.55rem;
+    margin-top: 0.7rem;
 }
 
 .metric-card-detail {
     color: var(--app-text-muted);
     font-size: 0.82rem;
-    margin-top: 0.4rem;
+    line-height: 1.35;
+    margin-top: 0.45rem;
+    max-width: 15rem;
 }
 
 .metric-card::before {
-    background: var(--metric-soft);
+    background: color-mix(in srgb, var(--metric-accent) 72%, transparent);
     content: "";
     height: 3px;
     inset: 0 0 auto;
     position: absolute;
+}
+
+.metric-card::after {
+    align-items: center;
+    background: var(--metric-soft);
+    border: 1px solid color-mix(in srgb, var(--metric-accent) 44%, var(--app-border));
+    border-radius: 8px;
+    color: color-mix(in srgb, var(--metric-accent) 82%, var(--app-text-muted));
+    content: "•";
+    display: inline-flex;
+    font-size: 1.1rem;
+    font-weight: 800;
+    height: 2.65rem;
+    justify-content: center;
+    line-height: 1;
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    width: 2.65rem;
 }
 
 .metric-accent-green {
@@ -60,6 +86,15 @@
     --metric-soft: var(--app-accent-blue-soft);
 }
 
+.metric-accent-blue::after {
+    content: "⌂";
+}
+
+.metric-accent-cyan::after {
+    content: "h";
+    font-size: 1rem;
+}
+
 .metric-accent-orange,
 .metric-accent-purple {
     --metric-accent: var(--app-accent-orange);
@@ -67,13 +102,19 @@
 }
 
 .metric-accent-red {
-    --metric-accent: var(--app-accent-red);
-    --metric-soft: var(--app-accent-red-soft);
+    --metric-accent: var(--app-accent-orange);
+    --metric-soft: var(--app-accent-orange-soft);
+}
+
+.metric-accent-red::after {
+    content: "!";
 }
 
 @media (hover: hover) and (pointer: fine) {
     .metric-card:hover {
         background: color-mix(in srgb, var(--metric-soft) 52%, var(--app-surface));
         border-color: var(--metric-accent);
+        box-shadow: 0 8px 22px color-mix(in srgb, var(--metric-accent) 10%, transparent);
+        transform: translateY(-1px);
     }
 }
