@@ -10,6 +10,42 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.timetable-share-grid {
+    display: grid;
+    gap: 0.85rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.timetable-share-card {
+    background: linear-gradient(180deg, color-mix(in srgb, var(--app-primary) 6%, var(--app-surface)) 0%, var(--app-bg) 100%);
+    border: 1px solid color-mix(in srgb, var(--app-border) 62%, transparent);
+    border-radius: 10px;
+    display: grid;
+    gap: 0.75rem;
+    padding: 1rem;
+}
+
+.timetable-share-card strong {
+    color: var(--app-text);
+    font-size: 1rem;
+    font-weight: 760;
+}
+
+.timetable-share-card span {
+    color: var(--app-text-muted);
+    font-size: 0.88rem;
+}
+
+.timetable-share-code {
+    background: #0f172a;
+    border-radius: 10px;
+    color: #f8fafc;
+    font-size: 0.95rem;
+    font-weight: 760;
+    padding: 0.85rem 1rem;
+    word-break: break-word;
+}
+
 .timetable-overview-item {
     background: linear-gradient(180deg, color-mix(in srgb, var(--app-primary) 8%, var(--app-surface)) 0%, var(--app-bg) 100%);
     border: 1px solid color-mix(in srgb, var(--app-border) 62%, transparent);
@@ -95,6 +131,16 @@
     resize: vertical;
 }
 
+.timetable-readonly-subjects {
+    background: var(--app-surface);
+    border: 1px solid color-mix(in srgb, var(--app-border) 62%, transparent);
+    border-radius: 10px;
+    color: var(--app-text);
+    min-height: 7rem;
+    padding: 0.85rem 1rem;
+    white-space: pre-wrap;
+}
+
 .timetable-day-hint {
     color: var(--app-text-muted);
     font-size: 0.8rem;
@@ -150,7 +196,8 @@
 
 @media (max-width: 760px) {
     .timetable-overview,
-    .timetable-grid {
+    .timetable-grid,
+    .timetable-share-grid {
         grid-template-columns: 1fr;
     }
 

@@ -2,6 +2,7 @@ using AzubiLog.Models;
 using AzubiLog.Services.Identity;
 using AzubiLog.Services.Timetable;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 
 namespace AzubiLog.Components.Pages;
 
@@ -10,7 +11,14 @@ public partial class TimetablePage : ComponentBase
     private const string EmptyDaySubtitle = "Noch keine Fächer eingetragen";
     private ApplicationUser? CurrentUser { get; set; }
     private string? StatusMessage { get; set; }
+    private string? ShareStatusMessage { get; set; }
     private bool IsSaving { get; set; }
+    private bool IsCopyingShareCode { get; set; }
+    private bool CanManageTimetable => CurrentUser?.Role == UserRole.Klassensprecher;
+    private bool HasClassAssignment => !string.IsNullOrWhiteSpace(CurrentUser?.School) && !string.IsNullOrWhiteSpace(CurrentUser?.ClassName);
+    private string ShareCode => HasClassAssignment
+        ? $"{CurrentUser!.School.Trim()}|{CurrentUser.ClassName.Trim()}"
+        : string.Empty;
 
     private List<DayEntry> DayEntries { get; set; } = new();
     private List<TimetableCancellation> Cancellations { get; set; } = new();
@@ -18,13 +26,17 @@ public partial class TimetablePage : ComponentBase
     private int SelectedCancellationDay { get; set; } = (int)DayOfWeek.Monday;
     private DateTime CancellationDate { get; set; } = DateTime.Today;
     private string? CancellationReason { get; set; }
+    private string ShareCodeInput { get; set; } = string.Empty;
     private int FilledDayCount => DayEntries.Count(entry => !string.IsNullOrWhiteSpace(entry.SubjectsText));
+
+    [Inject]
+    private IJSRuntime JS { get; set; } = null!;
 
     protected override async Task OnInitializedAsync()
     {
         CurrentUser = await CurrentUserService.GetRequiredUserAsync();
 
-        if (CurrentUser.Role != UserRole.Klassensprecher)
+        if (!HasClassAssignment)
             return;
 
         DayEntries = new List<DayEntry>
@@ -36,20 +48,7 @@ public partial class TimetablePage : ComponentBase
             new(DayOfWeek.Friday)
         };
 
-        var entries = await TimetableService.GetClassTimetableAsync(
-            CurrentUser.School, CurrentUser.ClassName);
-
-        foreach (var entry in entries)
-        {
-            var dayEntry = DayEntries.FirstOrDefault(d => d.DayOfWeek == entry.DayOfWeek);
-            if (dayEntry is not null)
-            {
-                dayEntry.SubjectsText = entry.SubjectsText;
-                dayEntry.EntryId = entry.Id;
-            }
-        }
-
-        await LoadCancellationsAsync();
+        await ReloadTimetableAsync();
     }
 
     private async Task LoadCancellationsAsync()
@@ -92,7 +91,7 @@ public partial class TimetablePage : ComponentBase
 
     private async Task SaveTimetableAsync()
     {
-        if (CurrentUser is null) return;
+        if (CurrentUser is null || !CanManageTimetable) return;
 
         IsSaving = true;
         StatusMessage = null;
@@ -109,18 +108,7 @@ public partial class TimetablePage : ComponentBase
                     dayEntry.SubjectsText);
             }
 
-            var entries = await TimetableService.GetClassTimetableAsync(
-                CurrentUser.School, CurrentUser.ClassName);
-
-            foreach (var entry in entries)
-            {
-                var dayEntry = DayEntries.FirstOrDefault(d => d.DayOfWeek == entry.DayOfWeek);
-                if (dayEntry is not null)
-                {
-                    dayEntry.EntryId = entry.Id;
-                }
-            }
-
+            await ReloadTimetableAsync();
             StatusMessage = "Stundenplan wurde gespeichert.";
         }
         catch
@@ -135,7 +123,7 @@ public partial class TimetablePage : ComponentBase
 
     private async Task AddCancellationAsync()
     {
-        if (CurrentUser is null) return;
+        if (CurrentUser is null || !CanManageTimetable) return;
 
         var selectedDay = (DayOfWeek)SelectedCancellationDay;
         var dayEntry = DayEntries.FirstOrDefault(d => d.DayOfWeek == selectedDay);
@@ -161,10 +149,127 @@ public partial class TimetablePage : ComponentBase
 
     private async Task RemoveCancellationAsync(int cancellationId)
     {
-        if (CurrentUser is null) return;
+        if (CurrentUser is null || !CanManageTimetable) return;
 
         await TimetableService.RemoveCancellationAsync(CurrentUser.Id, cancellationId);
         await LoadCancellationsAsync();
+    }
+
+    private async Task CopyShareCodeAsync()
+    {
+        if (!HasClassAssignment)
+            return;
+
+        IsCopyingShareCode = true;
+        ShareStatusMessage = null;
+
+        try
+        {
+            await JS.InvokeVoidAsync("navigator.clipboard.writeText", ShareCode);
+            ShareStatusMessage = "Freigabecode wurde in die Zwischenablage kopiert.";
+        }
+        catch
+        {
+            ShareStatusMessage = "Freigabecode konnte nicht kopiert werden. Bitte manuell kopieren.";
+        }
+        finally
+        {
+            IsCopyingShareCode = false;
+        }
+    }
+
+    private async Task ApplyShareCodeAsync()
+    {
+        if (CurrentUser is null || !CanManageTimetable)
+            return;
+
+        ShareStatusMessage = null;
+
+        if (!TryParseShareCode(ShareCodeInput, out var school, out var className))
+        {
+            ShareStatusMessage = "Bitte gib einen gültigen Freigabecode im Format Schule|Klasse ein.";
+            return;
+        }
+
+        if (string.Equals(CurrentUser.School.Trim(), school, StringComparison.OrdinalIgnoreCase)
+            && string.Equals(CurrentUser.ClassName.Trim(), className, StringComparison.OrdinalIgnoreCase))
+        {
+            ShareStatusMessage = "Dieser Stundenplan ist bereits deiner Klasse zugeordnet.";
+            return;
+        }
+
+        IsSaving = true;
+
+        try
+        {
+            await TimetableService.ShareTimetableAsync(
+                CurrentUser.Id,
+                CurrentUser.School,
+                CurrentUser.ClassName,
+                school,
+                className);
+
+            ShareCodeInput = string.Empty;
+            await ReloadTimetableAsync();
+            ShareStatusMessage = "Stundenplan wurde für deine Klasse übernommen.";
+        }
+        catch
+        {
+            ShareStatusMessage = "Stundenplan konnte nicht geteilt werden.";
+        }
+        finally
+        {
+            IsSaving = false;
+        }
+    }
+
+    private async Task ReloadTimetableAsync()
+    {
+        if (CurrentUser is null || !HasClassAssignment)
+            return;
+
+        var entries = await TimetableService.GetClassTimetableAsync(
+            CurrentUser.School, CurrentUser.ClassName);
+
+        foreach (var dayEntry in DayEntries)
+        {
+            dayEntry.SubjectsText = string.Empty;
+            dayEntry.EntryId = null;
+        }
+
+        foreach (var entry in entries)
+        {
+            var dayEntry = DayEntries.FirstOrDefault(d => d.DayOfWeek == entry.DayOfWeek);
+            if (dayEntry is not null)
+            {
+                dayEntry.SubjectsText = entry.SubjectsText;
+                dayEntry.EntryId = entry.Id;
+            }
+        }
+
+        if (CanManageTimetable)
+        {
+            await LoadCancellationsAsync();
+        }
+    }
+
+    private static bool TryParseShareCode(string? shareCode, out string school, out string className)
+    {
+        school = string.Empty;
+        className = string.Empty;
+
+        if (string.IsNullOrWhiteSpace(shareCode))
+            return false;
+
+        var parts = shareCode
+            .Split('|', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+
+        if (parts.Length != 2)
+            return false;
+
+        school = parts[0];
+        className = parts[1];
+        return !string.IsNullOrWhiteSpace(school) && !string.IsNullOrWhiteSpace(className);
     }
 
     private static string GetDayName(DayOfWeek day) => day switch

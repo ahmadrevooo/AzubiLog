@@ -170,4 +170,66 @@ public sealed class TimetableService(ApplicationDbContext dbContext) : ITimetabl
             await dbContext.SaveChangesAsync(cancellationToken);
         }
     }
+
+    public async Task ShareTimetableAsync(
+        string userId,
+        string targetSchool,
+        string targetClassName,
+        string sourceSchool,
+        string sourceClassName,
+        CancellationToken cancellationToken = default)
+    {
+        var normalizedTargetSchool = targetSchool.Trim().ToUpperInvariant();
+        var normalizedTargetClass = targetClassName.Trim().ToUpperInvariant();
+        var normalizedSourceSchool = sourceSchool.Trim().ToUpperInvariant();
+        var normalizedSourceClass = sourceClassName.Trim().ToUpperInvariant();
+
+        var sourceEntries = await dbContext.ClassTimetableEntries
+            .Include(entry => entry.Cancellations)
+            .Where(entry =>
+                entry.School.ToUpper() == normalizedSourceSchool &&
+                entry.ClassName.ToUpper() == normalizedSourceClass)
+            .OrderBy(entry => entry.DayOfWeek)
+            .ToListAsync(cancellationToken);
+
+        if (sourceEntries.Count == 0)
+        {
+            throw new InvalidOperationException("Source timetable not found.");
+        }
+
+        var targetEntries = await dbContext.ClassTimetableEntries
+            .Include(entry => entry.Cancellations)
+            .Where(entry =>
+                entry.School.ToUpper() == normalizedTargetSchool &&
+                entry.ClassName.ToUpper() == normalizedTargetClass)
+            .ToListAsync(cancellationToken);
+
+        dbContext.TimetableCancellations.RemoveRange(targetEntries.SelectMany(entry => entry.Cancellations));
+        dbContext.ClassTimetableEntries.RemoveRange(targetEntries);
+
+        var clonedEntries = sourceEntries
+            .Select(entry => new ClassTimetableEntry
+            {
+                School = targetSchool.Trim(),
+                ClassName = targetClassName.Trim(),
+                DayOfWeek = entry.DayOfWeek,
+                SubjectsText = entry.SubjectsText,
+                CreatedByUserId = userId,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
+                Cancellations = entry.Cancellations
+                    .Select(cancellation => new TimetableCancellation
+                    {
+                        Date = cancellation.Date,
+                        Reason = cancellation.Reason,
+                        CreatedByUserId = userId,
+                        CreatedAt = DateTime.UtcNow
+                    })
+                    .ToList()
+            })
+            .ToList();
+
+        dbContext.ClassTimetableEntries.AddRange(clonedEntries);
+        await dbContext.SaveChangesAsync(cancellationToken);
+    }
 }

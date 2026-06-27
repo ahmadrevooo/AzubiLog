@@ -45,4 +45,12 @@ public interface ITimetableService
         string userId,
         int cancellationId,
         CancellationToken cancellationToken = default);
+
+    Task ShareTimetableAsync(
+        string userId,
+        string targetSchool,
+        string targetClassName,
+        string sourceSchool,
+        string sourceClassName,
+        CancellationToken cancellationToken = default);
 }
