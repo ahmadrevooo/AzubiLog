@@ -21,6 +21,8 @@
     --accent-blue-soft: rgba(122, 167, 216, 0.10);
     --accent-orange-soft: rgba(224, 164, 88, 0.10);
     --accent-red-soft: rgba(217, 124, 108, 0.10);
+    --accent-border-width: 1.5px;
+    --accent-border-width-strong: 2px;
     --focus-ring: rgba(55, 53, 47, 0.22);
     --background: var(--app-background);
     --surface: var(--surface-background);
@@ -49,6 +51,8 @@
     --app-accent-blue-soft: var(--accent-blue-soft);
     --app-accent-orange-soft: var(--accent-orange-soft);
     --app-accent-red-soft: var(--accent-red-soft);
+    --app-accent-border-width: var(--accent-border-width);
+    --app-accent-border-width-strong: var(--accent-border-width-strong);
     --app-primary-contrast: #ffffff;
     --app-danger: #b42318;
     --app-success: #257a4f;
@@ -79,6 +83,8 @@
     --accent-blue-soft: rgba(139, 179, 223, 0.13);
     --accent-orange-soft: rgba(227, 177, 107, 0.13);
     --accent-red-soft: rgba(223, 141, 128, 0.13);
+    --accent-border-width: 1.5px;
+    --accent-border-width-strong: 2px;
     --focus-ring: rgba(241, 241, 239, 0.18);
     --background: var(--app-background);
     --surface: var(--surface-background);
@@ -107,6 +113,8 @@
     --app-accent-blue-soft: var(--accent-blue-soft);
     --app-accent-orange-soft: var(--accent-orange-soft);
     --app-accent-red-soft: var(--accent-red-soft);
+    --app-accent-border-width: var(--accent-border-width);
+    --app-accent-border-width-strong: var(--accent-border-width-strong);
     --app-primary-contrast: #191919;
     --app-danger: #f87171;
     --app-success: #75c99d;
@@ -213,14 +221,17 @@ h1:focus {
     --accent-border: var(--app-border);
     --accent-soft: transparent;
     --accent-strong: var(--app-border-strong);
-    background: var(--app-surface);
-    border: 1px solid var(--accent-border);
+    background:
+        linear-gradient(180deg, color-mix(in srgb, var(--accent-soft) 24%, var(--app-surface)), var(--app-surface) 46%),
+        var(--app-surface);
+    border: var(--app-accent-border-width) solid var(--accent-border);
     border-radius: 8px;
     transition:
         background-color 150ms ease,
         border-color 150ms ease,
         color 150ms ease,
-        box-shadow 150ms ease;
+        box-shadow 150ms ease,
+        transform 150ms ease;
 }
 
 .card-accent-green,
@@ -256,6 +267,7 @@ h1:focus {
     .accent-panel:hover {
         border-color: var(--accent-strong);
         background-color: color-mix(in srgb, var(--accent-soft) 55%, var(--app-surface));
+        transform: translateY(-1px);
     }
 }
 

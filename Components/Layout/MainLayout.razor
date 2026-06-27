@@ -20,6 +20,10 @@
                 @foreach (var item in PrimaryNavigation)
                 {
                     <NavLink class="app-nav-link" href="@item.Href" Match="@GetMatch(item)">
+                        @if (item.ResourceKey == "NavDashboard")
+                        {
+                            <span class="app-nav-icon" aria-hidden="true">⌂</span>
+                        }
                         @GetNavigationText(item)
                     </NavLink>
                 }
@@ -94,6 +98,10 @@
                 @foreach (var item in PrimaryNavigation)
                 {
                     <NavLink class="app-mobile-nav-link" href="@item.Href" Match="@GetMatch(item)" @onclick="CloseMenus">
+                        @if (item.ResourceKey == "NavDashboard")
+                        {
+                            <span class="app-nav-icon" aria-hidden="true">⌂</span>
+                        }
                         @GetNavigationText(item)
                     </NavLink>
                 }
