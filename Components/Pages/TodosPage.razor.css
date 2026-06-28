@@ -35,21 +35,20 @@
 }
 
 .todos-grid {
+    align-items: start;
     display: grid;
     gap: 1.15rem;
     grid-template-columns: minmax(18rem, 0.8fr) minmax(0, 1fr);
 }
 
 .todo-create-panel {
-    background:
-        linear-gradient(180deg, color-mix(in srgb, var(--app-accent-green-soft) 22%, var(--app-surface)), var(--app-surface) 54%),
-        var(--app-surface);
-    border: 1px solid color-mix(in srgb, var(--app-accent-green) 58%, var(--app-border));
+    background: var(--app-surface);
+    border: 1px solid color-mix(in srgb, var(--app-accent-green) 64%, var(--app-border));
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
     display: grid;
-    gap: 1.05rem;
-    padding: 1.35rem;
+    gap: 1.1rem;
+    padding: 1.5rem;
     transition:
         background-color 150ms ease,
         border-color 150ms ease,
@@ -152,7 +151,7 @@
 
 @media (hover: hover) and (pointer: fine) {
     .todo-create-panel:hover {
-        background: color-mix(in srgb, var(--app-accent-green-soft) 46%, var(--app-surface));
+        background: color-mix(in srgb, var(--app-accent-green-soft) 18%, var(--app-surface));
         border-color: var(--app-accent-green);
         box-shadow: 0 10px 26px color-mix(in srgb, var(--app-accent-green) 10%, transparent);
         transform: translateY(-1px);
