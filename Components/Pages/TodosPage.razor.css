@@ -3,7 +3,7 @@
     gap: 1.35rem;
     margin-inline: auto;
     max-width: 72rem;
-    padding: 0 0 2.5rem;
+    padding: 1rem 0 2.5rem;
 }
 
 .todos-page-loading {
@@ -41,13 +41,12 @@
     grid-template-columns: minmax(18rem, 0.8fr) minmax(0, 1fr);
 }
 
-.todo-create-panel {
+.todo-create-card {
     background: var(--app-surface);
     border: 1px solid color-mix(in srgb, var(--app-accent-green) 64%, var(--app-border));
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
-    display: grid;
-    gap: 1.1rem;
+    min-width: 0;
     padding: 1.5rem;
     transition:
         background-color 150ms ease,
@@ -55,6 +54,11 @@
         color 150ms ease,
         box-shadow 150ms ease,
         transform 150ms ease;
+}
+
+.todo-create-form {
+    display: grid;
+    gap: 1.1rem;
 }
 
 .todo-create-heading {
@@ -79,7 +83,7 @@
     width: 2.35rem;
 }
 
-.todo-create-panel h2 {
+.todo-create-card h2 {
     color: var(--app-text);
     font-size: 1.04rem;
     font-weight: 700;
@@ -150,7 +154,7 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-    .todo-create-panel:hover {
+    .todo-create-card:hover {
         background: color-mix(in srgb, var(--app-accent-green-soft) 18%, var(--app-surface));
         border-color: var(--app-accent-green);
         box-shadow: 0 10px 26px color-mix(in srgb, var(--app-accent-green) 10%, transparent);
