@@ -11,39 +11,157 @@
 else
 {
     <div class="dashboard-page">
-        <section class="dashboard-hero">
-            <div>
-                <p class="dashboard-eyebrow">@Localizer["DashboardEyebrow"]</p>
-                <h1>@GetWelcomeHeading()</h1>
-                <p>@Localizer["DashboardIntro"]</p>
+        <section class="dashboard-greeting" aria-labelledby="dashboard-heading">
+            <div class="dashboard-greeting-copy">
+                <p class="dashboard-eyebrow">Kalenderwoche @ViewModel.CalendarWeek</p>
+                <h1 id="dashboard-heading">@GetWelcomeHeading()</h1>
+                <p>Deine Übersicht für die aktuelle Ausbildungswoche.</p>
             </div>
+
+            <aside class="today-card" aria-label="Heute">
+                <span class="icon-box icon-box-green" aria-hidden="true">
+                    <span class="bi bi-calendar3"></span>
+                </span>
+                <div>
+                    <span>Heute</span>
+                    <strong>@TodayLabel</strong>
+                </div>
+            </aside>
         </section>
 
-        <section class="dashboard-metrics" aria-label="@Localizer["DashboardMetricsLabel"]">
-            @foreach (var metric in ViewModel.Metrics)
-            {
-                <DashboardMetricCard Metric="metric" />
-            }
-        </section>
+        <section class="dashboard-layout" aria-label="Dashboard Übersicht">
+            <div class="dashboard-left-column">
+                <section class="dashboard-card calendar-card" aria-labelledby="calendar-title">
+                    <div class="card-heading">
+                        <div>
+                            <span class="icon-box icon-box-green" aria-hidden="true">
+                                <span class="bi bi-calendar-week"></span>
+                            </span>
+                        </div>
+                        <div>
+                            <h2 id="calendar-title">Kalender</h2>
+                            <p>@CurrentMonthLabel</p>
+                        </div>
+                        <div class="calendar-nav" aria-label="Monatsnavigation">
+                            <button type="button" aria-label="Vorheriger Monat">
+                                <span class="bi bi-chevron-left" aria-hidden="true"></span>
+                            </button>
+                            <button type="button" aria-label="Nächster Monat">
+                                <span class="bi bi-chevron-right" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                    </div>
 
-        <section class="dashboard-actions" aria-label="@Localizer["DashboardQuickActions"]">
-            @foreach (var action in ViewModel.QuickActions)
-            {
-                <DashboardQuickActionCard Action="action" />
-            }
-        </section>
+                    <div class="calendar-grid calendar-weekdays" aria-hidden="true">
+                        @foreach (var dayName in WeekdayLabels)
+                        {
+                            <span>@dayName</span>
+                        }
+                    </div>
 
-        <section class="dashboard-widgets">
-            <DashboardWidget
-                TitleKey="DashboardRecentEntries"
-                SubtitleKey="DashboardRecentEntriesSubtitle"
-                EmptyTextKey="DashboardNoRecentEntries"
-                Items="ViewModel.RecentReportEntries" />
-            <DashboardWidget
-                TitleKey="DashboardOpenTodos"
-                SubtitleKey="DashboardOpenTodosSubtitle"
-                EmptyTextKey="DashboardNoOpenTodos"
-                Items="ViewModel.OpenTodos" />
+                    <div class="calendar-grid month-grid">
+                        @foreach (var day in CalendarDays)
+                        {
+                            <span class="@GetCalendarDayClass(day)" aria-label="@day.Date.ToString("D", CurrentCulture)">
+                                @day.Date.Day
+                            </span>
+                        }
+                    </div>
+                </section>
+
+                <section class="dashboard-card timer-card" aria-labelledby="timer-title">
+                    <div class="card-heading">
+                        <span class="icon-box icon-box-blue" aria-hidden="true">
+                            <span class="bi bi-clock-history"></span>
+                        </span>
+                        <div>
+                            <h2 id="timer-title">Timer</h2>
+                            <p>Dauer wählen</p>
+                        </div>
+                    </div>
+
+                    <div class="timer-options" role="group" aria-label="Dauer wählen">
+                        @foreach (var duration in TimerDurations)
+                        {
+                            <button class="@(duration == SelectedTimerDuration ? "active" : null)" type="button">
+                                @duration
+                            </button>
+                        }
+                    </div>
+
+                    <label class="custom-duration">
+                        <span>Custom</span>
+                        <input class="form-control" type="number" min="1" value="25" aria-label="Eigene Dauer in Minuten" />
+                        <small>Minuten</small>
+                    </label>
+
+                    <div class="timer-display" aria-live="polite">@TimerDisplay</div>
+
+                    <div class="timer-actions">
+                        <button class="btn btn-primary" type="button">Start</button>
+                        <button class="btn btn-outline-secondary" type="button">Pause</button>
+                        <button class="btn btn-outline-secondary" type="button">Reset</button>
+                    </div>
+                </section>
+            </div>
+
+            <section class="dashboard-card progress-card" aria-labelledby="progress-title">
+                <div class="progress-card-intro">
+                    <div>
+                        <p class="morning-label"><span aria-hidden="true"></span>Guten Morgen</p>
+                        <h2>@GetWelcomeHeading()</h2>
+                        <p>Deine Woche im Blick. Weiter so!</p>
+                    </div>
+                    <span class="icon-box icon-box-blue" aria-hidden="true">
+                        <span class="bi bi-grid-3x3-gap"></span>
+                    </span>
+                </div>
+
+                <div class="progress-content">
+                    <div class="month-progress" aria-labelledby="progress-title">
+                        <div class="section-heading">
+                            <div>
+                                <h3 id="progress-title">Wochenfortschritt</h3>
+                                <p>@CurrentMonthLabel</p>
+                            </div>
+                        </div>
+
+                        <div class="calendar-grid progress-weekdays" aria-hidden="true">
+                            @foreach (var dayName in WeekdayLabels)
+                            {
+                                <span>@dayName</span>
+                            }
+                        </div>
+
+                        <div class="calendar-grid progress-grid">
+                            @foreach (var day in ProgressDays)
+                            {
+                                <span class="@GetProgressDayClass(day)" aria-label="@GetProgressDayLabel(day)">
+                                    @day.Date.Day
+                                </span>
+                            }
+                        </div>
+                    </div>
+
+                    <aside class="week-summary" aria-labelledby="week-summary-title">
+                        <h3 id="week-summary-title">Diese Woche</h3>
+                        <dl>
+                            <div>
+                                <dt>Erfasst</dt>
+                                <dd>26 h</dd>
+                            </div>
+                            <div>
+                                <dt>Reststunden</dt>
+                                <dd>14 h</dd>
+                            </div>
+                            <div>
+                                <dt>Berichtseinträge</dt>
+                                <dd>2</dd>
+                            </div>
+                        </dl>
+                    </aside>
+                </div>
+            </section>
         </section>
     </div>
 }

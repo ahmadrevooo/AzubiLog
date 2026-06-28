@@ -1,7 +1,7 @@
 .dashboard-page {
     display: grid;
-    gap: 1rem;
-    padding: 0 0 2rem;
+    gap: 24px;
+    padding: 24px 0 40px;
 }
 
 .dashboard-loading {
@@ -9,74 +9,524 @@
     padding: 2rem 0;
 }
 
-.dashboard-hero {
+.dashboard-greeting {
     align-items: center;
-    background: transparent;
-    border: 0;
-    border-radius: 0;
-    display: flex;
-    gap: 1.5rem;
-    min-height: auto;
-    padding: 0.35rem 0 0.65rem;
+    display: grid;
+    gap: 20px;
+    grid-template-columns: minmax(0, 1fr) auto;
 }
 
-.dashboard-eyebrow {
+.dashboard-greeting-copy {
+    min-width: 0;
+}
+
+.dashboard-eyebrow,
+.morning-label {
     color: var(--app-text-muted);
-    font-size: 0.82rem;
+    font-size: 0.84rem;
     font-weight: 500;
     letter-spacing: 0;
-    margin: 0 0 0.35rem;
-    text-transform: none;
+    margin: 0 0 0.42rem;
 }
 
-.dashboard-hero h1 {
+.dashboard-greeting h1,
+.progress-card-intro h2 {
     color: var(--app-text);
-    font-size: clamp(1.75rem, 3vw, 2rem);
+    font-size: clamp(1.8rem, 3vw, 2.2rem);
     font-weight: 600;
-    line-height: 1.15;
+    line-height: 1.1;
     margin: 0;
 }
 
-.dashboard-hero p:not(.dashboard-eyebrow) {
+.dashboard-greeting p:not(.dashboard-eyebrow),
+.progress-card-intro p:not(.morning-label),
+.card-heading p,
+.section-heading p {
     color: var(--app-text-secondary);
+    font-size: 0.94rem;
     margin: 0.45rem 0 0;
 }
 
-.dashboard-metrics,
-.dashboard-actions {
-    display: grid;
-    gap: 0.9rem;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+.today-card,
+.dashboard-card {
+    background: var(--app-surface);
+    border: 1px solid color-mix(in srgb, var(--app-border) 74%, transparent);
+    border-radius: 14px;
+    box-shadow: 0 4px 18px rgba(15, 15, 15, 0.04);
 }
 
-.dashboard-widgets {
-    display: grid;
-    gap: 0.9rem;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+.today-card {
+    align-items: center;
+    display: flex;
+    gap: 12px;
+    min-width: min(100%, 280px);
+    padding: 14px 16px;
 }
 
-@media (max-width: 1100px) {
-    .dashboard-metrics {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+.today-card span:not(.icon-box):not(.bi) {
+    color: var(--app-text-muted);
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 500;
+}
+
+.today-card strong {
+    color: var(--app-text);
+    display: block;
+    font-size: 0.98rem;
+    font-weight: 600;
+    margin-top: 0.12rem;
+    white-space: nowrap;
+}
+
+.dashboard-layout {
+    align-items: start;
+    display: grid;
+    gap: 24px;
+    grid-template-columns: minmax(280px, 0.78fr) minmax(0, 1.42fr);
+}
+
+.dashboard-left-column {
+    display: grid;
+    gap: 24px;
+}
+
+.dashboard-card {
+    padding: 22px;
+}
+
+.card-heading,
+.progress-card-intro,
+.section-heading {
+    align-items: center;
+    display: flex;
+    gap: 12px;
+}
+
+.card-heading {
+    margin-bottom: 18px;
+}
+
+.card-heading h2,
+.section-heading h3,
+.week-summary h3 {
+    color: var(--app-text);
+    font-size: 1.05rem;
+    font-weight: 600;
+    line-height: 1.2;
+    margin: 0;
+}
+
+.icon-box {
+    align-items: center;
+    border-radius: 10px;
+    display: inline-flex;
+    flex: 0 0 auto;
+    height: 40px;
+    justify-content: center;
+    width: 40px;
+}
+
+.icon-box-green {
+    background: var(--app-accent-green-soft);
+    color: var(--app-accent-green);
+}
+
+.icon-box-blue {
+    background: var(--app-accent-blue-soft);
+    color: var(--app-accent-blue);
+}
+
+.icon-box .bi {
+    display: inline-block;
+    height: 18px;
+    position: relative;
+    width: 18px;
+}
+
+.icon-box .bi-calendar3,
+.icon-box .bi-calendar-week {
+    border: 1.7px solid currentColor;
+    border-radius: 4px;
+}
+
+.icon-box .bi-calendar3::before,
+.icon-box .bi-calendar-week::before {
+    background: currentColor;
+    content: "";
+    height: 1.7px;
+    left: 2px;
+    position: absolute;
+    right: 2px;
+    top: 4px;
+}
+
+.icon-box .bi-clock-history {
+    border: 1.8px solid currentColor;
+    border-radius: 50%;
+}
+
+.icon-box .bi-clock-history::before,
+.icon-box .bi-clock-history::after {
+    background: currentColor;
+    content: "";
+    left: 50%;
+    position: absolute;
+    top: 50%;
+    transform-origin: left center;
+}
+
+.icon-box .bi-clock-history::before {
+    height: 1.7px;
+    transform: rotate(0deg);
+    width: 5px;
+}
+
+.icon-box .bi-clock-history::after {
+    height: 1.7px;
+    transform: rotate(-90deg);
+    width: 6px;
+}
+
+.icon-box .bi-grid-3x3-gap {
+    background:
+        linear-gradient(currentColor 0 0) 0 0 / 4px 4px,
+        linear-gradient(currentColor 0 0) 7px 0 / 4px 4px,
+        linear-gradient(currentColor 0 0) 14px 0 / 4px 4px,
+        linear-gradient(currentColor 0 0) 0 7px / 4px 4px,
+        linear-gradient(currentColor 0 0) 7px 7px / 4px 4px,
+        linear-gradient(currentColor 0 0) 14px 7px / 4px 4px,
+        linear-gradient(currentColor 0 0) 0 14px / 4px 4px,
+        linear-gradient(currentColor 0 0) 7px 14px / 4px 4px,
+        linear-gradient(currentColor 0 0) 14px 14px / 4px 4px;
+    background-repeat: no-repeat;
+}
+
+.calendar-nav .bi {
+    display: inline-block;
+    height: 8px;
+    width: 8px;
+}
+
+.calendar-nav .bi-chevron-left,
+.calendar-nav .bi-chevron-right {
+    border-color: currentColor;
+    border-style: solid;
+    border-width: 0 0 1.8px 1.8px;
+}
+
+.calendar-nav .bi-chevron-left {
+    transform: rotate(45deg);
+}
+
+.calendar-nav .bi-chevron-right {
+    transform: rotate(-135deg);
+}
+
+.calendar-nav {
+    display: flex;
+    gap: 6px;
+    margin-left: auto;
+}
+
+.calendar-nav button {
+    align-items: center;
+    background: var(--app-surface-muted);
+    border: 1px solid transparent;
+    border-radius: 8px;
+    color: var(--app-text-secondary);
+    display: inline-flex;
+    height: 32px;
+    justify-content: center;
+    width: 32px;
+}
+
+.calendar-grid {
+    display: grid;
+    gap: 8px;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.calendar-weekdays,
+.progress-weekdays {
+    color: var(--app-text-muted);
+    font-size: 0.76rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.month-day,
+.progress-day {
+    align-items: center;
+    aspect-ratio: 1;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    color: var(--app-text-secondary);
+    display: inline-flex;
+    font-size: 0.88rem;
+    font-weight: 500;
+    justify-content: center;
+    min-width: 0;
+}
+
+.month-day {
+    background: var(--app-surface-muted);
+}
+
+.month-day.is-weekend {
+    color: var(--app-text-muted);
+}
+
+.month-day.is-muted,
+.progress-day.is-muted {
+    opacity: 0.38;
+}
+
+.month-day.is-today {
+    background: var(--app-accent-green-soft);
+    border-color: color-mix(in srgb, var(--app-accent-green) 58%, var(--app-border));
+    color: var(--app-text);
+}
+
+.timer-card {
+    display: grid;
+}
+
+.timer-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.timer-options button,
+.timer-actions button {
+    min-height: 38px;
+}
+
+.timer-options button {
+    background: var(--app-surface-muted);
+    border: 1px solid transparent;
+    border-radius: 8px;
+    color: var(--app-text-secondary);
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0 12px;
+}
+
+.timer-options button.active {
+    background: color-mix(in srgb, var(--app-accent-blue) 18%, var(--app-surface));
+    border-color: color-mix(in srgb, var(--app-accent-blue) 46%, var(--app-border));
+    color: var(--app-text);
+}
+
+.custom-duration {
+    align-items: center;
+    background: color-mix(in srgb, var(--app-surface-muted) 70%, transparent);
+    border: 1px solid color-mix(in srgb, var(--app-border) 70%, transparent);
+    border-radius: 10px;
+    display: grid;
+    gap: 10px;
+    grid-template-columns: auto minmax(72px, 1fr) auto;
+    margin-top: 14px;
+    padding: 10px 12px;
+}
+
+.custom-duration span,
+.custom-duration small {
+    color: var(--app-text-muted);
+    font-size: 0.84rem;
+    font-weight: 500;
+}
+
+.custom-duration .form-control {
+    min-height: 36px;
+}
+
+.timer-display {
+    color: var(--app-text);
+    font-size: clamp(2.25rem, 6vw, 3.4rem);
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 1;
+    margin: 24px 0 18px;
+    text-align: center;
+}
+
+.timer-actions {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.progress-card {
+    min-height: 100%;
+    padding: 26px;
+}
+
+.progress-card-intro {
+    justify-content: space-between;
+    margin-bottom: 28px;
+}
+
+.morning-label {
+    align-items: center;
+    display: flex;
+    gap: 8px;
+}
+
+.morning-label span {
+    background: var(--app-accent-green);
+    border-radius: 50%;
+    display: inline-flex;
+    height: 8px;
+    width: 8px;
+}
+
+.progress-content {
+    align-items: start;
+    display: grid;
+    gap: 24px;
+    grid-template-columns: minmax(0, 1fr) minmax(190px, 0.38fr);
+}
+
+.month-progress {
+    min-width: 0;
+}
+
+.section-heading {
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.progress-day {
+    background: transparent;
+    border-color: color-mix(in srgb, var(--app-border) 76%, transparent);
+}
+
+.progress-day.has-entry {
+    background: color-mix(in srgb, var(--app-accent-blue) 72%, var(--app-surface));
+    border-color: color-mix(in srgb, var(--app-accent-blue) 80%, var(--app-border));
+    color: #ffffff;
+}
+
+.week-summary {
+    background: color-mix(in srgb, var(--app-surface-muted) 58%, transparent);
+    border: 1px solid color-mix(in srgb, var(--app-border) 70%, transparent);
+    border-radius: 12px;
+    padding: 18px;
+}
+
+.week-summary dl {
+    display: grid;
+    gap: 14px;
+    margin: 18px 0 0;
+}
+
+.week-summary dl > div {
+    align-items: baseline;
+    display: flex;
+    gap: 14px;
+    justify-content: space-between;
+}
+
+.week-summary dt {
+    color: var(--app-text-muted);
+    font-size: 0.88rem;
+    font-weight: 500;
+}
+
+.week-summary dd {
+    color: var(--app-text);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .calendar-nav button:hover,
+    .timer-options button:hover {
+        background: var(--app-surface-hover);
+        color: var(--app-text);
+    }
+}
+
+[data-theme="dark"] .today-card,
+[data-theme="dark"] .dashboard-card {
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.16);
+}
+
+[data-theme="dark"] .progress-day.has-entry {
+    background: color-mix(in srgb, var(--app-accent-blue) 58%, var(--app-surface));
+    color: var(--app-text);
+}
+
+@media (max-width: 1120px) {
+    .dashboard-layout {
+        grid-template-columns: minmax(260px, 0.88fr) minmax(0, 1.12fr);
     }
 
-    .dashboard-actions,
-    .dashboard-widgets {
+    .progress-content {
         grid-template-columns: 1fr;
     }
 }
 
-@media (max-width: 720px) {
-    .dashboard-hero {
-        align-items: stretch;
-        flex-direction: column;
-    }
-
-    .dashboard-metrics {
+@media (max-width: 860px) {
+    .dashboard-greeting,
+    .dashboard-layout {
         grid-template-columns: 1fr;
     }
 
-    .dashboard-hero h1 {
+    .today-card {
+        justify-self: stretch;
+    }
+}
+
+@media (max-width: 560px) {
+    .dashboard-page {
+        gap: 18px;
+        padding-top: 18px;
+    }
+
+    .dashboard-card,
+    .progress-card {
+        padding: 18px;
+    }
+
+    .dashboard-greeting h1,
+    .progress-card-intro h2 {
         font-size: 1.55rem;
+    }
+
+    .progress-card-intro {
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .progress-card-intro .icon-box {
+        display: none;
+    }
+
+    .calendar-grid {
+        gap: 6px;
+    }
+
+    .month-day,
+    .progress-day {
+        border-radius: 8px;
+        font-size: 0.78rem;
+    }
+
+    .timer-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .custom-duration {
+        grid-template-columns: 1fr;
+    }
+
+    .today-card strong {
+        white-space: normal;
     }
 }
