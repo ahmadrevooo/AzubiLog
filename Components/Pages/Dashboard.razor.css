@@ -289,15 +289,16 @@
 
 .progress-day {
     align-items: center;
-    aspect-ratio: 1;
     border: 1px solid transparent;
-    border-radius: 10px;
+    border-radius: 9px;
     color: var(--app-text-secondary);
     display: inline-flex;
     font-size: 0.84rem;
     font-weight: 500;
+    height: 42px;
     justify-content: center;
     min-width: 0;
+    width: min(100%, 52px);
 }
 
 .progress-day.is-muted {
@@ -391,6 +392,11 @@
 }
 
 .progress-card {
+    --marker-workday: #4f8fd8;
+    --marker-school-day: #e0b84f;
+    --marker-vacation: #7aa874;
+    --marker-sick-leave: #9b7ad8;
+    --marker-exam: #d97c6c;
     min-height: 100%;
     padding: 20px;
 }
@@ -414,7 +420,13 @@
 }
 
 .section-heading h3 {
-    font-size: 1.12rem;
+    font-size: 1.22rem;
+}
+
+.section-heading p {
+    color: var(--app-text-muted);
+    font-size: 0.88rem;
+    margin: 0.38rem 0 0;
 }
 
 .progress-day-cell {
@@ -425,7 +437,7 @@
 .progress-day {
     background: transparent;
     border-color: color-mix(in srgb, var(--app-border) 76%, transparent);
-    width: 100%;
+    justify-self: center;
 }
 
 .day-marker {
@@ -433,27 +445,62 @@
 }
 
 .day-marker-workday {
-    background: #4f8fd8;
-    border-color: #4f8fd8;
+    background: var(--marker-workday);
+    border-color: var(--marker-workday);
     color: #ffffff;
 }
 
+.day-marker-school-day {
+    background: var(--marker-school-day);
+    border-color: var(--marker-school-day);
+    color: #2f2f2f;
+}
+
 .day-marker-vacation {
-    background: #7aa874;
-    border-color: #7aa874;
+    background: var(--marker-vacation);
+    border-color: var(--marker-vacation);
     color: #ffffff;
 }
 
 .day-marker-sick-leave {
-    background: #9b7ad8;
-    border-color: #9b7ad8;
+    background: var(--marker-sick-leave);
+    border-color: var(--marker-sick-leave);
     color: #ffffff;
 }
 
 .day-marker-exam {
-    background: #d97c6c;
-    border-color: #d97c6c;
+    background: var(--marker-exam);
+    border-color: var(--marker-exam);
     color: #ffffff;
+}
+
+.marker-color {
+    border: 1px solid color-mix(in srgb, currentColor 20%, transparent);
+    border-radius: 4px;
+    display: inline-flex;
+    flex: 0 0 auto;
+    height: 12px;
+    width: 12px;
+}
+
+.marker-color-workday {
+    background: var(--marker-workday);
+}
+
+.marker-color-school-day {
+    background: var(--marker-school-day);
+}
+
+.marker-color-vacation {
+    background: var(--marker-vacation);
+}
+
+.marker-color-sick-leave {
+    background: var(--marker-sick-leave);
+}
+
+.marker-color-exam {
+    background: var(--marker-exam);
 }
 
 .marker-menu {
@@ -484,12 +531,15 @@
 }
 
 .marker-menu button {
+    align-items: center;
     background: transparent;
     border: 0;
     border-radius: 7px;
     color: var(--app-text-secondary);
+    display: flex;
     font-size: 0.86rem;
     font-weight: 500;
+    gap: 8px;
     padding: 8px 9px;
     text-align: left;
 }
@@ -514,23 +564,29 @@
 }
 
 [data-theme="dark"] .day-marker-workday {
-    background: color-mix(in srgb, #4f8fd8 72%, var(--app-surface));
-    border-color: color-mix(in srgb, #4f8fd8 84%, var(--app-border));
+    background: color-mix(in srgb, var(--marker-workday) 72%, var(--app-surface));
+    border-color: color-mix(in srgb, var(--marker-workday) 84%, var(--app-border));
+}
+
+[data-theme="dark"] .day-marker-school-day {
+    background: color-mix(in srgb, var(--marker-school-day) 68%, var(--app-surface));
+    border-color: color-mix(in srgb, var(--marker-school-day) 78%, var(--app-border));
+    color: #1f1f1f;
 }
 
 [data-theme="dark"] .day-marker-vacation {
-    background: color-mix(in srgb, #7aa874 72%, var(--app-surface));
-    border-color: color-mix(in srgb, #7aa874 84%, var(--app-border));
+    background: color-mix(in srgb, var(--marker-vacation) 72%, var(--app-surface));
+    border-color: color-mix(in srgb, var(--marker-vacation) 84%, var(--app-border));
 }
 
 [data-theme="dark"] .day-marker-sick-leave {
-    background: color-mix(in srgb, #9b7ad8 70%, var(--app-surface));
-    border-color: color-mix(in srgb, #9b7ad8 84%, var(--app-border));
+    background: color-mix(in srgb, var(--marker-sick-leave) 70%, var(--app-surface));
+    border-color: color-mix(in srgb, var(--marker-sick-leave) 84%, var(--app-border));
 }
 
 [data-theme="dark"] .day-marker-exam {
-    background: color-mix(in srgb, #d97c6c 70%, var(--app-surface));
-    border-color: color-mix(in srgb, #d97c6c 84%, var(--app-border));
+    background: color-mix(in srgb, var(--marker-exam) 70%, var(--app-surface));
+    border-color: color-mix(in srgb, var(--marker-exam) 84%, var(--app-border));
 }
 
 @media (max-width: 1120px) {
@@ -587,6 +643,8 @@
     .progress-day {
         border-radius: 8px;
         font-size: 0.78rem;
+        height: 38px;
+        width: min(100%, 46px);
     }
 
     .timer-actions {

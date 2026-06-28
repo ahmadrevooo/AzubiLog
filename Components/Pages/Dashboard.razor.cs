@@ -203,6 +203,7 @@ public partial class Dashboard : ComponentBase, IAsyncDisposable
         return type switch
         {
             CalendarDayType.Workday => "day-marker-workday",
+            CalendarDayType.SchoolDay => "day-marker-school-day",
             CalendarDayType.Vacation => "day-marker-vacation",
             CalendarDayType.SickLeave => "day-marker-sick-leave",
             CalendarDayType.Exam => "day-marker-exam",
@@ -215,6 +216,7 @@ public partial class Dashboard : ComponentBase, IAsyncDisposable
         return type switch
         {
             CalendarDayType.Workday => "Arbeitstag",
+            CalendarDayType.SchoolDay => "Schultag",
             CalendarDayType.Vacation => "Urlaub",
             CalendarDayType.SickLeave => "Krankheit",
             CalendarDayType.Exam => "Prüfung / Klausur",

@@ -87,6 +87,7 @@ else
                         <div class="section-heading">
                             <div>
                                 <h3 id="progress-title">Wochenfortschritt @DisplayedMonthLabel</h3>
+                                <p>Markiere Arbeitstage, Schultage, Urlaub, Krankheit oder Prüfungstage.</p>
                             </div>
                             <div class="calendar-nav" aria-label="Monatsnavigation">
                                 <label class="month-picker">
@@ -121,10 +122,26 @@ else
                                     @if (SelectedMarkerDate == DateOnly.FromDateTime(day.Date))
                                     {
                                         <div class="marker-menu" role="menu">
-                                            <button type="button" role="menuitem" @onclick="() => SetMarkerAsync(CalendarDayType.Workday)">Arbeitstag</button>
-                                            <button type="button" role="menuitem" @onclick="() => SetMarkerAsync(CalendarDayType.Vacation)">Urlaub</button>
-                                            <button type="button" role="menuitem" @onclick="() => SetMarkerAsync(CalendarDayType.SickLeave)">Krankheit</button>
-                                            <button type="button" role="menuitem" @onclick="() => SetMarkerAsync(CalendarDayType.Exam)">Prüfung / Klausur</button>
+                                            <button type="button" role="menuitem" @onclick="() => SetMarkerAsync(CalendarDayType.Workday)">
+                                                <span class="marker-color marker-color-workday" aria-hidden="true"></span>
+                                                <span>Arbeitstag</span>
+                                            </button>
+                                            <button type="button" role="menuitem" @onclick="() => SetMarkerAsync(CalendarDayType.SchoolDay)">
+                                                <span class="marker-color marker-color-school-day" aria-hidden="true"></span>
+                                                <span>Schultag</span>
+                                            </button>
+                                            <button type="button" role="menuitem" @onclick="() => SetMarkerAsync(CalendarDayType.Vacation)">
+                                                <span class="marker-color marker-color-vacation" aria-hidden="true"></span>
+                                                <span>Urlaub</span>
+                                            </button>
+                                            <button type="button" role="menuitem" @onclick="() => SetMarkerAsync(CalendarDayType.SickLeave)">
+                                                <span class="marker-color marker-color-sick-leave" aria-hidden="true"></span>
+                                                <span>Krankheit</span>
+                                            </button>
+                                            <button type="button" role="menuitem" @onclick="() => SetMarkerAsync(CalendarDayType.Exam)">
+                                                <span class="marker-color marker-color-exam" aria-hidden="true"></span>
+                                                <span>Prüfung / Klausur</span>
+                                            </button>
                                             <button class="marker-menu-remove" type="button" role="menuitem" @onclick="RemoveMarkerAsync">Markierung entfernen</button>
                                         </div>
                                     }
