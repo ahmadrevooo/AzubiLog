@@ -4,11 +4,25 @@ using Microsoft.AspNetCore.Components;
 
 namespace AzubiLog.Components.Pages;
 
-public partial class Dashboard : ComponentBase
+public partial class Dashboard : ComponentBase, IAsyncDisposable
 {
     private static readonly string[] WeekdayLabels = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
-    private static readonly string[] TimerDurations = ["15 min", "25 min", "45 min", "60 min", "Custom"];
-    private static readonly TimeSpan SelectedDuration = TimeSpan.FromMinutes(25);
+    private static readonly TimerDurationOption[] TimerDurations =
+    [
+        new("15 min", 15, false),
+        new("25 min", 25, false),
+        new("45 min", 45, false),
+        new("60 min", 60, false),
+        new("Custom", 25, true)
+    ];
+
+    private int selectedTimerMinutes = 25;
+    private int customTimerMinutes = 25;
+    private int remainingSeconds = 25 * 60;
+    private bool isCustomTimerSelected;
+    private bool isTimerRunning;
+    private PeriodicTimer? dashboardTimer;
+    private CancellationTokenSource? timerCancellationTokenSource;
 
     [Inject]
     private IDashboardService DashboardService { get; set; } = null!;
@@ -23,9 +37,13 @@ public partial class Dashboard : ComponentBase
 
     private string CurrentMonthLabel => Today.ToString("MMMM yyyy", CurrentCulture);
 
-    private string SelectedTimerDuration => "25 min";
+    private string SelectedTimerLabel => isCustomTimerSelected
+        ? "Custom"
+        : $"{selectedTimerMinutes} min";
 
-    private string TimerDisplay => SelectedDuration.ToString(@"hh\:mm\:ss", CurrentCulture);
+    private string TimerDisplay => TimeSpan.FromSeconds(Math.Max(0, remainingSeconds)).ToString(@"hh\:mm\:ss", CurrentCulture);
+
+    private bool CanStartTimer => !isTimerRunning && remainingSeconds > 0;
 
     private IReadOnlyList<DashboardCalendarDay> CalendarDays => BuildMonthDays(Today);
 
@@ -40,6 +58,11 @@ public partial class Dashboard : ComponentBase
     protected override async Task OnInitializedAsync()
     {
         ViewModel = await DashboardService.GetDashboardAsync();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await StopTimerAsync(updateUi: false);
     }
 
     protected string GetWelcomeHeading()
@@ -103,6 +126,120 @@ public partial class Dashboard : ComponentBase
         return string.Create(CurrentCulture, $"{day.Date:D}: {status}");
     }
 
+    private void SelectTimerDuration(TimerDurationOption duration)
+    {
+        if (isTimerRunning)
+        {
+            return;
+        }
+
+        isCustomTimerSelected = duration.IsCustom;
+        selectedTimerMinutes = duration.IsCustom ? GetValidCustomTimerMinutes() : duration.Minutes;
+        ResetRemainingTimerSeconds();
+    }
+
+    private void HandleCustomTimerMinutesChanged(ChangeEventArgs args)
+    {
+        if (!int.TryParse(args.Value?.ToString(), NumberStyles.Integer, CurrentCulture, out var minutes)
+            && !int.TryParse(args.Value?.ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out minutes))
+        {
+            return;
+        }
+
+        if (minutes <= 0)
+        {
+            return;
+        }
+
+        customTimerMinutes = minutes;
+
+        if (isTimerRunning)
+        {
+            return;
+        }
+
+        isCustomTimerSelected = true;
+        selectedTimerMinutes = customTimerMinutes;
+        ResetRemainingTimerSeconds();
+    }
+
+    private async Task StartTimerAsync()
+    {
+        if (isTimerRunning || remainingSeconds <= 0)
+        {
+            return;
+        }
+
+        await StopTimerAsync();
+
+        isTimerRunning = true;
+        timerCancellationTokenSource = new CancellationTokenSource();
+        dashboardTimer = new PeriodicTimer(TimeSpan.FromSeconds(1));
+        _ = RunTimerAsync(timerCancellationTokenSource.Token);
+    }
+
+    private async Task PauseTimer()
+    {
+        await StopTimerAsync();
+    }
+
+    private async Task ResetTimer()
+    {
+        await StopTimerAsync();
+        ResetRemainingTimerSeconds();
+    }
+
+    private async Task RunTimerAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            while (dashboardTimer is not null
+                && await dashboardTimer.WaitForNextTickAsync(cancellationToken)
+                && remainingSeconds > 0)
+            {
+                remainingSeconds--;
+
+                if (remainingSeconds <= 0)
+                {
+                    await StopTimerAsync();
+                }
+
+                await InvokeAsync(StateHasChanged);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+        }
+    }
+
+    private Task StopTimerAsync(bool updateUi = true)
+    {
+        if (!isTimerRunning && dashboardTimer is null && timerCancellationTokenSource is null)
+        {
+            return Task.CompletedTask;
+        }
+
+        isTimerRunning = false;
+        timerCancellationTokenSource?.Cancel();
+        timerCancellationTokenSource?.Dispose();
+        timerCancellationTokenSource = null;
+        dashboardTimer?.Dispose();
+        dashboardTimer = null;
+
+        return updateUi ? InvokeAsync(StateHasChanged) : Task.CompletedTask;
+    }
+
+    private void ResetRemainingTimerSeconds()
+    {
+        selectedTimerMinutes = isCustomTimerSelected ? GetValidCustomTimerMinutes() : selectedTimerMinutes;
+        remainingSeconds = Math.Max(1, selectedTimerMinutes) * 60;
+    }
+
+    private int GetValidCustomTimerMinutes()
+    {
+        return customTimerMinutes > 0 ? customTimerMinutes : 25;
+    }
+
     private static IReadOnlyList<DashboardCalendarDay> BuildMonthDays(DateTime referenceDate)
     {
         var firstOfMonth = new DateTime(referenceDate.Year, referenceDate.Month, 1);
@@ -131,4 +268,6 @@ public partial class Dashboard : ComponentBase
     }
 
     private sealed record DashboardCalendarDay(DateTime Date, bool IsCurrentMonth, bool IsWeekend);
+
+    private sealed record TimerDurationOption(string Label, int Minutes, bool IsCustom);
 }

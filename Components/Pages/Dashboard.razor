@@ -83,24 +83,24 @@ else
                     <div class="timer-options" role="group" aria-label="Dauer wählen">
                         @foreach (var duration in TimerDurations)
                         {
-                            <button class="@(duration == SelectedTimerDuration ? "active" : null)" type="button">
-                                @duration
+                            <button class="@(duration.Label == SelectedTimerLabel ? "active" : null)" type="button" disabled="@isTimerRunning" @onclick="() => SelectTimerDuration(duration)">
+                                @duration.Label
                             </button>
                         }
                     </div>
 
                     <label class="custom-duration">
                         <span>Custom</span>
-                        <input class="form-control" type="number" min="1" value="25" aria-label="Eigene Dauer in Minuten" />
+                        <input class="form-control" type="number" min="1" value="@customTimerMinutes" disabled="@isTimerRunning" aria-label="Eigene Dauer in Minuten" @onchange="HandleCustomTimerMinutesChanged" />
                         <small>Minuten</small>
                     </label>
 
                     <div class="timer-display" aria-live="polite">@TimerDisplay</div>
 
                     <div class="timer-actions">
-                        <button class="btn btn-primary" type="button">Start</button>
-                        <button class="btn btn-outline-secondary" type="button">Pause</button>
-                        <button class="btn btn-outline-secondary" type="button">Reset</button>
+                        <button class="btn btn-primary" type="button" disabled="@(!CanStartTimer)" @onclick="StartTimerAsync">Start</button>
+                        <button class="btn btn-outline-secondary" type="button" disabled="@(!isTimerRunning)" @onclick="PauseTimer">Pause</button>
+                        <button class="btn btn-outline-secondary" type="button" @onclick="ResetTimer">Reset</button>
                     </div>
                 </section>
             </div>

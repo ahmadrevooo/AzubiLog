@@ -320,6 +320,12 @@
     color: var(--app-text);
 }
 
+.timer-options button:disabled,
+.custom-duration .form-control:disabled {
+    cursor: not-allowed;
+    opacity: 0.62;
+}
+
 .custom-duration {
     align-items: center;
     background: color-mix(in srgb, var(--app-surface-muted) 70%, transparent);
