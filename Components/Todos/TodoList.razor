@@ -2,13 +2,20 @@
 
 <section class="todo-list-panel">
     <header>
-        <h2>@Localizer[TitleKey]</h2>
-        <span>@Items.Count</span>
+        <div class="todo-list-heading">
+            <span class="todo-list-heading-icon" aria-hidden="true"></span>
+            <h2>@Localizer[TitleKey]</h2>
+        </div>
+        <span class="todo-list-count">@Items.Count</span>
     </header>
 
     @if (Items.Count == 0)
     {
-        <p class="todo-list-empty">@Localizer[EmptyTextKey]</p>
+        <div class="todo-list-empty">
+            <span class="todo-list-empty-icon" aria-hidden="true"></span>
+            <strong>@Localizer[EmptyTextKey]</strong>
+            <span>@GetEmptyStateHint()</span>
+        </div>
     }
     else
     {
@@ -26,13 +33,13 @@
                             <span aria-hidden="true"></span>
                         }
                     </div>
-                    <div>
+                    <div class="todo-list-item-content">
                         <strong>@todo.Title</strong>
                         @if (!string.IsNullOrWhiteSpace(todo.Description))
                         {
                             <p>@todo.Description</p>
                         }
-                        <span>
+                        <span class="todo-list-due-date">
                             @if (todo.DueDate.HasValue)
                             {
                                 @Localizer["TodoDue", todo.DueDate.Value.ToString("d")]
@@ -75,4 +82,11 @@
 
     [Parameter]
     public EventCallback<int> Delete { get; set; }
+
+    private string GetEmptyStateHint()
+    {
+        return ShowCompleteAction
+            ? "Erstelle eine neue Aufgabe, um loszulegen."
+            : "Erledigte Aufgaben erscheinen hier.";
+    }
 }

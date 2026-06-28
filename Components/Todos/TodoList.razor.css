@@ -1,13 +1,13 @@
 .todo-list-panel {
     background:
-        linear-gradient(180deg, color-mix(in srgb, var(--todo-panel-soft, transparent) 24%, var(--app-surface)), var(--app-surface) 48%),
+        linear-gradient(180deg, color-mix(in srgb, var(--todo-panel-soft, transparent) 20%, var(--app-surface)), var(--app-surface) 54%),
         var(--app-surface);
-    border: var(--app-accent-border-width) solid color-mix(in srgb, var(--todo-panel-accent, var(--app-accent-blue)) 74%, var(--app-border));
-    border-radius: 8px;
-    box-shadow: var(--app-shadow);
+    border: 1px solid color-mix(in srgb, var(--todo-panel-accent, var(--app-accent-blue)) 58%, var(--app-border));
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
     display: grid;
-    gap: 1rem;
-    padding: 1.2rem;
+    gap: 1.05rem;
+    padding: 1.35rem;
     transition:
         background-color 150ms ease,
         border-color 150ms ease,
@@ -19,7 +19,46 @@
 .todo-list-panel header {
     align-items: center;
     display: flex;
+    gap: 0.75rem;
     justify-content: space-between;
+}
+
+.todo-list-heading {
+    align-items: center;
+    display: flex;
+    gap: 0.75rem;
+    min-width: 0;
+}
+
+.todo-list-heading-icon {
+    align-items: center;
+    background: color-mix(in srgb, var(--todo-panel-soft, var(--app-accent-blue-soft)) 74%, var(--app-surface));
+    border: 1px solid color-mix(in srgb, var(--todo-panel-accent, var(--app-accent-blue)) 38%, var(--app-border));
+    border-radius: 10px;
+    color: var(--todo-panel-accent, var(--app-accent-blue));
+    display: inline-flex;
+    flex: 0 0 auto;
+    height: 2.35rem;
+    justify-content: center;
+    position: relative;
+    width: 2.35rem;
+}
+
+.todo-list-heading-icon::before {
+    border: 1.7px solid currentColor;
+    border-radius: 5px;
+    content: "";
+    height: 1.05rem;
+    width: 1.05rem;
+}
+
+.todo-list-heading-icon::after {
+    background: currentColor;
+    border-radius: 999px;
+    content: "";
+    height: 0.28rem;
+    position: absolute;
+    width: 0.28rem;
 }
 
 .todo-list-panel h2 {
@@ -29,28 +68,73 @@
     margin: 0;
 }
 
-.todo-list-panel header span {
+.todo-list-count {
     align-items: center;
     background: color-mix(in srgb, var(--todo-panel-soft, var(--app-accent-blue-soft)) 65%, var(--app-surface-muted));
     border: 1px solid color-mix(in srgb, var(--todo-panel-accent, var(--app-accent-blue)) 38%, var(--app-border));
-    border-radius: 6px;
+    border-radius: 999px;
     color: var(--app-text-secondary);
     display: inline-flex;
     font-size: 0.8rem;
     font-weight: 600;
-    height: 2rem;
+    height: 1.9rem;
     justify-content: center;
-    min-width: 2rem;
+    min-width: 2.15rem;
+    padding-inline: 0.55rem;
 }
 
 .todo-list-empty {
+    align-items: center;
     background: color-mix(in srgb, var(--todo-panel-soft, transparent) 58%, var(--app-surface-muted));
     border: 1px dashed color-mix(in srgb, var(--todo-panel-accent, var(--app-border)) 42%, var(--app-border));
-    border-radius: 8px;
+    border-radius: 10px;
     color: var(--app-text-muted);
+    display: grid;
+    gap: 0.45rem;
+    justify-items: center;
+    line-height: 1.4;
     margin: 0;
-    padding: 1rem;
+    min-height: 8.75rem;
+    padding: 1.35rem;
     text-align: center;
+}
+
+.todo-list-empty-icon {
+    align-items: center;
+    background: color-mix(in srgb, var(--todo-panel-soft, transparent) 78%, var(--app-surface));
+    border: 1px solid color-mix(in srgb, var(--todo-panel-accent, var(--app-accent-blue)) 34%, var(--app-border));
+    border-radius: 10px;
+    color: var(--todo-panel-accent, var(--app-accent-blue));
+    display: inline-flex;
+    height: 2.45rem;
+    justify-content: center;
+    position: relative;
+    width: 2.45rem;
+}
+
+.todo-list-empty-icon::before,
+.todo-list-empty-icon::after {
+    background: currentColor;
+    border-radius: 999px;
+    content: "";
+    height: 0.12rem;
+    position: absolute;
+    width: 1rem;
+}
+
+.todo-list-empty-icon::after {
+    transform: rotate(90deg);
+}
+
+.todo-list-empty strong {
+    color: var(--app-text);
+    font-size: 0.95rem;
+    font-weight: 650;
+}
+
+.todo-list-empty span:not(.todo-list-empty-icon) {
+    color: var(--app-text-muted);
+    font-size: 0.86rem;
 }
 
 .todo-list {
@@ -61,12 +145,15 @@
 .todo-list-item {
     align-items: flex-start;
     background: transparent;
-    border-top: 1px solid color-mix(in srgb, var(--todo-panel-accent, var(--app-border)) 24%, var(--app-border));
+    border-top: 1px solid color-mix(in srgb, var(--todo-panel-accent, var(--app-border)) 20%, var(--app-border));
     border-radius: 0;
     display: grid;
-    gap: 0.75rem;
+    gap: 0.85rem;
     grid-template-columns: auto minmax(0, 1fr) auto;
-    padding: 0.8rem 0;
+    padding: 0.95rem 0;
+    transition:
+        background-color 150ms ease,
+        border-color 150ms ease;
 }
 
 .todo-list-item:first-child {
@@ -86,19 +173,25 @@
 .todo-list-item strong {
     color: var(--app-text);
     display: block;
-    font-size: 0.98rem;
-    font-weight: 500;
+    font-size: 1rem;
+    font-weight: 650;
     line-height: 1.3;
+}
+
+.todo-list-item-content {
+    min-width: 0;
 }
 
 .todo-list-item p {
     color: var(--app-text-muted);
-    margin: 0.35rem 0;
+    margin: 0.4rem 0 0;
 }
 
-.todo-list-item span {
+.todo-list-due-date {
     color: var(--app-text-muted);
+    display: block;
     font-size: 0.82rem;
+    margin-top: 0.35rem;
 }
 
 .todo-list-actions {
@@ -109,11 +202,11 @@
 .todo-list-check span {
     background: var(--app-surface);
     border: 1px solid color-mix(in srgb, var(--todo-panel-accent, var(--app-border-strong)) 44%, var(--app-border-strong));
-    border-radius: 4px;
+    border-radius: 6px;
     display: block;
-    height: 1.05rem;
+    height: 1.25rem;
     margin-top: 0.15rem;
-    width: 1.05rem;
+    width: 1.25rem;
 }
 
 .todo-list-check span {
@@ -129,7 +222,7 @@
 
 .todo-list-actions summary {
     align-items: center;
-    border-radius: 6px;
+    border-radius: 8px;
     color: var(--app-text-muted);
     cursor: pointer;
     display: inline-flex;
@@ -153,7 +246,7 @@
 .todo-list-actions details button {
     background: var(--app-surface);
     border: 1px solid var(--app-border);
-    border-radius: 6px;
+    border-radius: 8px;
     box-shadow: 0 8px 24px rgba(15, 15, 15, 0.12);
     color: var(--app-danger);
     font-size: 0.88rem;
@@ -235,11 +328,21 @@
     .todo-list-panel:hover {
         background: color-mix(in srgb, var(--todo-panel-soft, transparent) 44%, var(--app-surface));
         border-color: var(--todo-panel-accent, var(--app-border-strong));
+        box-shadow: 0 10px 26px color-mix(in srgb, var(--todo-panel-accent, var(--app-accent-blue)) 10%, transparent);
         transform: translateY(-1px);
+    }
+
+    .todo-list-item:hover {
+        background: color-mix(in srgb, var(--todo-panel-soft, transparent) 20%, transparent);
     }
 
     .todo-list-check button:hover {
         background: color-mix(in srgb, var(--todo-panel-soft, transparent) 70%, var(--app-surface));
         border-color: var(--todo-panel-accent, var(--app-border-strong));
+    }
+
+    .todo-list-actions summary:hover {
+        background: var(--app-surface-hover);
+        color: var(--app-text);
     }
 }
