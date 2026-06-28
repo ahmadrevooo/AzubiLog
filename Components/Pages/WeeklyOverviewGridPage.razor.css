@@ -84,6 +84,12 @@
     color: #fff;
 }
 
+[data-theme="dark"] .weekly-grid-export-button {
+    background: var(--app-text);
+    border-color: var(--app-text);
+    color: var(--app-bg);
+}
+
 .weekly-grid-date-picker .form-control {
     font-size: 0.9rem;
     padding: 0.3rem 0.55rem;
@@ -263,6 +269,17 @@
         box-shadow: 0 10px 22px color-mix(in srgb, #000 7%, transparent);
         transform: translateY(-1px);
     }
+
+    [data-theme="dark"] .weekly-grid-export-button:hover {
+        background: var(--app-primary-hover);
+        border-color: var(--app-primary-hover);
+        color: var(--app-primary-contrast);
+    }
+}
+
+.weekly-grid-export-button:focus-visible {
+    box-shadow: 0 0 0 0.2rem var(--focus-ring);
+    outline: 0;
 }
 
 @media (max-width: 1180px) {
