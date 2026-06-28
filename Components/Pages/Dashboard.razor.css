@@ -322,10 +322,10 @@
     display: inline-flex;
     font-size: 0.8rem;
     font-weight: 500;
-    height: 40px;
+    height: 42px;
     justify-content: center;
     min-width: 0;
-    width: 50px;
+    width: 52px;
 }
 
 .progress-day.is-muted {
@@ -429,7 +429,7 @@
     --dashboard-card-accent: var(--app-accent-orange);
     display: flex;
     flex-direction: column;
-    min-height: 400px;
+    min-height: 440px;
     padding: 16px;
 }
 
@@ -494,7 +494,7 @@
 
 .progress-weekdays,
 .progress-grid {
-    grid-template-columns: repeat(7, 50px);
+    grid-template-columns: repeat(7, 52px);
     justify-content: start;
     width: fit-content;
 }
