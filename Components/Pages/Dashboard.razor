@@ -97,10 +97,8 @@ else
                                 <button class="current-month-button" type="button" @onclick="ShowCurrentMonthAsync">Diesen Monat</button>
                                 <button class="month-step-button" type="button" aria-label="Vorheriger Monat" @onclick="ShowPreviousMonthAsync">
                                     <span class="bi bi-chevron-left" aria-hidden="true"></span>
-                                    <span>Vorheriger Monat</span>
                                 </button>
                                 <button class="month-step-button" type="button" aria-label="Nächster Monat" @onclick="ShowNextMonthAsync">
-                                    <span>Nächster Monat</span>
                                     <span class="bi bi-chevron-right" aria-hidden="true"></span>
                                 </button>
                             </div>
@@ -151,27 +149,29 @@ else
                             }
                         </div>
 
-                        <div class="marker-legend" aria-label="Legende der Tagesmarkierungen">
-                            <span>
-                                <span class="marker-color marker-color-workday" aria-hidden="true"></span>
-                                Arbeitstag
-                            </span>
-                            <span>
-                                <span class="marker-color marker-color-school-day" aria-hidden="true"></span>
-                                Schultag
-                            </span>
-                            <span>
-                                <span class="marker-color marker-color-vacation" aria-hidden="true"></span>
-                                Urlaub
-                            </span>
-                            <span>
-                                <span class="marker-color marker-color-sick-leave" aria-hidden="true"></span>
-                                Krankheit
-                            </span>
-                            <span>
-                                <span class="marker-color marker-color-exam" aria-hidden="true"></span>
-                                Prüfung/Klausur
-                            </span>
+                        <div class="week-progress-footer">
+                            <div class="marker-legend" aria-label="Legende der Tagesmarkierungen">
+                                <span>
+                                    <span class="marker-color marker-color-workday" aria-hidden="true"></span>
+                                    Arbeitstag
+                                </span>
+                                <span>
+                                    <span class="marker-color marker-color-school-day" aria-hidden="true"></span>
+                                    Schultag
+                                </span>
+                                <span>
+                                    <span class="marker-color marker-color-vacation" aria-hidden="true"></span>
+                                    Urlaub
+                                </span>
+                                <span>
+                                    <span class="marker-color marker-color-sick-leave" aria-hidden="true"></span>
+                                    Krankheit
+                                </span>
+                                <span>
+                                    <span class="marker-color marker-color-exam" aria-hidden="true"></span>
+                                    Prüfung/Klausur
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
