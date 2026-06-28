@@ -95,10 +95,12 @@ else
                                     <input type="month" value="@DisplayedMonthValue" @onchange="HandleDisplayedMonthChangedAsync" />
                                 </label>
                                 <button class="current-month-button" type="button" @onclick="ShowCurrentMonthAsync">Diesen Monat</button>
-                                <button type="button" aria-label="Vorheriger Monat" @onclick="ShowPreviousMonthAsync">
+                                <button class="month-step-button" type="button" aria-label="Vorheriger Monat" @onclick="ShowPreviousMonthAsync">
                                     <span class="bi bi-chevron-left" aria-hidden="true"></span>
+                                    <span>Vorheriger Monat</span>
                                 </button>
-                                <button type="button" aria-label="Nächster Monat" @onclick="ShowNextMonthAsync">
+                                <button class="month-step-button" type="button" aria-label="Nächster Monat" @onclick="ShowNextMonthAsync">
+                                    <span>Nächster Monat</span>
                                     <span class="bi bi-chevron-right" aria-hidden="true"></span>
                                 </button>
                             </div>
