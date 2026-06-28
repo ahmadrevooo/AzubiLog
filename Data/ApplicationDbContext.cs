@@ -8,6 +8,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     : IdentityUserContext<ApplicationUser>(options)
 {
     public DbSet<Category> Categories => Set<Category>();
+    public DbSet<CalendarDayMarker> CalendarDayMarkers => Set<CalendarDayMarker>();
     public DbSet<ReportEntry> ReportEntries => Set<ReportEntry>();
     public DbSet<SchoolScheduleDay> SchoolScheduleDays => Set<SchoolScheduleDay>();
     public DbSet<TodoItem> Todos => Set<TodoItem>();
@@ -19,6 +20,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         base.OnModelCreating(builder);
 
         ConfigureApplicationUser(builder);
+        ConfigureCalendarDayMarker(builder);
         ConfigureCategory(builder);
         ConfigureTrainer(builder);
         ConfigureWeeklyReport(builder);
@@ -63,6 +65,30 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
             entity.Property(user => user.AnnualVacationDays)
                 .HasDefaultValue(30);
+        });
+    }
+
+    private static void ConfigureCalendarDayMarker(ModelBuilder builder)
+    {
+        builder.Entity<CalendarDayMarker>(entity =>
+        {
+            entity.ToTable("CalendarDayMarkers");
+
+            entity.Property(marker => marker.Type)
+                .HasConversion<string>()
+                .HasMaxLength(40)
+                .IsRequired();
+
+            entity.Property(marker => marker.Note)
+                .HasMaxLength(1_000);
+
+            entity.HasIndex(marker => new { marker.UserId, marker.Date })
+                .IsUnique();
+
+            entity.HasOne(marker => marker.User)
+                .WithMany(user => user.CalendarDayMarkers)
+                .HasForeignKey(marker => marker.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
     }
 

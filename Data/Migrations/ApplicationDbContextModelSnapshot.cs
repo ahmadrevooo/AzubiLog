@@ -52,6 +52,21 @@ namespace AzubiLog.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("AzubiLog.Models.CalendarDayMarker", b =>
+                {
+                    b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("INTEGER");
+                    b.Property<DateTime>("CreatedAt").HasColumnType("TEXT");
+                    b.Property<DateOnly>("Date").HasColumnType("TEXT");
+                    b.Property<string>("Note").HasMaxLength(1000).HasColumnType("TEXT");
+                    b.Property<string>("Type").IsRequired().HasMaxLength(40).HasColumnType("TEXT");
+                    b.Property<DateTime?>("UpdatedAt").HasColumnType("TEXT");
+                    b.Property<string>("UserId").IsRequired().HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+                    b.HasIndex("UserId", "Date").IsUnique();
+                    b.ToTable("CalendarDayMarkers", (string)null);
+                });
+
             modelBuilder.Entity("AzubiLog.Models.Category", b =>
                 {
                     b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("INTEGER");
@@ -198,6 +213,17 @@ namespace AzubiLog.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("AzubiLog.Models.CalendarDayMarker", b =>
+                {
+                    b.HasOne("AzubiLog.Models.ApplicationUser", "User")
+                        .WithMany("CalendarDayMarkers")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("AzubiLog.Models.ReportEntry", b =>
                 {
                     b.HasOne("AzubiLog.Models.Category", "Category")
@@ -301,6 +327,7 @@ namespace AzubiLog.Data.Migrations
 
             modelBuilder.Entity("AzubiLog.Models.ApplicationUser", b =>
                 {
+                    b.Navigation("CalendarDayMarkers");
                     b.Navigation("Categories");
                     b.Navigation("ReportEntries");
                     b.Navigation("SchoolScheduleDays");
