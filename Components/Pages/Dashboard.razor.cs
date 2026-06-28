@@ -91,6 +91,11 @@ public partial class Dashboard : ComponentBase, IAsyncDisposable
             classes.Add("is-muted");
         }
 
+        if (day.IsWeekend)
+        {
+            classes.Add("is-weekend");
+        }
+
         if (GetMarkerType(day) is { } markerType)
         {
             classes.Remove("day-marker-empty");
