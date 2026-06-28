@@ -205,38 +205,80 @@ main {
 }
 
 .app-theme-switch {
-    gap: 0.35rem;
+    border-radius: 999px;
+    gap: 0.42rem;
+    min-width: 78px;
     padding: 0 0.45rem;
 }
 
 .app-theme-icon {
     color: var(--app-text-secondary);
-    font-size: 0.85rem;
-    line-height: 1;
+    display: inline-flex;
+    flex: 0 0 auto;
+    height: 15px;
+    position: relative;
+    transition: color 150ms ease, opacity 150ms ease;
+    width: 15px;
+}
+
+.app-theme-icon-sun {
+    border: 1.6px solid currentColor;
+    border-radius: 50%;
+    box-shadow:
+        0 -5px 0 -3.5px currentColor,
+        0 5px 0 -3.5px currentColor,
+        5px 0 0 -3.5px currentColor,
+        -5px 0 0 -3.5px currentColor;
+}
+
+.app-theme-icon-moon::before {
+    border: 1.8px solid currentColor;
+    border-left-color: transparent;
+    border-radius: 50%;
+    content: "";
+    height: 13px;
+    left: 0;
+    position: absolute;
+    top: 1px;
+    transform: rotate(-18deg);
+    width: 13px;
 }
 
 .app-theme-track {
-    background: var(--app-surface-muted);
-    border: 1px solid var(--app-border);
-    border-radius: 6px;
+    background: color-mix(in srgb, var(--app-surface-muted) 86%, var(--app-bg));
+    border: 1px solid color-mix(in srgb, var(--app-border) 78%, transparent);
+    border-radius: 999px;
     display: inline-flex;
-    height: 18px;
+    flex: 0 0 auto;
+    height: 20px;
     padding: 2px;
-    width: 34px;
+    width: 38px;
 }
 
 .app-theme-thumb {
-    background: var(--app-text);
-    border-radius: 4px;
+    background: var(--app-text-secondary);
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(15, 15, 15, 0.22);
     display: block;
-    height: 12px;
+    height: 14px;
     transform: translateX(0);
-    transition: transform 150ms ease, background-color 150ms ease;
-    width: 12px;
+    transition: transform 180ms ease, background-color 180ms ease;
+    width: 14px;
 }
 
 .app-theme-switch[aria-checked="true"] .app-theme-thumb {
-    transform: translateX(14px);
+    background: var(--app-text);
+    transform: translateX(18px);
+}
+
+.app-theme-switch[aria-checked="false"] .app-theme-icon-sun,
+.app-theme-switch[aria-checked="true"] .app-theme-icon-moon {
+    color: var(--app-text);
+}
+
+.app-theme-switch[aria-checked="true"] .app-theme-track {
+    background: color-mix(in srgb, var(--app-accent-blue) 18%, var(--app-surface-muted));
+    border-color: color-mix(in srgb, var(--app-accent-blue) 44%, var(--app-border));
 }
 
 .app-profile-menu {
@@ -420,6 +462,7 @@ main {
     }
 
     .app-theme-switch {
+        min-width: 74px;
         padding: 0 0.35rem;
     }
 }

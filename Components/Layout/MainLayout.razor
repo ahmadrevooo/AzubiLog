@@ -57,12 +57,12 @@
 
                 <AuthorizeView>
                     <Authorized>
-                        <button class="app-theme-switch" type="button" role="switch" aria-checked="@(CurrentTheme == "dark")" aria-label="Darstellung wechseln" @onclick="ToggleThemeAsync">
-                            <span class="app-theme-icon" aria-hidden="true">☀</span>
+                        <button class="app-theme-switch" type="button" role="switch" aria-checked="@ThemeSwitchState" aria-label="Darstellung wechseln" title="Darstellung wechseln" @onclick="ToggleThemeAsync">
+                            <span class="app-theme-icon app-theme-icon-sun" aria-hidden="true"></span>
                             <span class="app-theme-track">
                                 <span class="app-theme-thumb"></span>
                             </span>
-                            <span class="app-theme-icon" aria-hidden="true">☾</span>
+                            <span class="app-theme-icon app-theme-icon-moon" aria-hidden="true"></span>
                         </button>
 
                         <div class="app-profile">
@@ -147,6 +147,10 @@
     private bool IsMobileMenuOpen { get; set; }
     private bool IsMoreMenuOpen { get; set; }
 
+    private bool IsDarkTheme => string.Equals(CurrentTheme, "dark", StringComparison.Ordinal);
+
+    private string ThemeSwitchState => IsDarkTheme ? "true" : "false";
+
     private IEnumerable<NavigationItem> PrimaryNavigation =>
         Navigation.GetMainNavigation().Where(item => item.IsEnabled && PrimaryNavigationKeys.Contains(item.ResourceKey));
 
@@ -170,17 +174,11 @@
         StateHasChanged();
     }
 
-    private async Task HandleThemeChangedAsync(ChangeEventArgs args)
-    {
-        CurrentTheme = args.Value?.ToString() == "dark" ? "dark" : "light";
-        await JsRuntime.InvokeVoidAsync("azubiLogPreferences.setTheme", CurrentTheme);
-        IsProfileMenuOpen = false;
-    }
-
     private async Task ToggleThemeAsync()
     {
-        CurrentTheme = CurrentTheme == "dark" ? "light" : "dark";
+        CurrentTheme = IsDarkTheme ? "light" : "dark";
         await JsRuntime.InvokeVoidAsync("azubiLogPreferences.setTheme", CurrentTheme);
+        CloseMenus();
     }
 
     private async Task LoadUserAsync()
@@ -243,11 +241,6 @@
 
     private static NavLinkMatch GetMatch(NavigationItem item)
     {
-        if (string.Equals(item.Href, "weekly-reports", StringComparison.Ordinal))
-        {
-            return NavLinkMatch.All;
-        }
-
         return string.IsNullOrWhiteSpace(item.Href)
             ? NavLinkMatch.All
             : NavLinkMatch.Prefix;
