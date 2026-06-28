@@ -1,4 +1,6 @@
 using System.Globalization;
+using AzubiLog.Models;
+using AzubiLog.Services.CalendarDayMarkers;
 using AzubiLog.Services.Dashboard;
 using Microsoft.AspNetCore.Components;
 
@@ -23,9 +25,14 @@ public partial class Dashboard : ComponentBase, IAsyncDisposable
     private bool isTimerRunning;
     private PeriodicTimer? dashboardTimer;
     private CancellationTokenSource? timerCancellationTokenSource;
+    private DateTime displayedMonth = DateTime.Today;
+    private Dictionary<DateOnly, CalendarDayType> monthMarkers = [];
 
     [Inject]
     private IDashboardService DashboardService { get; set; } = null!;
+
+    [Inject]
+    private ICalendarDayMarkerService CalendarDayMarkerService { get; set; } = null!;
 
     protected DashboardViewModel? ViewModel { get; private set; }
 
@@ -35,7 +42,7 @@ public partial class Dashboard : ComponentBase, IAsyncDisposable
 
     private string TodayLabel => Today.ToString("dddd, dd.MM.yyyy", CurrentCulture);
 
-    private string CurrentMonthLabel => Today.ToString("MMMM yyyy", CurrentCulture);
+    private string DisplayedMonthLabel => displayedMonth.ToString("MMMM yyyy", CurrentCulture);
 
     private string SelectedTimerLabel => isCustomTimerSelected
         ? "Custom"
@@ -45,19 +52,14 @@ public partial class Dashboard : ComponentBase, IAsyncDisposable
 
     private bool CanStartTimer => !isTimerRunning && remainingSeconds > 0;
 
-    private IReadOnlyList<DashboardCalendarDay> CalendarDays => BuildMonthDays(Today);
+    private IReadOnlyList<DashboardCalendarDay> ProgressDays => BuildMonthDays(displayedMonth);
 
-    private IReadOnlyList<DashboardCalendarDay> ProgressDays => BuildMonthDays(Today);
-
-    private ISet<DateOnly> EntryDates => new HashSet<DateOnly>
-    {
-        DateOnly.FromDateTime(GetStartOfWeek(Today).AddDays(3)),
-        DateOnly.FromDateTime(GetStartOfWeek(Today).AddDays(4))
-    };
+    private DateOnly? SelectedMarkerDate { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         ViewModel = await DashboardService.GetDashboardAsync();
+        await LoadMarkersForDisplayedMonthAsync();
     }
 
     public async ValueTask DisposeAsync()
@@ -78,40 +80,19 @@ public partial class Dashboard : ComponentBase, IAsyncDisposable
             ViewModel.ApprenticeName);
     }
 
-    private string GetCalendarDayClass(DashboardCalendarDay day)
-    {
-        var classes = new List<string> { "month-day" };
-
-        if (!day.IsCurrentMonth)
-        {
-            classes.Add("is-muted");
-        }
-
-        if (day.IsWeekend)
-        {
-            classes.Add("is-weekend");
-        }
-
-        if (DateOnly.FromDateTime(day.Date) == DateOnly.FromDateTime(Today))
-        {
-            classes.Add("is-today");
-        }
-
-        return string.Join(" ", classes);
-    }
-
     private string GetProgressDayClass(DashboardCalendarDay day)
     {
-        var classes = new List<string> { "progress-day" };
+        var classes = new List<string> { "progress-day", "day-marker", "day-marker-empty" };
 
         if (!day.IsCurrentMonth)
         {
             classes.Add("is-muted");
         }
 
-        if (EntryDates.Contains(DateOnly.FromDateTime(day.Date)))
+        if (GetMarkerType(day) is { } markerType)
         {
-            classes.Add("has-entry");
+            classes.Remove("day-marker-empty");
+            classes.Add(GetMarkerClass(markerType));
         }
 
         return string.Join(" ", classes);
@@ -119,11 +100,100 @@ public partial class Dashboard : ComponentBase, IAsyncDisposable
 
     private string GetProgressDayLabel(DashboardCalendarDay day)
     {
-        var status = EntryDates.Contains(DateOnly.FromDateTime(day.Date))
-            ? "Eintrag vorhanden"
-            : "kein Eintrag";
+        var status = GetMarkerType(day) is { } markerType
+            ? GetMarkerLabel(markerType)
+            : "keine Markierung";
 
         return string.Create(CurrentCulture, $"{day.Date:D}: {status}");
+    }
+
+    private async Task ShowPreviousMonthAsync()
+    {
+        displayedMonth = displayedMonth.AddMonths(-1);
+        SelectedMarkerDate = null;
+        await LoadMarkersForDisplayedMonthAsync();
+    }
+
+    private async Task ShowNextMonthAsync()
+    {
+        displayedMonth = displayedMonth.AddMonths(1);
+        SelectedMarkerDate = null;
+        await LoadMarkersForDisplayedMonthAsync();
+    }
+
+    private void ToggleMarkerMenu(DashboardCalendarDay day)
+    {
+        if (!day.IsCurrentMonth)
+        {
+            return;
+        }
+
+        var date = DateOnly.FromDateTime(day.Date);
+        SelectedMarkerDate = SelectedMarkerDate == date ? null : date;
+    }
+
+    private async Task SetMarkerAsync(CalendarDayType type)
+    {
+        if (SelectedMarkerDate is not { } selectedDate)
+        {
+            return;
+        }
+
+        await CalendarDayMarkerService.SetMarkerAsync(selectedDate, type);
+        SelectedMarkerDate = null;
+        await LoadMarkersForDisplayedMonthAsync();
+    }
+
+    private async Task RemoveMarkerAsync()
+    {
+        if (SelectedMarkerDate is not { } selectedDate)
+        {
+            return;
+        }
+
+        await CalendarDayMarkerService.RemoveMarkerAsync(selectedDate);
+        SelectedMarkerDate = null;
+        await LoadMarkersForDisplayedMonthAsync();
+    }
+
+    private async Task LoadMarkersForDisplayedMonthAsync()
+    {
+        var markers = await CalendarDayMarkerService.GetMarkersForMonthAsync(
+            displayedMonth.Year,
+            displayedMonth.Month);
+
+        monthMarkers = markers.ToDictionary(marker => marker.Date, marker => marker.Type);
+    }
+
+    private CalendarDayType? GetMarkerType(DashboardCalendarDay day)
+    {
+        return monthMarkers.TryGetValue(DateOnly.FromDateTime(day.Date), out var markerType)
+            ? markerType
+            : null;
+    }
+
+    private static string GetMarkerClass(CalendarDayType type)
+    {
+        return type switch
+        {
+            CalendarDayType.Workday => "day-marker-workday",
+            CalendarDayType.Vacation => "day-marker-vacation",
+            CalendarDayType.SickLeave => "day-marker-sick-leave",
+            CalendarDayType.Exam => "day-marker-exam",
+            _ => "day-marker-empty"
+        };
+    }
+
+    private static string GetMarkerLabel(CalendarDayType type)
+    {
+        return type switch
+        {
+            CalendarDayType.Workday => "Arbeitstag",
+            CalendarDayType.Vacation => "Urlaub",
+            CalendarDayType.SickLeave => "Krankheit",
+            CalendarDayType.Exam => "Prüfung / Klausur",
+            _ => "keine Markierung"
+        };
     }
 
     private void SelectTimerDuration(TimerDurationOption duration)
@@ -259,12 +329,6 @@ public partial class Dashboard : ComponentBase, IAsyncDisposable
                     date.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday);
             })
             .ToList();
-    }
-
-    private static DateTime GetStartOfWeek(DateTime date)
-    {
-        var offset = ((int)date.DayOfWeek + 6) % 7;
-        return date.Date.AddDays(-offset);
     }
 
     private sealed record DashboardCalendarDay(DateTime Date, bool IsCurrentMonth, bool IsWeekend);

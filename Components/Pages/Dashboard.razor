@@ -31,42 +31,18 @@ else
 
         <section class="dashboard-layout" aria-label="Dashboard Übersicht">
             <div class="dashboard-left-column">
-                <section class="dashboard-card calendar-card" aria-labelledby="calendar-title">
+                <section class="dashboard-card todo-action-card" aria-labelledby="todo-action-title">
                     <div class="card-heading">
-                        <div>
-                            <span class="icon-box icon-box-green" aria-hidden="true">
-                                <span class="bi bi-calendar-week"></span>
-                            </span>
+                        <div class="icon-box icon-box-green" aria-hidden="true">
+                            <span class="bi bi-list-check"></span>
                         </div>
                         <div>
-                            <h2 id="calendar-title">Kalender</h2>
-                            <p>@CurrentMonthLabel</p>
-                        </div>
-                        <div class="calendar-nav" aria-label="Monatsnavigation">
-                            <button type="button" aria-label="Vorheriger Monat">
-                                <span class="bi bi-chevron-left" aria-hidden="true"></span>
-                            </button>
-                            <button type="button" aria-label="Nächster Monat">
-                                <span class="bi bi-chevron-right" aria-hidden="true"></span>
-                            </button>
+                            <h2 id="todo-action-title">To-do anlegen</h2>
+                            <p>Plane deine nächste Aufgabe für Ausbildung, Schule oder Projekt.</p>
                         </div>
                     </div>
 
-                    <div class="calendar-grid calendar-weekdays" aria-hidden="true">
-                        @foreach (var dayName in WeekdayLabels)
-                        {
-                            <span>@dayName</span>
-                        }
-                    </div>
-
-                    <div class="calendar-grid month-grid">
-                        @foreach (var day in CalendarDays)
-                        {
-                            <span class="@GetCalendarDayClass(day)" aria-label="@day.Date.ToString("D", CurrentCulture)">
-                                @day.Date.Day
-                            </span>
-                        }
-                    </div>
+                    <a class="btn btn-primary todo-action-button" href="/todos">Neue Aufgabe erstellen</a>
                 </section>
 
                 <section class="dashboard-card timer-card" aria-labelledby="timer-title">
@@ -122,7 +98,15 @@ else
                         <div class="section-heading">
                             <div>
                                 <h3 id="progress-title">Wochenfortschritt</h3>
-                                <p>@CurrentMonthLabel</p>
+                                <p>@DisplayedMonthLabel</p>
+                            </div>
+                            <div class="calendar-nav" aria-label="Monatsnavigation">
+                                <button type="button" aria-label="Vorheriger Monat" @onclick="ShowPreviousMonthAsync">
+                                    <span class="bi bi-chevron-left" aria-hidden="true"></span>
+                                </button>
+                                <button type="button" aria-label="Nächster Monat" @onclick="ShowNextMonthAsync">
+                                    <span class="bi bi-chevron-right" aria-hidden="true"></span>
+                                </button>
                             </div>
                         </div>
 
@@ -136,9 +120,22 @@ else
                         <div class="calendar-grid progress-grid">
                             @foreach (var day in ProgressDays)
                             {
-                                <span class="@GetProgressDayClass(day)" aria-label="@GetProgressDayLabel(day)">
-                                    @day.Date.Day
-                                </span>
+                                <div class="progress-day-cell">
+                                    <button class="@GetProgressDayClass(day)" type="button" aria-label="@GetProgressDayLabel(day)" @onclick="() => ToggleMarkerMenu(day)">
+                                        @day.Date.Day
+                                    </button>
+
+                                    @if (SelectedMarkerDate == DateOnly.FromDateTime(day.Date))
+                                    {
+                                        <div class="marker-menu" role="menu">
+                                            <button type="button" role="menuitem" @onclick="() => SetMarkerAsync(CalendarDayType.Workday)">Arbeitstag</button>
+                                            <button type="button" role="menuitem" @onclick="() => SetMarkerAsync(CalendarDayType.Vacation)">Urlaub</button>
+                                            <button type="button" role="menuitem" @onclick="() => SetMarkerAsync(CalendarDayType.SickLeave)">Krankheit</button>
+                                            <button type="button" role="menuitem" @onclick="() => SetMarkerAsync(CalendarDayType.Exam)">Prüfung / Klausur</button>
+                                            <button class="marker-menu-remove" type="button" role="menuitem" @onclick="RemoveMarkerAsync">Markierung entfernen</button>
+                                        </div>
+                                    }
+                                </div>
                             }
                         </div>
                     </div>
