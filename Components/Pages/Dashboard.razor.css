@@ -471,6 +471,15 @@
     margin: 0.24rem 0 0;
 }
 
+.progress-card .section-heading h3 {
+    font-size: 1.16rem;
+}
+
+.progress-card .section-heading p {
+    font-size: 0.88rem;
+    line-height: 1.4;
+}
+
 .progress-day-cell {
     min-width: 0;
     position: relative;
