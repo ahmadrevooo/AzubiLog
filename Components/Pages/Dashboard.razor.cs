@@ -96,6 +96,11 @@ public partial class Dashboard : ComponentBase, IAsyncDisposable
             classes.Add("is-weekend");
         }
 
+        if (SelectedMarkerDate == DateOnly.FromDateTime(day.Date))
+        {
+            classes.Add("is-selected");
+        }
+
         if (GetMarkerType(day) is { } markerType)
         {
             classes.Remove("day-marker-empty");
