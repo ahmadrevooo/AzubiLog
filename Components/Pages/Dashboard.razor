@@ -82,25 +82,18 @@ else
             </div>
 
             <section class="dashboard-card progress-card" aria-labelledby="progress-title">
-                <div class="progress-card-intro">
-                    <div>
-                        <p class="morning-label"><span aria-hidden="true"></span>Guten Morgen</p>
-                        <h2>@GetWelcomeHeading()</h2>
-                        <p>Deine Woche im Blick. Weiter so!</p>
-                    </div>
-                    <span class="icon-box icon-box-blue" aria-hidden="true">
-                        <span class="bi bi-grid-3x3-gap"></span>
-                    </span>
-                </div>
-
                 <div class="progress-content">
                     <div class="month-progress" aria-labelledby="progress-title">
                         <div class="section-heading">
                             <div>
-                                <h3 id="progress-title">Wochenfortschritt</h3>
-                                <p>@DisplayedMonthLabel</p>
+                                <h3 id="progress-title">Wochenfortschritt @DisplayedMonthLabel</h3>
                             </div>
                             <div class="calendar-nav" aria-label="Monatsnavigation">
+                                <label class="month-picker">
+                                    <span class="visually-hidden">Monat auswählen</span>
+                                    <input type="month" value="@DisplayedMonthValue" @onchange="HandleDisplayedMonthChangedAsync" />
+                                </label>
+                                <button class="current-month-button" type="button" @onclick="ShowCurrentMonthAsync">Diesen Monat</button>
                                 <button type="button" aria-label="Vorheriger Monat" @onclick="ShowPreviousMonthAsync">
                                     <span class="bi bi-chevron-left" aria-hidden="true"></span>
                                 </button>
@@ -139,24 +132,6 @@ else
                             }
                         </div>
                     </div>
-
-                    <aside class="week-summary" aria-labelledby="week-summary-title">
-                        <h3 id="week-summary-title">Diese Woche</h3>
-                        <dl>
-                            <div>
-                                <dt>Erfasst</dt>
-                                <dd>26 h</dd>
-                            </div>
-                            <div>
-                                <dt>Reststunden</dt>
-                                <dd>14 h</dd>
-                            </div>
-                            <div>
-                                <dt>Berichtseinträge</dt>
-                                <dd>2</dd>
-                            </div>
-                        </dl>
-                    </aside>
                 </div>
             </section>
         </section>

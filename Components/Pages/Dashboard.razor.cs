@@ -44,6 +44,8 @@ public partial class Dashboard : ComponentBase, IAsyncDisposable
 
     private string DisplayedMonthLabel => displayedMonth.ToString("MMMM yyyy", CurrentCulture);
 
+    private string DisplayedMonthValue => displayedMonth.ToString("yyyy-MM", CultureInfo.InvariantCulture);
+
     private string SelectedTimerLabel => isCustomTimerSelected
         ? "Custom"
         : $"{selectedTimerMinutes} min";
@@ -117,6 +119,30 @@ public partial class Dashboard : ComponentBase, IAsyncDisposable
     private async Task ShowNextMonthAsync()
     {
         displayedMonth = displayedMonth.AddMonths(1);
+        SelectedMarkerDate = null;
+        await LoadMarkersForDisplayedMonthAsync();
+    }
+
+    private async Task ShowCurrentMonthAsync()
+    {
+        displayedMonth = new DateTime(Today.Year, Today.Month, 1);
+        SelectedMarkerDate = null;
+        await LoadMarkersForDisplayedMonthAsync();
+    }
+
+    private async Task HandleDisplayedMonthChangedAsync(ChangeEventArgs args)
+    {
+        if (!DateTime.TryParseExact(
+                args.Value?.ToString(),
+                "yyyy-MM",
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.None,
+                out var selectedMonth))
+        {
+            return;
+        }
+
+        displayedMonth = new DateTime(selectedMonth.Year, selectedMonth.Month, 1);
         SelectedMarkerDate = null;
         await LoadMarkersForDisplayedMonthAsync();
     }

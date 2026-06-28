@@ -20,8 +20,7 @@
     min-width: 0;
 }
 
-.dashboard-eyebrow,
-.morning-label {
+.dashboard-eyebrow {
     color: var(--app-text-muted);
     font-size: 0.84rem;
     font-weight: 500;
@@ -29,8 +28,7 @@
     margin: 0 0 0.42rem;
 }
 
-.dashboard-greeting h1,
-.progress-card-intro h2 {
+.dashboard-greeting h1 {
     color: var(--app-text);
     font-size: clamp(1.65rem, 2.6vw, 2rem);
     font-weight: 600;
@@ -39,9 +37,7 @@
 }
 
 .dashboard-greeting p:not(.dashboard-eyebrow),
-.progress-card-intro p:not(.morning-label),
-.card-heading p,
-.section-heading p {
+.card-heading p {
     color: var(--app-text-secondary);
     font-size: 0.94rem;
     margin: 0.45rem 0 0;
@@ -96,7 +92,6 @@
 }
 
 .card-heading,
-.progress-card-intro,
 .section-heading {
     align-items: center;
     display: flex;
@@ -108,8 +103,7 @@
 }
 
 .card-heading h2,
-.section-heading h3,
-.week-summary h3 {
+.section-heading h3 {
     color: var(--app-text);
     font-size: 1.05rem;
     font-weight: 600;
@@ -238,11 +232,13 @@
 
 .calendar-nav {
     display: flex;
+    flex-wrap: wrap;
     gap: 6px;
     margin-left: auto;
 }
 
-.calendar-nav button {
+.calendar-nav button,
+.month-picker input {
     align-items: center;
     background: var(--app-surface-muted);
     border: 1px solid transparent;
@@ -251,7 +247,29 @@
     display: inline-flex;
     height: 32px;
     justify-content: center;
+}
+
+.calendar-nav button {
     width: 32px;
+}
+
+.calendar-nav .current-month-button {
+    color: var(--app-text);
+    font-size: 0.84rem;
+    font-weight: 500;
+    padding: 0 10px;
+    width: auto;
+}
+
+.month-picker {
+    margin: 0;
+}
+
+.month-picker input {
+    font-size: 0.84rem;
+    font-weight: 500;
+    padding: 0 8px;
+    width: 132px;
 }
 
 .calendar-grid {
@@ -377,39 +395,26 @@
     padding: 20px;
 }
 
-.progress-card-intro {
-    justify-content: space-between;
-    margin-bottom: 20px;
-}
-
-.morning-label {
-    align-items: center;
-    display: flex;
-    gap: 8px;
-}
-
-.morning-label span {
-    background: var(--app-accent-green);
-    border-radius: 50%;
-    display: inline-flex;
-    height: 8px;
-    width: 8px;
-}
-
 .progress-content {
-    align-items: start;
-    display: grid;
-    gap: 20px;
-    grid-template-columns: minmax(0, 1fr) minmax(190px, 0.38fr);
+    display: block;
 }
 
 .month-progress {
+    margin-inline: auto;
+    max-width: 760px;
     min-width: 0;
 }
 
 .section-heading {
+    align-items: center;
+    display: flex;
+    gap: 14px;
     justify-content: space-between;
-    margin-bottom: 12px;
+    margin-bottom: 16px;
+}
+
+.section-heading h3 {
+    font-size: 1.12rem;
 }
 
 .progress-day-cell {
@@ -493,41 +498,9 @@
     color: var(--app-danger) !important;
 }
 
-.week-summary {
-    background: color-mix(in srgb, var(--app-surface-muted) 58%, transparent);
-    border: 1px solid color-mix(in srgb, var(--app-border) 70%, transparent);
-    border-radius: 12px;
-    padding: 16px;
-}
-
-.week-summary dl {
-    display: grid;
-    gap: 12px;
-    margin: 14px 0 0;
-}
-
-.week-summary dl > div {
-    align-items: baseline;
-    display: flex;
-    gap: 14px;
-    justify-content: space-between;
-}
-
-.week-summary dt {
-    color: var(--app-text-muted);
-    font-size: 0.88rem;
-    font-weight: 500;
-}
-
-.week-summary dd {
-    color: var(--app-text);
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin: 0;
-}
-
 @media (hover: hover) and (pointer: fine) {
     .calendar-nav button:hover,
+    .month-picker input:hover,
     .timer-options button:hover,
     .marker-menu button:hover {
         background: var(--app-surface-hover);
@@ -565,9 +538,6 @@
         grid-template-columns: minmax(260px, 0.88fr) minmax(0, 1.12fr);
     }
 
-    .progress-content {
-        grid-template-columns: 1fr;
-    }
 }
 
 @media (max-width: 860px) {
@@ -592,22 +562,26 @@
         padding: 18px;
     }
 
-    .dashboard-greeting h1,
-    .progress-card-intro h2 {
+    .dashboard-greeting h1 {
         font-size: 1.55rem;
     }
 
-    .progress-card-intro {
-        align-items: flex-start;
-        gap: 16px;
-    }
-
-    .progress-card-intro .icon-box {
-        display: none;
+    .section-heading {
+        align-items: stretch;
+        flex-direction: column;
     }
 
     .calendar-grid {
         gap: 6px;
+    }
+
+    .calendar-nav {
+        margin-left: 0;
+    }
+
+    .month-picker,
+    .month-picker input {
+        width: 100%;
     }
 
     .progress-day {
