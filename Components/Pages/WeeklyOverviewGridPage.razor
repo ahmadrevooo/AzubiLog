@@ -13,7 +13,6 @@ else
     <div class="weekly-grid-page">
         <header class="weekly-grid-header">
             <div>
-                <p>@Localizer["WeeklyOverviewEyebrow"]</p>
                 <h1>@Localizer["WeeklyOverviewGridPageTitle"]</h1>
                 <span>@Localizer["WeeklyOverviewPageIntro"]</span>
             </div>
@@ -50,35 +49,29 @@ else
                             <span>@Localizer[day.DayKey]</span>
                             <strong>@day.Date.ToString("dd.MM.yyyy")</strong>
                         </a>
-                        <div>
-                            <strong>@day.TotalHours.ToString("0.##") h</strong>
-                            <span>@day.EntryCount @Localizer["WeeklyOverviewEntries"]</span>
-                        </div>
                     </header>
 
-                    @if (day.Entries.Count == 0)
-                    {
-                        <p class="weekly-grid-empty">@Localizer["WeeklyOverviewNoEntries"]</p>
-                    }
-                    else
-                    {
-                        <div class="weekly-grid-entry-list">
-                            @foreach (var entry in day.Entries)
-                            {
-                                <a class="weekly-grid-entry" href="@($"report-entries/{entry.Id}")">
-                                    <span class="weekly-grid-entry-time">@entry.TimeRange</span>
-                                    <strong>@entry.Title</strong>
-                                    <span class="weekly-grid-entry-meta">
-                                        <span>@entry.CategoryName</span>
-                                        @if (!string.IsNullOrWhiteSpace(entry.OrderNumber))
-                                        {
-                                            <span>@entry.OrderNumber</span>
-                                        }
-                                    </span>
-                                </a>
-                            }
-                        </div>
-                    }
+                    <div class="weekly-grid-day-content">
+                        @if (day.Entries.Count == 0)
+                        {
+                            <p class="weekly-grid-empty">@Localizer["WeeklyOverviewNoEntries"]</p>
+                        }
+                        else
+                        {
+                            <div class="weekly-grid-entry-list">
+                                @foreach (var entry in day.Entries)
+                                {
+                                    <a class="weekly-grid-entry" href="@($"report-entries/{entry.Id}")">
+                                        <strong>@entry.Title</strong>
+                                    </a>
+                                }
+                            </div>
+                        }
+                    </div>
+
+                    <footer class="weekly-grid-day-footer" aria-label="@Localizer["WeeklyOverviewRecorded"]">
+                        <strong>@day.TotalHours.ToString("0.##") h</strong>
+                    </footer>
                 </article>
             }
         </section>
