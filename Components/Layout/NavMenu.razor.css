@@ -138,6 +138,7 @@
     pointer-events: none;
     position: absolute;
     transition: opacity 180ms ease;
+    z-index: 200;
 }
 
 .app-navbar__mobile-panel.is-open {
@@ -147,7 +148,9 @@
 
 .app-navbar__mobile-backdrop {
     background: rgba(15, 23, 42, 0.38);
-    height: calc(100vh - 4.5rem);
+    position: fixed;
+    inset: 4.5rem 0 0 0;
+    z-index: -1;
 }
 
 .app-navbar__mobile-menu {
@@ -160,6 +163,8 @@
     padding: 0.85rem 1rem 1rem;
     transform: translateY(-0.75rem);
     transition: transform 220ms ease;
+    position: relative;
+    z-index: 1;
 }
 
 .app-navbar__mobile-panel.is-open .app-navbar__mobile-menu {
