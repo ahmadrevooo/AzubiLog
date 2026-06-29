@@ -1,24 +1,16 @@
 using AzubiLog.Models;
 using AzubiLog.Services.Timetable;
 using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
 using System.Text.Json;
 
 namespace AzubiLog.Components.Pages;
 
 public partial class TimetablePage : ComponentBase
 {
-    private const string EmptyDaySubtitle = "Noch keine Einträge eingetragen";
     private ApplicationUser? CurrentUser { get; set; }
     private string? StatusMessage { get; set; }
-    private string? ShareStatusMessage { get; set; }
     private bool IsSaving { get; set; }
-    private bool IsCopyingShareCode { get; set; }
-    private bool CanManageTimetable => true;
-    private bool HasClassAssignment => !string.IsNullOrWhiteSpace(CurrentUser?.School) && !string.IsNullOrWhiteSpace(CurrentUser?.ClassName);
-    private string ShareCode => HasClassAssignment
-        ? TimetableService.GenerateShareCode(CurrentUser!.School, CurrentUser.ClassName)
-        : string.Empty;
+    private DayOfWeek SelectedDay { get; set; } = DayOfWeek.Monday;
 
     private List<DayEntry> DayEntries { get; set; } = new();
     private List<TimetableCancellation> Cancellations { get; set; } = new();
@@ -26,18 +18,14 @@ public partial class TimetablePage : ComponentBase
     private int SelectedCancellationDay { get; set; } = (int)DayOfWeek.Monday;
     private DateTime CancellationDate { get; set; } = DateTime.Today;
     private string? CancellationReason { get; set; }
-    private string ShareCodeInput { get; set; } = string.Empty;
     private int FilledDayCount => DayEntries.Count(entry => entry.SubjectRows.Count > 0);
 
-    [Inject]
-    private IJSRuntime JS { get; set; } = null!;
+    private string UserSchool => string.IsNullOrWhiteSpace(CurrentUser?.School) ? "_personal" : CurrentUser.School;
+    private string UserClass => string.IsNullOrWhiteSpace(CurrentUser?.ClassName) ? CurrentUser!.Id : CurrentUser.ClassName;
 
     protected override async Task OnInitializedAsync()
     {
         CurrentUser = await CurrentUserService.GetRequiredUserAsync();
-
-        if (!HasClassAssignment)
-            return;
 
         DayEntries = new List<DayEntry>
         {
@@ -51,32 +39,9 @@ public partial class TimetablePage : ComponentBase
         await ReloadTimetableAsync();
     }
 
-    private async Task LoadCancellationsAsync()
+    private void SelectDay(DayOfWeek day)
     {
-        if (CurrentUser is null) return;
-
-        var allEntries = await TimetableService.GetClassTimetableAsync(
-            CurrentUser.School, CurrentUser.ClassName);
-
-        Cancellations = allEntries
-            .SelectMany(e => e.Cancellations)
-            .OrderByDescending(c => c.Date)
-            .ToList();
-    }
-
-    private static string GetDaySubtitle(string? subjectsText)
-    {
-        var subjectRows = ParseSubjectRows(subjectsText);
-
-        if (subjectRows.Count == 0)
-            return EmptyDaySubtitle;
-
-        return subjectRows.Count switch
-        {
-            0 => EmptyDaySubtitle,
-            1 => $"{subjectRows[0].Fach} geplant",
-            _ => $"{subjectRows.Count} Einträge geplant"
-        };
+        SelectedDay = day;
     }
 
     private async Task SaveTimetableAsync()
@@ -92,8 +57,8 @@ public partial class TimetablePage : ComponentBase
             {
                 await TimetableService.SaveClassTimetableAsync(
                     CurrentUser.Id,
-                    CurrentUser.School,
-                    CurrentUser.ClassName,
+                    UserSchool,
+                    UserClass,
                     dayEntry.DayOfWeek,
                     SerializeSubjectRows(dayEntry.SubjectRows));
             }
@@ -145,84 +110,23 @@ public partial class TimetablePage : ComponentBase
         await LoadCancellationsAsync();
     }
 
-    private async Task CopyShareCodeAsync()
+    private async Task LoadCancellationsAsync()
     {
-        if (!HasClassAssignment)
-            return;
+        if (CurrentUser is null) return;
 
-        IsCopyingShareCode = true;
-        ShareStatusMessage = null;
+        var allEntries = await TimetableService.GetClassTimetableAsync(UserSchool, UserClass);
 
-        try
-        {
-            await JS.InvokeVoidAsync("navigator.clipboard.writeText", ShareCode);
-            ShareStatusMessage = "Freigabecode wurde in die Zwischenablage kopiert.";
-        }
-        catch
-        {
-            ShareStatusMessage = "Freigabecode konnte nicht kopiert werden. Bitte manuell kopieren.";
-        }
-        finally
-        {
-            IsCopyingShareCode = false;
-        }
-    }
-
-    private async Task ApplyShareCodeAsync()
-    {
-        if (CurrentUser is null)
-            return;
-
-        ShareStatusMessage = null;
-
-        var resolvedShareTarget = await TimetableService.ResolveShareCodeAsync(ShareCodeInput);
-        if (resolvedShareTarget is null)
-        {
-            ShareStatusMessage = "Bitte gib einen gültigen Beitrittscode ein.";
-            return;
-        }
-
-        var (school, className) = resolvedShareTarget.Value;
-
-        if (string.Equals(CurrentUser.School.Trim(), school, StringComparison.OrdinalIgnoreCase)
-            && string.Equals(CurrentUser.ClassName.Trim(), className, StringComparison.OrdinalIgnoreCase))
-        {
-            ShareStatusMessage = "Dieser Stundenplan ist bereits deiner Klasse zugeordnet.";
-            return;
-        }
-
-        IsSaving = true;
-
-        try
-        {
-            await TimetableService.ShareTimetableAsync(
-                CurrentUser.Id,
-                CurrentUser.School,
-                CurrentUser.ClassName,
-                school,
-                className);
-
-            ShareCodeInput = string.Empty;
-            await ReloadTimetableAsync();
-            ShareStatusMessage = "Stundenplan wurde für deine Klasse übernommen.";
-        }
-        catch
-        {
-            ShareStatusMessage = "Stundenplan konnte nicht übernommen werden.";
-        }
-        finally
-        {
-            IsSaving = false;
-        }
+        Cancellations = allEntries
+            .SelectMany(e => e.Cancellations)
+            .OrderByDescending(c => c.Date)
+            .ToList();
     }
 
     private async Task ReloadTimetableAsync()
     {
-        if (CurrentUser is null || !HasClassAssignment)
-            return;
+        if (CurrentUser is null) return;
 
-        var entries = await TimetableService.GetClassTimetableAsync(
-            CurrentUser.School, CurrentUser.ClassName);
+        var entries = await TimetableService.GetClassTimetableAsync(UserSchool, UserClass);
 
         foreach (var dayEntry in DayEntries)
         {
@@ -260,9 +164,7 @@ public partial class TimetablePage : ComponentBase
     private static List<SubjectRow> ParseSubjectRows(string? subjectsText)
     {
         if (string.IsNullOrWhiteSpace(subjectsText))
-        {
             return new List<SubjectRow>();
-        }
 
         try
         {
@@ -280,16 +182,14 @@ public partial class TimetablePage : ComponentBase
                     .ToList();
             }
         }
-        catch (JsonException)
-        {
-        }
+        catch (JsonException) { }
 
         return subjectsText
             .Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
             .Select(subject => new SubjectRow
             {
                 Fach = subject,
-                Lehrer = "Unbekannt",
+                Lehrer = string.Empty,
                 Raum = string.Empty
             })
             .ToList();
@@ -298,11 +198,11 @@ public partial class TimetablePage : ComponentBase
     private static string SerializeSubjectRows(List<SubjectRow> subjectRows)
     {
         var normalizedRows = subjectRows
-            .Where(row => !string.IsNullOrWhiteSpace(row.Fach) && !string.IsNullOrWhiteSpace(row.Lehrer))
+            .Where(row => !string.IsNullOrWhiteSpace(row.Fach))
             .Select(row => new ClassTimetableEntry.StructuredSubjectEntry
             {
                 Fach = row.Fach.Trim(),
-                Lehrer = row.Lehrer.Trim(),
+                Lehrer = string.IsNullOrWhiteSpace(row.Lehrer) ? "-" : row.Lehrer.Trim(),
                 Raum = string.IsNullOrWhiteSpace(row.Raum) ? null : row.Raum.Trim()
             })
             .ToList();
@@ -310,20 +210,6 @@ public partial class TimetablePage : ComponentBase
         return normalizedRows.Count == 0
             ? string.Empty
             : JsonSerializer.Serialize(normalizedRows);
-    }
-
-    private static string FormatReadonlySubjects(string? subjectsText)
-    {
-        var subjectRows = ParseSubjectRows(subjectsText);
-        if (subjectRows.Count == 0)
-        {
-            return "Keine Einträge vorhanden.";
-        }
-
-        return string.Join(Environment.NewLine, subjectRows.Select(row =>
-            string.IsNullOrWhiteSpace(row.Raum)
-                ? $"{row.Fach} — {row.Lehrer}"
-                : $"{row.Fach} — {row.Lehrer} ({row.Raum})"));
     }
 
     private static string GetDayName(DayOfWeek day) => day switch
@@ -336,6 +222,16 @@ public partial class TimetablePage : ComponentBase
         DayOfWeek.Saturday => "Samstag",
         DayOfWeek.Sunday => "Sonntag",
         _ => day.ToString()
+    };
+
+    private static string GetDayShort(DayOfWeek day) => day switch
+    {
+        DayOfWeek.Monday => "Mo",
+        DayOfWeek.Tuesday => "Di",
+        DayOfWeek.Wednesday => "Mi",
+        DayOfWeek.Thursday => "Do",
+        DayOfWeek.Friday => "Fr",
+        _ => day.ToString()[..2]
     };
 
     private sealed class DayEntry(DayOfWeek dayOfWeek)

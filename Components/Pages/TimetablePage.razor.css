@@ -1,163 +1,3 @@
-.timetable-class-info {
-    margin-top: 0.5rem;
-    font-size: 0.95rem;
-    color: var(--app-text);
-}
-
-.timetable-overview {
-    display: grid;
-    gap: 0.85rem;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.timetable-share-grid {
-    display: grid;
-    gap: 0.85rem;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.timetable-share-card {
-    background: linear-gradient(180deg, color-mix(in srgb, var(--app-primary) 6%, var(--app-surface)) 0%, var(--app-bg) 100%);
-    border: 1px solid color-mix(in srgb, var(--app-border) 62%, transparent);
-    border-radius: 10px;
-    display: grid;
-    gap: 0.75rem;
-    padding: 1rem;
-}
-
-.timetable-share-card strong {
-    color: var(--app-text);
-    font-size: 1rem;
-    font-weight: 760;
-}
-
-.timetable-share-card span {
-    color: var(--app-text-muted);
-    font-size: 0.88rem;
-}
-
-.timetable-share-code {
-    background: #0f172a;
-    border-radius: 10px;
-    color: #f8fafc;
-    font-size: 0.95rem;
-    font-weight: 760;
-    padding: 0.85rem 1rem;
-    word-break: break-word;
-}
-
-.timetable-overview-item {
-    background: linear-gradient(180deg, color-mix(in srgb, var(--app-primary) 8%, var(--app-surface)) 0%, var(--app-bg) 100%);
-    border: 1px solid color-mix(in srgb, var(--app-border) 62%, transparent);
-    border-radius: 10px;
-    display: grid;
-    gap: 0.2rem;
-    padding: 0.9rem 1rem;
-}
-
-.timetable-overview-item strong {
-    color: var(--app-text);
-    font-size: 1rem;
-    font-weight: 760;
-}
-
-.timetable-overview-item span {
-    color: var(--app-text-muted);
-    font-size: 0.82rem;
-    font-weight: 650;
-}
-
-.timetable-grid {
-    display: grid;
-    gap: 0.9rem;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.timetable-day-card {
-    background: var(--app-bg);
-    border: 1px solid color-mix(in srgb, var(--app-border) 62%, transparent);
-    border-radius: 10px;
-    display: grid;
-    gap: 0.75rem;
-    min-width: 0;
-    padding: 1rem;
-}
-
-.timetable-day-card-header {
-    align-items: start;
-    display: flex;
-    gap: 0.75rem;
-    justify-content: space-between;
-}
-
-.timetable-day-card-header p {
-    color: var(--app-text-muted);
-    font-size: 0.84rem;
-    margin: 0.2rem 0 0;
-}
-
-.timetable-day-label {
-    display: block;
-    font-weight: 680;
-    color: var(--app-text);
-    font-size: 1rem;
-}
-
-.timetable-day-state {
-    border-radius: 999px;
-    font-size: 0.76rem;
-    font-weight: 760;
-    padding: 0.35rem 0.65rem;
-    white-space: nowrap;
-}
-
-.timetable-day-state.is-filled {
-    background: color-mix(in srgb, #22c55e 14%, var(--app-surface));
-    color: #15803d;
-}
-
-.timetable-day-state.is-empty {
-    background: color-mix(in srgb, var(--app-border) 22%, var(--app-surface));
-    color: var(--app-text-muted);
-}
-
-.timetable-day-input {
-    display: grid;
-    gap: 0.35rem;
-}
-
-.timetable-subject-rows {
-    display: grid;
-    gap: 0.65rem;
-}
-
-.timetable-subject-row {
-    display: grid;
-    gap: 0.5rem;
-    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.2fr) minmax(0, 0.9fr) auto;
-    align-items: start;
-}
-
-.timetable-row-add,
-.timetable-row-remove {
-    justify-self: start;
-}
-
-.timetable-readonly-subjects {
-    background: var(--app-surface);
-    border: 1px solid color-mix(in srgb, var(--app-border) 62%, transparent);
-    border-radius: 10px;
-    color: var(--app-text);
-    min-height: 7rem;
-    padding: 0.85rem 1rem;
-    white-space: pre-wrap;
-}
-
-.timetable-day-hint {
-    color: var(--app-text-muted);
-    font-size: 0.8rem;
-}
-
 .timetable-header-badge {
     align-items: flex-end;
     display: grid;
@@ -174,6 +14,162 @@
 .timetable-header-badge span {
     color: var(--app-text-muted);
     font-size: 0.8rem;
+}
+
+.timetable-day-tabs {
+    display: flex;
+    gap: 0.35rem;
+    border-bottom: 1px solid var(--app-border);
+    padding-bottom: 0;
+    overflow-x: auto;
+}
+
+.timetable-tab {
+    align-items: center;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--app-text-muted);
+    cursor: pointer;
+    display: flex;
+    font-size: 0.9rem;
+    font-weight: 600;
+    gap: 0.4rem;
+    padding: 0.75rem 1rem;
+    transition: color 150ms ease, border-color 150ms ease;
+    white-space: nowrap;
+}
+
+.timetable-tab:hover {
+    color: var(--app-text);
+}
+
+.timetable-tab.is-active {
+    border-bottom-color: var(--app-primary);
+    color: var(--app-primary);
+    font-weight: 700;
+}
+
+.timetable-tab.has-entries .timetable-tab-full,
+.timetable-tab.has-entries .timetable-tab-short {
+    color: inherit;
+}
+
+.timetable-tab-count {
+    background: color-mix(in srgb, var(--app-primary) 15%, var(--app-surface));
+    border-radius: 999px;
+    color: var(--app-primary);
+    font-size: 0.72rem;
+    font-weight: 760;
+    min-width: 1.4rem;
+    padding: 0.15rem 0.4rem;
+    text-align: center;
+}
+
+.timetable-tab-short {
+    display: none;
+}
+
+.timetable-day-content {
+    display: grid;
+    gap: 1rem;
+    padding: 1rem 0 0;
+}
+
+.timetable-day-content-header {
+    align-items: center;
+    display: flex;
+    gap: 0.75rem;
+    justify-content: space-between;
+}
+
+.timetable-day-content-header h3 {
+    font-size: 1.05rem;
+    font-weight: 720;
+    margin: 0;
+}
+
+.timetable-entry-count {
+    color: var(--app-text-muted);
+    font-size: 0.85rem;
+}
+
+.timetable-subject-list {
+    display: grid;
+    gap: 0.65rem;
+}
+
+.timetable-subject-item {
+    align-items: start;
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: auto 1fr auto;
+    padding: 0.65rem 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--app-border) 40%, transparent);
+}
+
+.timetable-subject-item:last-child {
+    border-bottom: none;
+}
+
+.timetable-subject-index {
+    align-items: center;
+    background: color-mix(in srgb, var(--app-primary) 10%, var(--app-surface));
+    border-radius: 50%;
+    color: var(--app-primary);
+    display: flex;
+    font-size: 0.78rem;
+    font-weight: 760;
+    height: 1.8rem;
+    justify-content: center;
+    margin-top: 0.4rem;
+    width: 1.8rem;
+}
+
+.timetable-subject-fields {
+    display: grid;
+    gap: 0.4rem;
+    grid-template-columns: 1fr 1fr 0.8fr;
+}
+
+.btn-icon-danger {
+    align-items: center;
+    background: transparent;
+    border: 1px solid color-mix(in srgb, #ef4444 40%, transparent);
+    border-radius: 50%;
+    color: #ef4444;
+    cursor: pointer;
+    display: flex;
+    font-size: 1.1rem;
+    height: 2rem;
+    justify-content: center;
+    margin-top: 0.35rem;
+    transition: background 150ms ease;
+    width: 2rem;
+}
+
+.btn-icon-danger:hover {
+    background: color-mix(in srgb, #ef4444 10%, var(--app-surface));
+}
+
+.timetable-add-btn {
+    justify-self: start;
+}
+
+.timetable-empty-state {
+    background: color-mix(in srgb, var(--app-border) 12%, var(--app-bg));
+    border: 1px dashed color-mix(in srgb, var(--app-border) 60%, transparent);
+    border-radius: 10px;
+    display: grid;
+    gap: 0.25rem;
+    justify-items: center;
+    padding: 2rem 1rem;
+    text-align: center;
+}
+
+.timetable-empty-state span {
+    color: var(--app-text-muted);
+    font-size: 0.88rem;
 }
 
 .timetable-actions {
@@ -194,27 +190,65 @@
 }
 
 .timetable-cancellation-item {
-    display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 0.5rem 0;
     border-bottom: 1px solid color-mix(in srgb, var(--app-border) 40%, transparent);
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+    padding: 0.6rem 0;
 }
 
 .timetable-cancellation-item:last-child {
     border-bottom: none;
 }
 
-@media (max-width: 760px) {
-    .timetable-overview,
-    .timetable-grid,
-    .timetable-share-grid {
+.timetable-cancellation-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.timetable-cancellation-info strong {
+    color: var(--app-text);
+}
+
+.timetable-cancellation-info span {
+    color: var(--app-text-muted);
+    font-size: 0.88rem;
+}
+
+.timetable-cancellation-info em {
+    color: var(--app-text-muted);
+    font-size: 0.85rem;
+    font-style: italic;
+}
+
+@media (max-width: 640px) {
+    .timetable-tab-full {
+        display: none;
+    }
+
+    .timetable-tab-short {
+        display: inline;
+    }
+
+    .timetable-subject-fields {
         grid-template-columns: 1fr;
     }
 
-    .timetable-header-badge {
-        justify-items: start;
+    .timetable-subject-item {
+        grid-template-columns: auto 1fr auto;
+    }
+
+    .timetable-day-tabs {
+        gap: 0;
+    }
+
+    .timetable-tab {
+        flex: 1;
+        justify-content: center;
+        padding: 0.7rem 0.5rem;
     }
 
     .timetable-actions .btn,
@@ -225,9 +259,10 @@
     .timetable-cancellation-item {
         align-items: stretch;
         flex-direction: column;
+        gap: 0.5rem;
     }
 
-    .timetable-subject-row {
-        grid-template-columns: 1fr;
+    .timetable-header-badge {
+        justify-items: start;
     }
 }

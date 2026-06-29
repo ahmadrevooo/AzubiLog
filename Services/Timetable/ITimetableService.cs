@@ -4,21 +4,9 @@ namespace AzubiLog.Services.Timetable;
 
 public interface ITimetableService
 {
-    string GenerateShareCode(string school, string className);
-
-    Task<(string School, string ClassName)?> ResolveShareCodeAsync(
-        string shareCode,
-        CancellationToken cancellationToken = default);
-
     Task<List<ClassTimetableEntry>> GetClassTimetableAsync(
         string school,
         string className,
-        CancellationToken cancellationToken = default);
-
-    Task<ClassTimetableEntry?> GetClassTimetableForDayAsync(
-        string school,
-        string className,
-        DayOfWeek dayOfWeek,
         CancellationToken cancellationToken = default);
 
     Task SaveClassTimetableAsync(
@@ -27,17 +15,6 @@ public interface ITimetableService
         string className,
         DayOfWeek dayOfWeek,
         string subjectsText,
-        CancellationToken cancellationToken = default);
-
-    Task DeleteClassTimetableEntryAsync(
-        string userId,
-        int entryId,
-        CancellationToken cancellationToken = default);
-
-    Task<List<TimetableCancellation>> GetCancellationsForDateAsync(
-        string school,
-        string className,
-        DateTime date,
         CancellationToken cancellationToken = default);
 
     Task AddCancellationAsync(
@@ -50,13 +27,5 @@ public interface ITimetableService
     Task RemoveCancellationAsync(
         string userId,
         int cancellationId,
-        CancellationToken cancellationToken = default);
-
-    Task ShareTimetableAsync(
-        string userId,
-        string targetSchool,
-        string targetClassName,
-        string sourceSchool,
-        string sourceClassName,
         CancellationToken cancellationToken = default);
 }
