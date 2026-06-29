@@ -50,9 +50,12 @@
     font-weight: 700;
 }
 
-.timetable-tab.has-entries .timetable-tab-full,
-.timetable-tab.has-entries .timetable-tab-short {
-    color: inherit;
+.timetable-tab.has-status {
+    color: #dc2626;
+}
+
+.timetable-tab.has-status.is-active {
+    border-bottom-color: #dc2626;
 }
 
 .timetable-tab-count {
@@ -64,6 +67,15 @@
     min-width: 1.4rem;
     padding: 0.15rem 0.4rem;
     text-align: center;
+}
+
+.timetable-tab-status {
+    background: color-mix(in srgb, #dc2626 12%, var(--app-surface));
+    border-radius: 999px;
+    color: #dc2626;
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 0.15rem 0.45rem;
 }
 
 .timetable-tab-short {
@@ -89,14 +101,93 @@
     margin: 0;
 }
 
-.timetable-entry-count {
+.timetable-day-status-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.timetable-day-status-label {
     color: var(--app-text-muted);
     font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.timetable-status-options {
+    display: flex;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+}
+
+.timetable-status-btn {
+    background: var(--app-bg);
+    border: 1px solid var(--app-border);
+    border-radius: 999px;
+    color: var(--app-text-muted);
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.4rem 0.85rem;
+    transition: all 150ms ease;
+}
+
+.timetable-status-btn:hover {
+    border-color: var(--app-text-muted);
+    color: var(--app-text);
+}
+
+.timetable-status-btn.is-active {
+    background: color-mix(in srgb, var(--app-primary) 12%, var(--app-surface));
+    border-color: var(--app-primary);
+    color: var(--app-primary);
+    font-weight: 700;
+}
+
+.timetable-status-btn.status-krank.is-active {
+    background: color-mix(in srgb, #dc2626 10%, var(--app-surface));
+    border-color: #dc2626;
+    color: #dc2626;
+}
+
+.timetable-status-btn.status-urlaub.is-active {
+    background: color-mix(in srgb, #2563eb 10%, var(--app-surface));
+    border-color: #2563eb;
+    color: #2563eb;
+}
+
+.timetable-status-btn.status-betrieb.is-active {
+    background: color-mix(in srgb, #d97706 10%, var(--app-surface));
+    border-color: #d97706;
+    color: #d97706;
+}
+
+.timetable-status-btn.status-feiertag.is-active {
+    background: color-mix(in srgb, #7c3aed 10%, var(--app-surface));
+    border-color: #7c3aed;
+    color: #7c3aed;
+}
+
+.timetable-day-status-notice {
+    background: color-mix(in srgb, #dc2626 6%, var(--app-bg));
+    border: 1px solid color-mix(in srgb, #dc2626 25%, transparent);
+    border-radius: 8px;
+    color: #dc2626;
+    font-size: 0.88rem;
+    padding: 0.65rem 1rem;
+}
+
+.timetable-day-status-notice strong {
+    font-weight: 700;
+}
+
+.timetable-day-status-notice span {
+    color: var(--app-text-muted);
 }
 
 .timetable-subject-list {
     display: grid;
-    gap: 0.65rem;
+    gap: 0.5rem;
 }
 
 .timetable-subject-item {
@@ -106,10 +197,19 @@
     grid-template-columns: auto 1fr auto;
     padding: 0.65rem 0;
     border-bottom: 1px solid color-mix(in srgb, var(--app-border) 40%, transparent);
+    transition: opacity 150ms ease;
 }
 
 .timetable-subject-item:last-child {
     border-bottom: none;
+}
+
+.timetable-subject-item.is-cancelled {
+    opacity: 0.5;
+}
+
+.timetable-subject-item.is-cancelled .timetable-subject-fields .form-control {
+    text-decoration: line-through;
 }
 
 .timetable-subject-index {
@@ -126,10 +226,52 @@
     width: 1.8rem;
 }
 
+.timetable-subject-item.is-cancelled .timetable-subject-index {
+    background: color-mix(in srgb, #dc2626 10%, var(--app-surface));
+    color: #dc2626;
+}
+
 .timetable-subject-fields {
     display: grid;
     gap: 0.4rem;
     grid-template-columns: 1fr 1fr 0.8fr;
+}
+
+.timetable-subject-actions {
+    display: flex;
+    align-items: start;
+    gap: 0.35rem;
+    margin-top: 0.3rem;
+}
+
+.btn-entfall {
+    background: var(--app-bg);
+    border: 1px solid var(--app-border);
+    border-radius: 999px;
+    color: var(--app-text-muted);
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.35rem 0.7rem;
+    transition: all 150ms ease;
+    white-space: nowrap;
+}
+
+.btn-entfall:hover {
+    border-color: #dc2626;
+    color: #dc2626;
+}
+
+.btn-entfall.is-active {
+    background: color-mix(in srgb, #dc2626 10%, var(--app-surface));
+    border-color: #dc2626;
+    color: #dc2626;
+    font-weight: 700;
+}
+
+.btn-entfall:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
 }
 
 .btn-icon-danger {
@@ -143,7 +285,6 @@
     font-size: 1.1rem;
     height: 2rem;
     justify-content: center;
-    margin-top: 0.35rem;
     transition: background 150ms ease;
     width: 2rem;
 }
@@ -179,51 +320,6 @@
     padding-top: 1rem;
 }
 
-.timetable-cancellation-form {
-    display: grid;
-    gap: 0.75rem;
-}
-
-.timetable-cancellation-list {
-    display: grid;
-    gap: 0.5rem;
-}
-
-.timetable-cancellation-item {
-    align-items: center;
-    border-bottom: 1px solid color-mix(in srgb, var(--app-border) 40%, transparent);
-    display: flex;
-    gap: 1rem;
-    justify-content: space-between;
-    padding: 0.6rem 0;
-}
-
-.timetable-cancellation-item:last-child {
-    border-bottom: none;
-}
-
-.timetable-cancellation-info {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-}
-
-.timetable-cancellation-info strong {
-    color: var(--app-text);
-}
-
-.timetable-cancellation-info span {
-    color: var(--app-text-muted);
-    font-size: 0.88rem;
-}
-
-.timetable-cancellation-info em {
-    color: var(--app-text-muted);
-    font-size: 0.85rem;
-    font-style: italic;
-}
-
 @media (max-width: 640px) {
     .timetable-tab-full {
         display: none;
@@ -238,7 +334,12 @@
     }
 
     .timetable-subject-item {
-        grid-template-columns: auto 1fr auto;
+        grid-template-columns: auto 1fr;
+    }
+
+    .timetable-subject-actions {
+        grid-column: 1 / -1;
+        justify-content: flex-end;
     }
 
     .timetable-day-tabs {
@@ -251,18 +352,24 @@
         padding: 0.7rem 0.5rem;
     }
 
-    .timetable-actions .btn,
-    .timetable-cancellation-form .btn {
+    .timetable-actions .btn {
         width: 100%;
     }
 
-    .timetable-cancellation-item {
-        align-items: stretch;
+    .timetable-day-status-bar {
         flex-direction: column;
-        gap: 0.5rem;
+        align-items: stretch;
+    }
+
+    .timetable-status-options {
+        flex-wrap: wrap;
     }
 
     .timetable-header-badge {
         justify-items: start;
+    }
+
+    .timetable-tab-status {
+        display: none;
     }
 }

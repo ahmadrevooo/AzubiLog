@@ -13,12 +13,16 @@ public partial class TimetablePage : ComponentBase
     private DayOfWeek SelectedDay { get; set; } = DayOfWeek.Monday;
 
     private List<DayEntry> DayEntries { get; set; } = new();
-    private List<TimetableCancellation> Cancellations { get; set; } = new();
-
-    private int SelectedCancellationDay { get; set; } = (int)DayOfWeek.Monday;
-    private DateTime CancellationDate { get; set; } = DateTime.Today;
-    private string? CancellationReason { get; set; }
     private int FilledDayCount => DayEntries.Count(entry => entry.SubjectRows.Count > 0);
+
+    private static readonly KeyValuePair<string, string>[] StatusOptions =
+    [
+        new("normal", "Normal"),
+        new("krank", "Krank"),
+        new("urlaub", "Urlaub"),
+        new("betrieb", "Betrieb"),
+        new("feiertag", "Feiertag")
+    ];
 
     private string UserSchool => string.IsNullOrWhiteSpace(CurrentUser?.School) ? "_personal" : CurrentUser.School;
     private string UserClass => string.IsNullOrWhiteSpace(CurrentUser?.ClassName) ? CurrentUser!.Id : CurrentUser.ClassName;
@@ -44,6 +48,21 @@ public partial class TimetablePage : ComponentBase
         SelectedDay = day;
     }
 
+    private void SetDayStatus(DayEntry dayEntry, string status)
+    {
+        dayEntry.DayStatus = status;
+        if (status != "normal")
+        {
+            foreach (var row in dayEntry.SubjectRows)
+                row.Entfall = false;
+        }
+    }
+
+    private void ToggleEntfall(SubjectRow row)
+    {
+        row.Entfall = !row.Entfall;
+    }
+
     private async Task SaveTimetableAsync()
     {
         if (CurrentUser is null) return;
@@ -55,12 +74,13 @@ public partial class TimetablePage : ComponentBase
         {
             foreach (var dayEntry in DayEntries)
             {
+                var serialized = SerializeDayData(dayEntry);
                 await TimetableService.SaveClassTimetableAsync(
                     CurrentUser.Id,
                     UserSchool,
                     UserClass,
                     dayEntry.DayOfWeek,
-                    SerializeSubjectRows(dayEntry.SubjectRows));
+                    serialized);
             }
 
             await ReloadTimetableAsync();
@@ -76,52 +96,6 @@ public partial class TimetablePage : ComponentBase
         }
     }
 
-    private async Task AddCancellationAsync()
-    {
-        if (CurrentUser is null) return;
-
-        var selectedDay = (DayOfWeek)SelectedCancellationDay;
-        var dayEntry = DayEntries.FirstOrDefault(d => d.DayOfWeek == selectedDay);
-        if (dayEntry is null || dayEntry.EntryId is null) return;
-
-        IsSaving = true;
-        try
-        {
-            await TimetableService.AddCancellationAsync(
-                CurrentUser.Id,
-                dayEntry.EntryId.Value,
-                CancellationDate,
-                CancellationReason);
-
-            CancellationReason = null;
-            await LoadCancellationsAsync();
-        }
-        finally
-        {
-            IsSaving = false;
-        }
-    }
-
-    private async Task RemoveCancellationAsync(int cancellationId)
-    {
-        if (CurrentUser is null) return;
-
-        await TimetableService.RemoveCancellationAsync(CurrentUser.Id, cancellationId);
-        await LoadCancellationsAsync();
-    }
-
-    private async Task LoadCancellationsAsync()
-    {
-        if (CurrentUser is null) return;
-
-        var allEntries = await TimetableService.GetClassTimetableAsync(UserSchool, UserClass);
-
-        Cancellations = allEntries
-            .SelectMany(e => e.Cancellations)
-            .OrderByDescending(c => c.Date)
-            .ToList();
-    }
-
     private async Task ReloadTimetableAsync()
     {
         if (CurrentUser is null) return;
@@ -130,9 +104,8 @@ public partial class TimetablePage : ComponentBase
 
         foreach (var dayEntry in DayEntries)
         {
-            dayEntry.SubjectsText = string.Empty;
-            dayEntry.EntryId = null;
             dayEntry.SubjectRows.Clear();
+            dayEntry.DayStatus = "normal";
         }
 
         foreach (var entry in entries)
@@ -140,13 +113,9 @@ public partial class TimetablePage : ComponentBase
             var dayEntry = DayEntries.FirstOrDefault(d => d.DayOfWeek == entry.DayOfWeek);
             if (dayEntry is not null)
             {
-                dayEntry.SubjectsText = entry.SubjectsText;
-                dayEntry.EntryId = entry.Id;
-                dayEntry.SubjectRows = ParseSubjectRows(entry.SubjectsText);
+                ParseDayData(entry.SubjectsText, dayEntry);
             }
         }
-
-        await LoadCancellationsAsync();
     }
 
     private void AddSubjectRow(DayOfWeek dayOfWeek)
@@ -161,56 +130,91 @@ public partial class TimetablePage : ComponentBase
         dayEntry?.SubjectRows.Remove(row);
     }
 
-    private static List<SubjectRow> ParseSubjectRows(string? subjectsText)
+    private static void ParseDayData(string? subjectsText, DayEntry dayEntry)
     {
         if (string.IsNullOrWhiteSpace(subjectsText))
-            return new List<SubjectRow>();
+            return;
 
         try
         {
-            var structuredEntries = JsonSerializer.Deserialize<List<ClassTimetableEntry.StructuredSubjectEntry>>(subjectsText);
-            if (structuredEntries is not null)
+            var dayData = JsonSerializer.Deserialize<DayDataJson>(subjectsText);
+            if (dayData?.Entries is not null)
             {
-                return structuredEntries
-                    .Where(entry => !string.IsNullOrWhiteSpace(entry.Fach) && !string.IsNullOrWhiteSpace(entry.Lehrer))
-                    .Select(entry => new SubjectRow
+                dayEntry.DayStatus = dayData.Status ?? "normal";
+                dayEntry.SubjectRows = dayData.Entries
+                    .Where(e => !string.IsNullOrWhiteSpace(e.Fach))
+                    .Select(e => new SubjectRow
                     {
-                        Fach = entry.Fach.Trim(),
-                        Lehrer = entry.Lehrer.Trim(),
-                        Raum = entry.Raum?.Trim() ?? string.Empty
+                        Fach = e.Fach.Trim(),
+                        Lehrer = e.Lehrer?.Trim() ?? string.Empty,
+                        Raum = e.Raum?.Trim() ?? string.Empty,
+                        Entfall = e.Entfall
                     })
                     .ToList();
+                return;
             }
         }
         catch (JsonException) { }
 
-        return subjectsText
-            .Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
-            .Select(subject => new SubjectRow
+        try
+        {
+            var legacyEntries = JsonSerializer.Deserialize<List<ClassTimetableEntry.StructuredSubjectEntry>>(subjectsText);
+            if (legacyEntries is not null)
             {
-                Fach = subject,
-                Lehrer = string.Empty,
-                Raum = string.Empty
-            })
+                dayEntry.SubjectRows = legacyEntries
+                    .Where(e => !string.IsNullOrWhiteSpace(e.Fach))
+                    .Select(e => new SubjectRow
+                    {
+                        Fach = e.Fach.Trim(),
+                        Lehrer = e.Lehrer?.Trim() ?? string.Empty,
+                        Raum = e.Raum?.Trim() ?? string.Empty,
+                        Entfall = false
+                    })
+                    .ToList();
+                return;
+            }
+        }
+        catch (JsonException) { }
+
+        dayEntry.SubjectRows = subjectsText
+            .Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
+            .Select(s => new SubjectRow { Fach = s, Lehrer = string.Empty, Raum = string.Empty })
             .ToList();
     }
 
-    private static string SerializeSubjectRows(List<SubjectRow> subjectRows)
+    private static string SerializeDayData(DayEntry dayEntry)
     {
-        var normalizedRows = subjectRows
+        var entries = dayEntry.SubjectRows
             .Where(row => !string.IsNullOrWhiteSpace(row.Fach))
-            .Select(row => new ClassTimetableEntry.StructuredSubjectEntry
+            .Select(row => new SubjectEntryJson
             {
                 Fach = row.Fach.Trim(),
                 Lehrer = string.IsNullOrWhiteSpace(row.Lehrer) ? "-" : row.Lehrer.Trim(),
-                Raum = string.IsNullOrWhiteSpace(row.Raum) ? null : row.Raum.Trim()
+                Raum = string.IsNullOrWhiteSpace(row.Raum) ? null : row.Raum.Trim(),
+                Entfall = row.Entfall
             })
             .ToList();
 
-        return normalizedRows.Count == 0
-            ? string.Empty
-            : JsonSerializer.Serialize(normalizedRows);
+        if (entries.Count == 0 && dayEntry.DayStatus == "normal")
+            return string.Empty;
+
+        var dayData = new DayDataJson
+        {
+            Status = dayEntry.DayStatus,
+            Entries = entries
+        };
+
+        return JsonSerializer.Serialize(dayData);
     }
+
+    private static string GetStatusLabel(string status) => status switch
+    {
+        "krank" => "Krank",
+        "urlaub" => "Urlaub",
+        "betrieb" => "Betrieb",
+        "feiertag" => "Feiertag",
+        _ => "Normal"
+    };
 
     private static string GetDayName(DayOfWeek day) => day switch
     {
@@ -237,8 +241,7 @@ public partial class TimetablePage : ComponentBase
     private sealed class DayEntry(DayOfWeek dayOfWeek)
     {
         public DayOfWeek DayOfWeek { get; } = dayOfWeek;
-        public string SubjectsText { get; set; } = string.Empty;
-        public int? EntryId { get; set; }
+        public string DayStatus { get; set; } = "normal";
         public List<SubjectRow> SubjectRows { get; set; } = new();
     }
 
@@ -247,5 +250,20 @@ public partial class TimetablePage : ComponentBase
         public string Fach { get; set; } = string.Empty;
         public string Lehrer { get; set; } = string.Empty;
         public string Raum { get; set; } = string.Empty;
+        public bool Entfall { get; set; }
+    }
+
+    private sealed class DayDataJson
+    {
+        public string? Status { get; set; }
+        public List<SubjectEntryJson> Entries { get; set; } = new();
+    }
+
+    private sealed class SubjectEntryJson
+    {
+        public string Fach { get; set; } = string.Empty;
+        public string Lehrer { get; set; } = string.Empty;
+        public string? Raum { get; set; }
+        public bool Entfall { get; set; }
     }
 }

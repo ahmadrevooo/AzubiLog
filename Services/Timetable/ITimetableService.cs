@@ -16,16 +16,4 @@ public interface ITimetableService
         DayOfWeek dayOfWeek,
         string subjectsText,
         CancellationToken cancellationToken = default);
-
-    Task AddCancellationAsync(
-        string userId,
-        int classTimetableEntryId,
-        DateTime date,
-        string? reason,
-        CancellationToken cancellationToken = default);
-
-    Task RemoveCancellationAsync(
-        string userId,
-        int cancellationId,
-        CancellationToken cancellationToken = default);
 }
