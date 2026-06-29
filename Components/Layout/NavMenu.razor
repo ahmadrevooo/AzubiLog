@@ -1,6 +1,5 @@
 @inject IApplicationNavigationService Navigation
 @inject IStringLocalizer<SharedResource> Localizer
-@inject ICurrentUserService CurrentUserService
 @inject IJSRuntime JsRuntime
 
 <header class="app-navbar">
@@ -25,13 +24,10 @@
                     </span>
                 }
             }
-            @if (IsKlassensprecher)
-            {
-                <NavLink class="app-navbar__link" href="timetable" Match="NavLinkMatch.Prefix">
-                    <span class="bi bi-calendar-week-nav-menu" aria-hidden="true"></span>
-                    <span>@Localizer["TimetableNavItem"]</span>
-                </NavLink>
-            }
+            <NavLink class="app-navbar__link" href="timetable" Match="NavLinkMatch.Prefix">
+                <span class="bi bi-calendar-week-nav-menu" aria-hidden="true"></span>
+                <span>@Localizer["TimetableNavItem"]</span>
+            </NavLink>
         </nav>
 
         <div class="app-navbar__actions">
@@ -84,13 +80,10 @@
                     </span>
                 }
             }
-            @if (IsKlassensprecher)
-            {
-                <NavLink class="app-navbar__mobile-link" href="timetable" Match="NavLinkMatch.Prefix" @onclick="CloseMenuAsync">
-                    <span class="bi bi-calendar-week-nav-menu" aria-hidden="true"></span>
-                    <span>@Localizer["TimetableNavItem"]</span>
-                </NavLink>
-            }
+            <NavLink class="app-navbar__mobile-link" href="timetable" Match="NavLinkMatch.Prefix" @onclick="CloseMenuAsync">
+                <span class="bi bi-calendar-week-nav-menu" aria-hidden="true"></span>
+                <span>@Localizer["TimetableNavItem"]</span>
+            </NavLink>
             <div class="app-navbar__mobile-meta">
                 <label class="app-navbar__theme-switcher app-navbar__theme-switcher--mobile">
                     <span>@Localizer["ThemeLabel"]</span>
@@ -114,22 +107,8 @@
 </header>
 
 @code {
-    private bool IsKlassensprecher { get; set; }
     private bool IsMenuOpen { get; set; }
     private string CurrentTheme { get; set; } = "light";
-
-    protected override async Task OnInitializedAsync()
-    {
-        try
-        {
-            var user = await CurrentUserService.GetRequiredUserAsync();
-            IsKlassensprecher = user.Role == AzubiLog.Models.UserRole.Klassensprecher;
-        }
-        catch
-        {
-            IsKlassensprecher = false;
-        }
-    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

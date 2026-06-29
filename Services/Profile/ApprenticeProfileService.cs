@@ -35,7 +35,7 @@ public sealed class ApprenticeProfileService(
         return new ApprenticeProfileViewModel
         {
             Email = user.Email ?? string.Empty,
-            Role = user.Role,
+
             Profile = new ApprenticeProfileFormModel
             {
                 FirstName = user.FirstName,

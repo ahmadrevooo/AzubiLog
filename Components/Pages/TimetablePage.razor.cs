@@ -1,5 +1,4 @@
 using AzubiLog.Models;
-using AzubiLog.Services.Identity;
 using AzubiLog.Services.Timetable;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
@@ -15,7 +14,7 @@ public partial class TimetablePage : ComponentBase
     private string? ShareStatusMessage { get; set; }
     private bool IsSaving { get; set; }
     private bool IsCopyingShareCode { get; set; }
-    private bool CanManageTimetable => CurrentUser?.Role == UserRole.Klassensprecher;
+    private bool CanManageTimetable => true;
     private bool HasClassAssignment => !string.IsNullOrWhiteSpace(CurrentUser?.School) && !string.IsNullOrWhiteSpace(CurrentUser?.ClassName);
     private string ShareCode => HasClassAssignment
         ? TimetableService.GenerateShareCode(CurrentUser!.School, CurrentUser.ClassName)
@@ -82,7 +81,7 @@ public partial class TimetablePage : ComponentBase
 
     private async Task SaveTimetableAsync()
     {
-        if (CurrentUser is null || !CanManageTimetable) return;
+        if (CurrentUser is null) return;
 
         IsSaving = true;
         StatusMessage = null;
@@ -114,7 +113,7 @@ public partial class TimetablePage : ComponentBase
 
     private async Task AddCancellationAsync()
     {
-        if (CurrentUser is null || !CanManageTimetable) return;
+        if (CurrentUser is null) return;
 
         var selectedDay = (DayOfWeek)SelectedCancellationDay;
         var dayEntry = DayEntries.FirstOrDefault(d => d.DayOfWeek == selectedDay);
@@ -140,7 +139,7 @@ public partial class TimetablePage : ComponentBase
 
     private async Task RemoveCancellationAsync(int cancellationId)
     {
-        if (CurrentUser is null || !CanManageTimetable) return;
+        if (CurrentUser is null) return;
 
         await TimetableService.RemoveCancellationAsync(CurrentUser.Id, cancellationId);
         await LoadCancellationsAsync();
@@ -171,7 +170,7 @@ public partial class TimetablePage : ComponentBase
 
     private async Task ApplyShareCodeAsync()
     {
-        if (CurrentUser is null || !CanManageTimetable)
+        if (CurrentUser is null)
             return;
 
         ShareStatusMessage = null;
@@ -243,10 +242,7 @@ public partial class TimetablePage : ComponentBase
             }
         }
 
-        if (CanManageTimetable)
-        {
-            await LoadCancellationsAsync();
-        }
+        await LoadCancellationsAsync();
     }
 
     private void AddSubjectRow(DayOfWeek dayOfWeek)

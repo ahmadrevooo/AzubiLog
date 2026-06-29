@@ -21,7 +21,6 @@ public static class AccountEndpointExtensions
             var email = form["email"].ToString();
             var password = form["password"].ToString();
             var confirmPassword = form["confirmPassword"].ToString();
-            var role = form["role"].ToString();
             var school = form["school"].ToString();
             var className = form["className"].ToString();
 
@@ -36,7 +35,7 @@ public static class AccountEndpointExtensions
                 return Results.Redirect("/account/register?error=invalid");
             }
 
-            var result = await accountFlow.RegisterAsync(firstName, lastName, email, password, role, school, className, context.RequestAborted);
+            var result = await accountFlow.RegisterAsync(firstName, lastName, email, password, school, className, context.RequestAborted);
             if (!result.Succeeded)
             {
                 var encodedErrors = EncodeErrors(result.Errors.Select(static error => error.Description));
