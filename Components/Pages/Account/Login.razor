@@ -12,7 +12,7 @@
 
         @if (!string.IsNullOrWhiteSpace(StatusMessage))
         {
-            <div class="account-status">@StatusMessage</div>
+            <div class="account-status @(IsErrorStatus ? "account-status-error" : "account-status-success")">@StatusMessage</div>
         }
 
         <form method="post" action="/account/login/submit" class="account-form">
@@ -52,18 +52,33 @@
     [SupplyParameterFromQuery(Name = "reset")]
     private bool Reset { get; set; }
 
+    [SupplyParameterFromQuery(Name = "registered")]
+    private bool Registered { get; set; }
+
+    private bool IsErrorStatus => !string.IsNullOrWhiteSpace(Error);
+
     private string? StatusMessage
     {
         get
         {
             if (!string.IsNullOrWhiteSpace(Error))
             {
-                return Localizer["AccountLoginFailed"].Value;
+                return Error switch
+                {
+                    "invalid" => Localizer["ErrorLoginInvalid"].Value,
+                    "locked" => Localizer["ErrorLoginLocked"].Value,
+                    _ => Localizer["AccountLoginFailed"].Value
+                };
             }
 
             if (LoggedOut)
             {
                 return Localizer["AccountLoggedOut"].Value;
+            }
+
+            if (Registered)
+            {
+                return Localizer["AccountRegistered"].Value;
             }
 
             return Reset ? Localizer["AccountPasswordResetComplete"].Value : null;

@@ -21,15 +21,33 @@ public static class AccountEndpointExtensions
             if (string.IsNullOrWhiteSpace(firstName)
                 || string.IsNullOrWhiteSpace(lastName)
                 || string.IsNullOrWhiteSpace(email)
-                || string.IsNullOrWhiteSpace(password)
-                || password != confirmPassword)
+                || string.IsNullOrWhiteSpace(password))
             {
-                return Results.Redirect("/account/register?error=invalid");
+                return Results.Redirect("/account/register?error=missing_fields");
+            }
+
+            if (password != confirmPassword)
+            {
+                return Results.Redirect("/account/register?error=password_mismatch");
+            }
+
+            if (password.Length < 8)
+            {
+                return Results.Redirect("/account/register?error=password_short");
             }
 
             var result = await accountFlow.RegisterAsync(firstName, lastName, email, password, context.RequestAborted);
             if (!result.Succeeded)
             {
+                var errors = result.Errors.Select(e => e.Code).ToList();
+                if (errors.Contains("DuplicateUserName") || errors.Contains("DuplicateEmail"))
+                {
+                    return Results.Redirect("/account/register?error=duplicate_email");
+                }
+                if (errors.Any(e => e.Contains("Password")))
+                {
+                    return Results.Redirect("/account/register?error=password_weak");
+                }
                 return Results.Redirect("/account/register?error=failed");
             }
 

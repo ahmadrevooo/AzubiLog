@@ -386,6 +386,11 @@ h1:focus {
     color: var(--app-danger);
 }
 
+.account-status-success {
+    background: color-mix(in srgb, #10b981 10%, var(--app-surface-muted));
+    color: #059669;
+}
+
 .account-links {
     display: flex;
     flex-wrap: wrap;
