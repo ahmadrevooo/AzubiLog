@@ -21,21 +21,16 @@ public static class AccountEndpointExtensions
             var email = form["email"].ToString();
             var password = form["password"].ToString();
             var confirmPassword = form["confirmPassword"].ToString();
-            var school = form["school"].ToString();
-            var className = form["className"].ToString();
-
             if (string.IsNullOrWhiteSpace(firstName)
                 || string.IsNullOrWhiteSpace(lastName)
                 || string.IsNullOrWhiteSpace(email)
                 || string.IsNullOrWhiteSpace(password)
-                || password != confirmPassword
-                || string.IsNullOrWhiteSpace(school)
-                || string.IsNullOrWhiteSpace(className))
+                || password != confirmPassword)
             {
                 return Results.Redirect("/account/register?error=invalid");
             }
 
-            var result = await accountFlow.RegisterAsync(firstName, lastName, email, password, school, className, context.RequestAborted);
+            var result = await accountFlow.RegisterAsync(firstName, lastName, email, password, context.RequestAborted);
             if (!result.Succeeded)
             {
                 var encodedErrors = EncodeErrors(result.Errors.Select(static error => error.Description));

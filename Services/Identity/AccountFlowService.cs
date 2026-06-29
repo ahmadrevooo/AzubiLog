@@ -17,8 +17,6 @@ public sealed class AccountFlowService(
         string lastName,
         string email,
         string password,
-        string school,
-        string className,
         CancellationToken cancellationToken = default)
     {
         var user = new ApplicationUser
@@ -27,8 +25,6 @@ public sealed class AccountFlowService(
             Email = email.Trim(),
             FirstName = firstName.Trim(),
             LastName = lastName.Trim(),
-            School = school.Trim(),
-            ClassName = className.Trim(),
             WeeklyTargetHours = 40,
             AnnualVacationDays = 30,
             IsActive = true
