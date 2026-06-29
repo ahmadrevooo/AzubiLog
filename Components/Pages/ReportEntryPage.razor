@@ -21,6 +21,7 @@ else
                     CalculatedHours="ViewModel.CalculatedHours"
                     RestoredDraft="ViewModel.RestoredDraft"
                     ShowSchoolDayHint="ViewModel.SchoolDaySuggestion?.IsSchoolDay == true"
+                    SchoolDaySubjects="ViewModel.SchoolDaySuggestion?.Subjects ?? []"
                     OnFieldChanged="HandleFieldChangedAsync"
                     OnDateChanged="HandleDateChangedAsync"
                     OnCreateCategory="HandleCreateCategoryAsync"

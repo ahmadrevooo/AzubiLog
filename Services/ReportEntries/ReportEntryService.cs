@@ -638,7 +638,8 @@ public class ReportEntryService(
                 {
                     IsSchoolDay = true,
                     SubjectsText = BuildSchoolDayDescription(classTimetable.SubjectsText),
-                    VocationalSchoolCategoryId = FindVocationalSchoolCategoryId(categories)
+                    VocationalSchoolCategoryId = FindVocationalSchoolCategoryId(categories),
+                    Subjects = ParseSubjectsForDisplay(classTimetable.SubjectsText)
                 };
             }
         }
@@ -658,7 +659,8 @@ public class ReportEntryService(
         {
             IsSchoolDay = true,
             SubjectsText = BuildSchoolDayDescription(scheduleDay.SubjectsText),
-            VocationalSchoolCategoryId = FindVocationalSchoolCategoryId(categories)
+            VocationalSchoolCategoryId = FindVocationalSchoolCategoryId(categories),
+            Subjects = ParseSubjectsForDisplay(scheduleDay.SubjectsText)
         };
     }
 
@@ -702,6 +704,33 @@ public class ReportEntryService(
         }
 
         var trimmedSubjectsText = subjectsText.Trim();
+
+        // Try new DayDataJson format (object with Status and Entries)
+        if (trimmedSubjectsText.StartsWith("{", StringComparison.Ordinal))
+        {
+            try
+            {
+                var dayData = JsonSerializer.Deserialize<DayDataJsonDto>(
+                    trimmedSubjectsText,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                if (dayData?.Entries is not null)
+                {
+                    return dayData.Entries
+                        .Where(e => !string.IsNullOrWhiteSpace(e.Fach))
+                        .Select(e => new ClassTimetableEntry.StructuredSubjectEntry
+                        {
+                            Fach = e.Fach,
+                            Lehrer = e.Lehrer ?? string.Empty,
+                            Raum = e.Raum
+                        })
+                        .ToList();
+                }
+            }
+            catch (JsonException) { }
+        }
+
+        // Try legacy array format
         if (!trimmedSubjectsText.StartsWith("[", StringComparison.Ordinal))
         {
             return [];
@@ -725,6 +754,33 @@ public class ReportEntryService(
         {
             return [];
         }
+    }
+
+    private static List<SchoolSubjectEntry> ParseSubjectsForDisplay(string subjectsText)
+    {
+        var structured = TryParseStructuredSubjects(subjectsText);
+        return structured
+            .Select(s => new SchoolSubjectEntry
+            {
+                Fach = s.Fach.Trim(),
+                Lehrer = s.Lehrer?.Trim() ?? string.Empty,
+                Raum = s.Raum?.Trim()
+            })
+            .ToList();
+    }
+
+    private sealed class DayDataJsonDto
+    {
+        public string? Status { get; set; }
+        public List<DayDataEntryDto>? Entries { get; set; }
+    }
+
+    private sealed class DayDataEntryDto
+    {
+        public string Fach { get; set; } = string.Empty;
+        public string? Lehrer { get; set; }
+        public string? Raum { get; set; }
+        public bool Entfall { get; set; }
     }
 
     private static string FormatStructuredSubject(ClassTimetableEntry.StructuredSubjectEntry subject)

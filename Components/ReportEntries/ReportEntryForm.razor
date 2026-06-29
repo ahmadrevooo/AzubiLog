@@ -25,13 +25,41 @@
             </button>
         </div>
 
-        @if (ShowSchoolDayHint)
+        @if (ShowSchoolDayHint && SchoolDaySubjects.Count > 0)
         {
-            <div class="report-entry-school-hint">
-                <span>@Localizer["ReportEntrySchoolDayHint"]</span>
-                <button class="btn btn-outline-secondary btn-sm" type="button" @onclick="OnApplySchoolDay">
-                    @Localizer["ReportEntryApplySchoolDay"]
-                </button>
+            <div class="report-entry-school-section">
+                <div class="report-entry-school-badge">Berufsschultag</div>
+                <div class="report-entry-school-subjects">
+                    @for (var i = 0; i < SchoolDaySubjects.Count; i++)
+                    {
+                        var subject = SchoolDaySubjects[i];
+                        var idx = i;
+                        <div class="report-entry-subject-row">
+                            <div class="report-entry-subject-header">
+                                <strong>@subject.Fach</strong>
+                                @if (!string.IsNullOrWhiteSpace(subject.Lehrer))
+                                {
+                                    <span class="report-entry-subject-teacher">@subject.Lehrer</span>
+                                }
+                                @if (!string.IsNullOrWhiteSpace(subject.Raum))
+                                {
+                                    <span class="report-entry-subject-room">@subject.Raum</span>
+                                }
+                            </div>
+                            <textarea class="form-control report-entry-subject-notes"
+                                      placeholder="Was wurde gemacht?"
+                                      value="@GetSubjectNote(idx)"
+                                      @oninput="@(e => SetSubjectNote(idx, e.Value?.ToString()))"></textarea>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+        else if (ShowSchoolDayHint)
+        {
+            <div class="report-entry-school-section">
+                <div class="report-entry-school-badge">Berufsschultag</div>
+                <span class="report-entry-school-no-subjects">Keine Fächer im Stundenplan eingetragen.</span>
             </div>
         }
 
@@ -57,7 +85,7 @@
                         <div class="report-entry-time-control">
                             <input class="form-control report-entry-time-input" type="text" inputmode="numeric" maxlength="5" placeholder="08:00" value="@Model.StartTime" @oninput="HandleStartTimeInputAsync" />
                             <div class="report-entry-time-stepper">
-                                <button type="button" title="Startzeit erhÃ¶hen" aria-label="Startzeit erhÃ¶hen" @onclick="IncreaseStartTimeAsync">+</button>
+                                <button type="button" title="Startzeit erhöhen" aria-label="Startzeit erhöhen" @onclick="IncreaseStartTimeAsync">+</button>
                                 <button type="button" title="Startzeit verringern" aria-label="Startzeit verringern" @onclick="DecreaseStartTimeAsync">-</button>
                             </div>
                         </div>
@@ -72,7 +100,7 @@
                         <div class="report-entry-time-control">
                             <input class="form-control report-entry-time-input" type="text" inputmode="numeric" maxlength="5" placeholder="16:00" value="@Model.EndTime" @oninput="HandleEndTimeInputAsync" />
                             <div class="report-entry-time-stepper">
-                                <button type="button" title="Endzeit erhÃ¶hen" aria-label="Endzeit erhÃ¶hen" @onclick="IncreaseEndTimeAsync">+</button>
+                                <button type="button" title="Endzeit erhöhen" aria-label="Endzeit erhöhen" @onclick="IncreaseEndTimeAsync">+</button>
                                 <button type="button" title="Endzeit verringern" aria-label="Endzeit verringern" @onclick="DecreaseEndTimeAsync">-</button>
                             </div>
                         </div>
@@ -132,15 +160,6 @@
                     </div>
                 }
 
-                @if (Model.IsVocationalSchoolDay)
-                {
-                    <label>
-                        <span>@Localizer["ReportEntrySubject"]</span>
-                        <InputText class="form-control" @bind-Value="Model.Subject" @bind-Value:after="FieldChangedAsync" />
-                        <ValidationMessage For="() => Model.Subject" />
-                    </label>
-                }
-
                 <label>
                     <span>@Localizer["ReportEntryOrderNumber"]</span>
                     <InputText class="form-control" list="report-entry-order-codes" @bind-Value="Model.OrderNumber" @bind-Value:after="OrderNumberChangedAsync" />
@@ -151,11 +170,6 @@
                         }
                     </datalist>
                     <ValidationMessage For="() => Model.OrderNumber" />
-                </label>
-
-                <label class="report-entry-check">
-                    <InputCheckbox @bind-Value="Model.IsVocationalSchoolDay" @bind-Value:after="FieldChangedAsync" />
-                    <span>@Localizer["ReportEntryVocationalSchoolDay"]</span>
                 </label>
 
                 @if (IsNoteOpen || !string.IsNullOrWhiteSpace(Model.Notes))
@@ -224,6 +238,9 @@
     public bool ShowSchoolDayHint { get; set; }
 
     [Parameter]
+    public IReadOnlyList<SchoolSubjectEntry> SchoolDaySubjects { get; set; } = [];
+
+    [Parameter]
     public EventCallback OnApplySchoolDay { get; set; }
 
     [Parameter]
@@ -252,6 +269,7 @@
     private bool IsCategoryCreatorOpen { get; set; }
     private bool IsNoteOpen { get; set; }
     private ReportEntryFormModel? PreviousModel { get; set; }
+    private List<string> SubjectNotes { get; set; } = new();
 
     private string FormattedSelectedDate
     {
@@ -288,6 +306,12 @@
         {
             IsNoteOpen = !string.IsNullOrWhiteSpace(Model.Notes);
             PreviousModel = Model;
+
+            if (ShowSchoolDayHint && SchoolDaySubjects.Count > 0)
+            {
+                InitSubjectNotes();
+            }
+
             return;
         }
 
@@ -295,6 +319,49 @@
         {
             IsNoteOpen = true;
         }
+    }
+
+    private void InitSubjectNotes()
+    {
+        while (SubjectNotes.Count < SchoolDaySubjects.Count)
+        {
+            SubjectNotes.Add(string.Empty);
+        }
+    }
+
+    private string GetSubjectNote(int index)
+    {
+        return index < SubjectNotes.Count ? SubjectNotes[index] : string.Empty;
+    }
+
+    private void SetSubjectNote(int index, string? value)
+    {
+        while (SubjectNotes.Count <= index)
+        {
+            SubjectNotes.Add(string.Empty);
+        }
+        SubjectNotes[index] = value ?? string.Empty;
+        BuildDescriptionFromSubjects();
+    }
+
+    private void BuildDescriptionFromSubjects()
+    {
+        var parts = new List<string>();
+        for (var i = 0; i < SchoolDaySubjects.Count && i < SubjectNotes.Count; i++)
+        {
+            var subject = SchoolDaySubjects[i];
+            var note = SubjectNotes[i];
+            if (!string.IsNullOrWhiteSpace(note))
+            {
+                parts.Add($"{subject.Fach}: {note.Trim()}");
+            }
+            else
+            {
+                parts.Add($"{subject.Fach}: -");
+            }
+        }
+
+        Model.Description = string.Join(Environment.NewLine, parts);
     }
 
     private Task FieldChangedAsync()

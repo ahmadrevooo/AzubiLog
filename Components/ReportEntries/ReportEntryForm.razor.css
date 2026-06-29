@@ -350,3 +350,68 @@
         width: 100%;
     }
 }
+
+/* School day subjects section */
+.report-entry-school-section {
+    background: color-mix(in srgb, var(--app-primary) 4%, var(--app-surface-muted));
+    border: 1px solid color-mix(in srgb, var(--app-primary) 18%, var(--app-border));
+    border-radius: 8px;
+    display: grid;
+    gap: 0.65rem;
+    padding: 0.75rem;
+}
+
+.report-entry-school-badge {
+    background: color-mix(in srgb, var(--app-primary) 14%, var(--app-surface));
+    border: 1px solid color-mix(in srgb, var(--app-primary) 30%, var(--app-border));
+    border-radius: 999px;
+    color: var(--app-primary);
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 0.25rem 0.7rem;
+    width: fit-content;
+}
+
+.report-entry-school-no-subjects {
+    color: var(--app-text-muted);
+    font-size: 0.82rem;
+}
+
+.report-entry-school-subjects {
+    display: grid;
+    gap: 0.6rem;
+}
+
+.report-entry-subject-row {
+    background: var(--app-surface);
+    border: 1px solid var(--app-border);
+    border-radius: 6px;
+    display: grid;
+    gap: 0.4rem;
+    padding: 0.6rem;
+}
+
+.report-entry-subject-header {
+    align-items: baseline;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.report-entry-subject-header strong {
+    color: var(--app-text);
+    font-size: 0.85rem;
+}
+
+.report-entry-subject-teacher,
+.report-entry-subject-room {
+    color: var(--app-text-muted);
+    font-size: 0.75rem;
+}
+
+.report-entry-subject-notes {
+    font-size: 0.82rem;
+    min-height: 2.2rem;
+    padding: 0.4rem 0.55rem;
+    resize: none;
+}
