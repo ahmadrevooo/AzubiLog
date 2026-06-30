@@ -1,0 +1,257 @@
+@page "/timetable"
+@attribute [Authorize(Policy = "ConfirmedEmail")]
+@inject IStringLocalizer<SharedResource> Localizer
+@inject ITimetableService TimetableService
+@inject ICurrentUserService CurrentUserService
+@using Microsoft.AspNetCore.Components.Forms
+
+<PageTitle>@Localizer["TimetableManagementTitle"]</PageTitle>
+
+@if (CurrentUser is null)
+{
+    <div class="profile-loading">Laden...</div>
+}
+else if (!HasClassAssignment)
+{
+    <div class="profile-page">
+        <header class="profile-page-header">
+            <p>@Localizer["TimetableNavItem"]</p>
+            <h1>@Localizer["TimetableManagementTitle"]</h1>
+            <span>Hinterlege zuerst Schule und Klasse in deinen Einstellungen, um einen geteilten Stundenplan zu sehen.</span>
+        </header>
+    </div>
+}
+else
+{
+    <div class="profile-page">
+        <header class="profile-page-header">
+            <p>@Localizer["TimetableNavItem"]</p>
+            <h1>@Localizer["TimetableManagementTitle"]</h1>
+            <span>@Localizer["TimetableManagementIntro"]</span>
+            <div class="timetable-class-info">
+                <strong>@CurrentUser.School</strong> &mdash; @CurrentUser.ClassName
+            </div>
+        </header>
+
+        @if (!string.IsNullOrWhiteSpace(StatusMessage))
+        {
+            <div class="profile-status">@StatusMessage</div>
+        }
+        @if (!string.IsNullOrWhiteSpace(ShareStatusMessage))
+        {
+            <div class="profile-status">@ShareStatusMessage</div>
+        }
+
+        <section class="profile-card">
+            <div class="profile-card-header">
+                <div>
+                    <p>Freigabe</p>
+                    <h2>Stundenplan teilen</h2>
+                </div>
+                <div class="timetable-header-badge">
+                    <strong>@CurrentUser.ClassName</strong>
+                    <span>Beitrittscode aktiv</span>
+                </div>
+            </div>
+
+            <div class="timetable-share-grid">
+                <div class="timetable-share-card">
+                    <strong>Beitrittscode deiner Klasse</strong>
+                    <span>Teile diesen kurzen Code mit anderen Azubis oder Klassensprechern deiner Klasse.</span>
+                    <div class="timetable-share-code">@ShareCode</div>
+                    <button class="btn btn-outline-primary" @onclick="CopyShareCodeAsync" disabled="@IsCopyingShareCode">
+                        @(IsCopyingShareCode ? "Wird kopiert..." : "Code kopieren")
+                    </button>
+                </div>
+
+                @if (CanManageTimetable)
+                {
+                    <div class="timetable-share-card">
+                        <strong>Stundenplan per Beitrittscode übernehmen</strong>
+                        <span>Vorhandene Einträge deiner Klasse werden durch den geteilten Stundenplan ersetzt.</span>
+                        <label class="timetable-day-input">
+                            <span>Beitrittscode</span>
+                            <InputText class="form-control"
+                                       @bind-Value="ShareCodeInput"
+                                       placeholder="A7X3K2" />
+                        </label>
+                        <button class="btn btn-secondary" @onclick="ApplyShareCodeAsync" disabled="@IsSaving">
+                            Stundenplan übernehmen
+                        </button>
+                    </div>
+                }
+            </div>
+        </section>
+
+        <section class="profile-card">
+            <div class="profile-card-header">
+                <div>
+                    <p>@Localizer["TimetableNavItem"]</p>
+                    <h2>Wochenplan</h2>
+                </div>
+                <div class="timetable-header-badge">
+                    <strong>@FilledDayCount / @DayEntries.Count</strong>
+                    <span>Tage gepflegt</span>
+                </div>
+            </div>
+
+            <div class="timetable-overview">
+                <div class="timetable-overview-item">
+                    <strong>@CurrentUser.ClassName</strong>
+                    <span>Klasse</span>
+                </div>
+                <div class="timetable-overview-item">
+                    <strong>@CurrentUser.School</strong>
+                    <span>Schule</span>
+                </div>
+                <div class="timetable-overview-item">
+                    <strong>@FilledDayCount</strong>
+                    <span>Unterrichtstage mit Inhalt</span>
+                </div>
+            </div>
+
+            <div class="timetable-grid">
+                @foreach (var dayEntry in DayEntries)
+                {
+                    <div class="timetable-day-card">
+                        <div class="timetable-day-card-header">
+                            <div>
+                                <span class="timetable-day-label">@GetDayName(dayEntry.DayOfWeek)</span>
+                                <p>@GetDaySubtitle(dayEntry.SubjectsText)</p>
+                            </div>
+                            <span class="timetable-day-state @(dayEntry.SubjectRows.Count == 0 ? "is-empty" : "is-filled")">
+                                @(dayEntry.SubjectRows.Count == 0 ? "Leer" : "Gefüllt")
+                            </span>
+                        </div>
+
+                        @if (CanManageTimetable)
+                        {
+                            <div class="timetable-day-input">
+                                <span>Einträge</span>
+                                <div class="timetable-subject-rows">
+                                    @foreach (var subjectRow in dayEntry.SubjectRows)
+                                    {
+                                        <div class="timetable-subject-row">
+                                            <InputText class="form-control"
+                                                       @bind-Value="subjectRow.Fach"
+                                                       placeholder="Fach" />
+                                            <InputText class="form-control"
+                                                       @bind-Value="subjectRow.Lehrer"
+                                                       placeholder="Lehrer" />
+                                            <InputText class="form-control"
+                                                       @bind-Value="subjectRow.Raum"
+                                                       placeholder="Raum (optional)" />
+                                            <button type="button"
+                                                    class="btn btn-outline-danger timetable-row-remove"
+                                                    @onclick="() => RemoveSubjectRow(dayEntry.DayOfWeek, subjectRow)">
+                                                Entfernen
+                                            </button>
+                                        </div>
+                                    }
+                                </div>
+                                <button type="button"
+                                        class="btn btn-outline-primary timetable-row-add"
+                                        @onclick="() => AddSubjectRow(dayEntry.DayOfWeek)">
+                                    Zeile hinzufügen
+                                </button>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="timetable-day-input">
+                                <span>Einträge</span>
+                                <div class="timetable-readonly-subjects">
+                                    @FormatReadonlySubjects(dayEntry.SubjectsText)
+                                </div>
+                            </div>
+                        }
+
+                        <div class="timetable-day-hint">
+                            Beispiel: Mathe · Hr. Müller · R201
+                        </div>
+                    </div>
+                }
+            </div>
+
+            @if (CanManageTimetable)
+            {
+                <div class="timetable-actions">
+                    <button class="btn btn-primary" @onclick="SaveTimetableAsync" disabled="@IsSaving">
+                        @if (IsSaving)
+                        {
+                            <span>Wird gespeichert...</span>
+                        }
+                        else
+                        {
+                            @Localizer["TimetableSave"]
+                        }
+                    </button>
+                </div>
+            }
+        </section>
+
+        @if (CanManageTimetable)
+        {
+            <section class="profile-card">
+                <div class="profile-card-header">
+                    <div>
+                        <p>@Localizer["TimetableCancellations"]</p>
+                        <h2>@Localizer["TimetableCancellations"]</h2>
+                    </div>
+                    <div class="timetable-header-badge">
+                        <strong>@Cancellations.Count</strong>
+                        <span>Aktuelle Ausfälle</span>
+                    </div>
+                </div>
+
+                <div class="timetable-cancellation-form">
+                    <div class="profile-grid">
+                        <label>
+                            <span>Tag</span>
+                            <select class="form-control" @bind="SelectedCancellationDay">
+                                @foreach (var dayEntry in DayEntries.Where(d => d.SubjectRows.Count > 0))
+                                {
+                                    <option value="@((int)dayEntry.DayOfWeek)">@GetDayName(dayEntry.DayOfWeek)</option>
+                                }
+                            </select>
+                        </label>
+                        <label>
+                            <span>@Localizer["TimetableCancellationDate"]</span>
+                            <input class="form-control" type="date" @bind="CancellationDate" />
+                        </label>
+                        <label>
+                            <span>@Localizer["TimetableCancelReason"]</span>
+                            <input class="form-control" type="text" @bind="CancellationReason" />
+                        </label>
+                    </div>
+                    <button class="btn btn-secondary" @onclick="AddCancellationAsync" disabled="@IsSaving">
+                        @Localizer["TimetableCancellationAdd"]
+                    </button>
+                </div>
+
+                @if (Cancellations.Count > 0)
+                {
+                    <div class="timetable-cancellation-list">
+                        @foreach (var cancellation in Cancellations)
+                        {
+                            <div class="timetable-cancellation-item">
+                                <span>
+                                    <strong>@GetDayName(cancellation.ClassTimetableEntry.DayOfWeek)</strong>
+                                    @cancellation.Date.ToString("dd.MM.yyyy") &mdash;
+                                    @GetDaySubtitle(cancellation.ClassTimetableEntry.SubjectsText)
+                                    @if (!string.IsNullOrWhiteSpace(cancellation.Reason))
+                                    {
+                                        <em>(@cancellation.Reason)</em>
+                                    }
+                                </span>
+                                <button class="btn btn-sm btn-outline-danger" @onclick="() => RemoveCancellationAsync(cancellation.Id)">
+                                    @Localizer["TimetableCancellationRemove"]
+                                </button>
+                            </div>
+                        }
+                    </div>
+                }
+            </section>
+        }
+    </div>
+}

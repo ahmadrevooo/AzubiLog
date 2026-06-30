@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
+using System.Text.Json;
 using AzubiLog.Data;
 using AzubiLog.Models;
 using AzubiLog.Services.Identity;
@@ -606,6 +607,43 @@ public class ReportEntryService(
         IReadOnlyList<ReportEntryOption> categories,
         CancellationToken cancellationToken)
     {
+        var user = await dbContext.Users.FindAsync([userId], cancellationToken);
+        if (user is null) return null;
+
+        // Try class timetable first (shared by Klassensprecher for the class)
+        if (!string.IsNullOrWhiteSpace(user.School) && !string.IsNullOrWhiteSpace(user.ClassName))
+        {
+            var normalizedSchool = user.School.Trim().ToUpperInvariant();
+            var normalizedClass = user.ClassName.Trim().ToUpperInvariant();
+
+            var classTimetable = await dbContext.ClassTimetableEntries
+                .Include(entry => entry.Cancellations)
+                .FirstOrDefaultAsync(entry =>
+                    entry.School.ToUpper() == normalizedSchool &&
+                    entry.ClassName.ToUpper() == normalizedClass &&
+                    entry.DayOfWeek == date.DayOfWeek,
+                    cancellationToken);
+
+            if (classTimetable is not null)
+            {
+                var isCancelled = classTimetable.Cancellations
+                    .Any(c => c.Date.Date == date.Date);
+
+                if (isCancelled)
+                {
+                    return null;
+                }
+
+                return new SchoolDaySuggestionViewModel
+                {
+                    IsSchoolDay = true,
+                    SubjectsText = BuildSchoolDayDescription(classTimetable.SubjectsText),
+                    VocationalSchoolCategoryId = FindVocationalSchoolCategoryId(categories)
+                };
+            }
+        }
+
+        // Fall back to personal schedule
         var scheduleDay = await dbContext.SchoolScheduleDays
             .FirstOrDefaultAsync(
                 day => day.UserId == userId && day.DayOfWeek == date.DayOfWeek,
@@ -633,8 +671,14 @@ public class ReportEntryService(
 
     private static string BuildSchoolDayDescription(string subjectsText)
     {
+        var structuredSubjects = TryParseStructuredSubjects(subjectsText);
+        if (structuredSubjects.Count > 0)
+        {
+            return "Berufsschultag: " + string.Join(", ", structuredSubjects.Select(FormatStructuredSubject));
+        }
+
         var subjects = subjectsText
-            .Split(["\r\n", "\n"], StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
+            .Split(["\r\n", "\n", ","], StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
             .ToList();
 
         if (subjects.Count == 0)
@@ -648,6 +692,59 @@ public class ReportEntryService(
             + string.Join(
                 Environment.NewLine + Environment.NewLine,
                 subjects.Select(subject => $"{subject}:{Environment.NewLine}- "));
+    }
+
+    private static List<ClassTimetableEntry.StructuredSubjectEntry> TryParseStructuredSubjects(string subjectsText)
+    {
+        if (string.IsNullOrWhiteSpace(subjectsText))
+        {
+            return [];
+        }
+
+        var trimmedSubjectsText = subjectsText.Trim();
+        if (!trimmedSubjectsText.StartsWith("[", StringComparison.Ordinal))
+        {
+            return [];
+        }
+
+        try
+        {
+            var structuredSubjects = JsonSerializer.Deserialize<List<ClassTimetableEntry.StructuredSubjectEntry>>(
+                trimmedSubjectsText,
+                new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+
+            return structuredSubjects?
+                .Where(subject => !string.IsNullOrWhiteSpace(subject.Fach))
+                .ToList()
+                ?? [];
+        }
+        catch (JsonException)
+        {
+            return [];
+        }
+    }
+
+    private static string FormatStructuredSubject(ClassTimetableEntry.StructuredSubjectEntry subject)
+    {
+        var details = new List<string>();
+
+        if (!string.IsNullOrWhiteSpace(subject.Lehrer))
+        {
+            details.Add(subject.Lehrer.Trim());
+        }
+
+        if (!string.IsNullOrWhiteSpace(subject.Raum))
+        {
+            details.Add(subject.Raum.Trim());
+        }
+
+        var subjectName = subject.Fach.Trim();
+        return details.Count > 0
+            ? $"{subjectName} ({string.Join(", ", details)})"
+            : subjectName;
     }
 
     private static string NormalizeCategoryName(string? categoryName)

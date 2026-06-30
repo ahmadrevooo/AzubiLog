@@ -9,21 +9,32 @@ public sealed class AccountFlowService(
     UserManager<ApplicationUser> userManager,
     IHttpContextAccessor httpContextAccessor,
     DefaultUserData defaultUserData,
-    IAccountEmailSender emailSender)
+    IAccountEmailSender emailSender,
+    ILogger<AccountFlowService> logger)
 {
     public async Task<IdentityResult> RegisterAsync(
         string firstName,
         string lastName,
         string email,
         string password,
+        string role,
+        string school,
+        string className,
         CancellationToken cancellationToken = default)
     {
+        var validRole = role == UserRole.Klassensprecher
+            ? UserRole.Klassensprecher
+            : UserRole.Azubi;
+
         var user = new ApplicationUser
         {
             UserName = email.Trim(),
             Email = email.Trim(),
             FirstName = firstName.Trim(),
             LastName = lastName.Trim(),
+            Role = validRole,
+            School = school.Trim(),
+            ClassName = className.Trim(),
             WeeklyTargetHours = 40,
             AnnualVacationDays = 30,
             IsActive = true
@@ -36,7 +47,15 @@ public sealed class AccountFlowService(
         }
 
         await defaultUserData.EnsureDefaultCategoriesAsync(user.Id, cancellationToken);
-        await SendConfirmationLinkAsync(user);
+
+        try
+        {
+            await SendConfirmationLinkAsync(user);
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "E-Mail-Bestätigung konnte nicht gesendet werden für {Email}", user.Email);
+        }
 
         return result;
     }

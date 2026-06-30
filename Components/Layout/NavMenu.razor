@@ -1,39 +1,165 @@
 @inject IApplicationNavigationService Navigation
 @inject IStringLocalizer<SharedResource> Localizer
+@inject ICurrentUserService CurrentUserService
+@inject IJSRuntime JsRuntime
 
-<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">@Localizer["AppName"]</a>
-    </div>
-</div>
+<header class="app-navbar">
+    <div class="app-navbar__inner">
+        <a class="app-navbar__brand" href="">@Localizer["AppName"]</a>
 
-<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
-
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="nav flex-column">
-        @foreach (var item in Navigation.GetMainNavigation())
-        {
-            <div class="nav-item px-3">
+        <nav class="app-navbar__desktop-nav" aria-label="@Localizer["AppName"]">
+            @foreach (var item in Navigation.GetMainNavigation())
+            {
                 @if (item.IsEnabled)
                 {
-                    <NavLink class="nav-link" href="@item.Href" Match="@GetMatch(item)">
+                    <NavLink class="app-navbar__link" href="@item.Href" Match="@GetMatch(item)">
                         <span class="bi @item.IconCssClass" aria-hidden="true"></span>
                         <span>@Localizer[item.ResourceKey]</span>
                     </NavLink>
                 }
                 else
                 {
-                    <span class="nav-link nav-link-disabled" title="@Localizer["ComingSoon"]">
+                    <span class="app-navbar__link app-navbar__link--disabled" title="@Localizer["ComingSoon"]">
                         <span class="bi @item.IconCssClass" aria-hidden="true"></span>
                         <span>@Localizer[item.ResourceKey]</span>
                     </span>
                 }
+            }
+            @if (IsKlassensprecher)
+            {
+                <NavLink class="app-navbar__link" href="timetable" Match="NavLinkMatch.Prefix">
+                    <span class="bi bi-calendar-week-nav-menu" aria-hidden="true"></span>
+                    <span>@Localizer["TimetableNavItem"]</span>
+                </NavLink>
+            }
+        </nav>
+
+        <div class="app-navbar__actions">
+            <label class="app-navbar__theme-switcher">
+                <span>@Localizer["ThemeLabel"]</span>
+                <select class="app-navbar__theme-select" value="@CurrentTheme" @onchange="HandleThemeChangedAsync">
+                    <option value="light">@Localizer["ThemeLight"]</option>
+                    <option value="dark">@Localizer["ThemeDark"]</option>
+                </select>
+            </label>
+
+            <AuthorizeView>
+                <Authorized>
+                    <a class="app-navbar__account-link" href="/account/logout">@Localizer["AccountLogoutAction"]</a>
+                </Authorized>
+                <NotAuthorized>
+                    <a class="app-navbar__account-link" href="/account/login">@Localizer["AccountLoginAction"]</a>
+                </NotAuthorized>
+            </AuthorizeView>
+
+            <button class="app-navbar__toggle"
+                    type="button"
+                    aria-label="@Localizer["AppName"]"
+                    aria-expanded="@IsMenuOpen.ToString().ToLowerInvariant()"
+                    @onclick="ToggleMenuAsync">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </div>
+
+    <div class="app-navbar__mobile-panel @(IsMenuOpen ? "is-open" : null)">
+        <div class="app-navbar__mobile-backdrop" @onclick="CloseMenuAsync"></div>
+        <nav class="app-navbar__mobile-menu" aria-label="@Localizer["AppName"]">
+            @foreach (var item in Navigation.GetMainNavigation())
+            {
+                @if (item.IsEnabled)
+                {
+                    <NavLink class="app-navbar__mobile-link" href="@item.Href" Match="@GetMatch(item)" @onclick="CloseMenuAsync">
+                        <span class="bi @item.IconCssClass" aria-hidden="true"></span>
+                        <span>@Localizer[item.ResourceKey]</span>
+                    </NavLink>
+                }
+                else
+                {
+                    <span class="app-navbar__mobile-link app-navbar__link--disabled" title="@Localizer["ComingSoon"]">
+                        <span class="bi @item.IconCssClass" aria-hidden="true"></span>
+                        <span>@Localizer[item.ResourceKey]</span>
+                    </span>
+                }
+            }
+            @if (IsKlassensprecher)
+            {
+                <NavLink class="app-navbar__mobile-link" href="timetable" Match="NavLinkMatch.Prefix" @onclick="CloseMenuAsync">
+                    <span class="bi bi-calendar-week-nav-menu" aria-hidden="true"></span>
+                    <span>@Localizer["TimetableNavItem"]</span>
+                </NavLink>
+            }
+            <div class="app-navbar__mobile-meta">
+                <label class="app-navbar__theme-switcher app-navbar__theme-switcher--mobile">
+                    <span>@Localizer["ThemeLabel"]</span>
+                    <select class="app-navbar__theme-select" value="@CurrentTheme" @onchange="HandleThemeChangedAsync">
+                        <option value="light">@Localizer["ThemeLight"]</option>
+                        <option value="dark">@Localizer["ThemeDark"]</option>
+                    </select>
+                </label>
+
+                <AuthorizeView>
+                    <Authorized>
+                        <a class="app-navbar__account-link app-navbar__account-link--mobile" href="/account/logout" @onclick="CloseMenuAsync">@Localizer["AccountLogoutAction"]</a>
+                    </Authorized>
+                    <NotAuthorized>
+                        <a class="app-navbar__account-link app-navbar__account-link--mobile" href="/account/login" @onclick="CloseMenuAsync">@Localizer["AccountLoginAction"]</a>
+                    </NotAuthorized>
+                </AuthorizeView>
             </div>
-        }
-    </nav>
-</div>
+        </nav>
+    </div>
+</header>
 
 @code {
+    private bool IsKlassensprecher { get; set; }
+    private bool IsMenuOpen { get; set; }
+    private string CurrentTheme { get; set; } = "light";
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var user = await CurrentUserService.GetRequiredUserAsync();
+            IsKlassensprecher = user.Role == AzubiLog.Models.UserRole.Klassensprecher;
+        }
+        catch
+        {
+            IsKlassensprecher = false;
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+
+        CurrentTheme = await JsRuntime.InvokeAsync<string>("azubiLogPreferences.getTheme");
+        StateHasChanged();
+    }
+
+    private async Task HandleThemeChangedAsync(ChangeEventArgs args)
+    {
+        CurrentTheme = args.Value?.ToString() == "dark" ? "dark" : "light";
+        await JsRuntime.InvokeVoidAsync("azubiLogPreferences.setTheme", CurrentTheme);
+    }
+
+    private Task ToggleMenuAsync()
+    {
+        IsMenuOpen = !IsMenuOpen;
+        return Task.CompletedTask;
+    }
+
+    private Task CloseMenuAsync()
+    {
+        IsMenuOpen = false;
+        return Task.CompletedTask;
+    }
+
     private static NavLinkMatch GetMatch(NavigationItem item)
     {
         return string.IsNullOrWhiteSpace(item.Href)

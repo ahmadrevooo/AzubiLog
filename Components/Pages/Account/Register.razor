@@ -1,6 +1,9 @@
 @page "/account/register"
 @attribute [AllowAnonymous]
 @inject IStringLocalizer<SharedResource> Localizer
+@using System.Text
+@using System.Text.Json
+@using Microsoft.AspNetCore.WebUtilities
 
 <PageTitle>@Localizer["AccountRegisterTitle"]</PageTitle>
 
@@ -12,7 +15,18 @@
 
         @if (!string.IsNullOrWhiteSpace(Error))
         {
-            <div class="account-status account-status-error">@ErrorMessage</div>
+            <div class="account-status account-status-error">
+                <div>@Localizer["AccountRegistrationFailed"]</div>
+                @if (RegistrationErrors.Count > 0)
+                {
+                    <ul>
+                        @foreach (var registrationError in RegistrationErrors)
+                        {
+                            <li>@registrationError</li>
+                        }
+                    </ul>
+                }
+            </div>
         }
 
         <form method="post" action="/account/register/submit" class="account-form">
@@ -27,6 +41,21 @@
             <label>
                 <span>@Localizer["AccountEmail"]</span>
                 <input class="form-control" type="email" name="email" autocomplete="email" required />
+            </label>
+            <label>
+                <span>@Localizer["AccountRole"]</span>
+                <select class="form-control" name="role" required>
+                    <option value="Azubi">@Localizer["RoleAzubi"]</option>
+                    <option value="Klassensprecher">@Localizer["RoleKlassensprecher"]</option>
+                </select>
+            </label>
+            <label>
+                <span>@Localizer["AccountSchool"]</span>
+                <input class="form-control" type="text" name="school" required placeholder="@Localizer["AccountSchoolPlaceholder"]" />
+            </label>
+            <label>
+                <span>@Localizer["AccountClassName"]</span>
+                <input class="form-control" type="text" name="className" required placeholder="@Localizer["AccountClassNamePlaceholder"]" />
             </label>
             <label>
                 <span>@Localizer["AccountPassword"]</span>
@@ -49,13 +78,27 @@
     [SupplyParameterFromQuery(Name = "error")]
     private string? Error { get; set; }
 
-    private string ErrorMessage => Error switch
+    [SupplyParameterFromQuery(Name = "errors")]
+    private string? EncodedErrors { get; set; }
+
+    private IReadOnlyList<string> RegistrationErrors => DecodeErrors(EncodedErrors);
+
+    private static IReadOnlyList<string> DecodeErrors(string? encodedErrors)
     {
-        "password_mismatch" => Localizer["ErrorPasswordMismatch"].Value,
-        "password_short" => Localizer["ErrorPasswordShort"].Value,
-        "password_weak" => Localizer["ErrorPasswordWeak"].Value,
-        "duplicate_email" => Localizer["ErrorDuplicateEmail"].Value,
-        "missing_fields" => Localizer["ErrorMissingFields"].Value,
-        _ => Localizer["AccountRegistrationFailed"].Value
-    };
+        if (string.IsNullOrWhiteSpace(encodedErrors))
+        {
+            return [];
+        }
+
+        try
+        {
+            var json = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(encodedErrors));
+            var errors = JsonSerializer.Deserialize<List<string>>(json);
+            return errors?.Where(static error => !string.IsNullOrWhiteSpace(error)).ToArray() ?? [];
+        }
+        catch
+        {
+            return [];
+        }
+    }
 }

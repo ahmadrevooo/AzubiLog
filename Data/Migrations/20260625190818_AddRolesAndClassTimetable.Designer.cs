@@ -3,6 +3,7 @@ using System;
 using AzubiLog.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AzubiLog.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260625190818_AddRolesAndClassTimetable")]
+    partial class AddRolesAndClassTimetable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.0");
@@ -144,21 +147,6 @@ namespace AzubiLog.Data.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("AzubiLog.Models.CalendarDayMarker", b =>
-                {
-                    b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("INTEGER");
-                    b.Property<DateTime>("CreatedAt").HasColumnType("TEXT");
-                    b.Property<DateOnly>("Date").HasColumnType("TEXT");
-                    b.Property<string>("Note").HasMaxLength(1000).HasColumnType("TEXT");
-                    b.Property<string>("Type").IsRequired().HasMaxLength(40).HasColumnType("TEXT");
-                    b.Property<DateTime?>("UpdatedAt").HasColumnType("TEXT");
-                    b.Property<string>("UserId").IsRequired().HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-                    b.HasIndex("UserId", "Date").IsUnique();
-                    b.ToTable("CalendarDayMarkers", (string)null);
                 });
 
             modelBuilder.Entity("AzubiLog.Models.Category", b =>
@@ -697,7 +685,6 @@ namespace AzubiLog.Data.Migrations
 
             modelBuilder.Entity("AzubiLog.Models.ApplicationUser", b =>
                 {
-                    b.Navigation("CalendarDayMarkers");
                     b.Navigation("Categories");
 
                     b.Navigation("ClassTimetableEntries");
