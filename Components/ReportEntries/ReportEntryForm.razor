@@ -424,26 +424,26 @@
 
         if (normalizedName.Contains("berufsschule", StringComparison.Ordinal))
         {
-            return "SCHULE";
+            return "Schule";
         }
 
         if (normalizedName.Contains("urlaub", StringComparison.Ordinal))
         {
-            return "URLAUB";
+            return "Urlaub";
         }
 
         if (normalizedName.Contains("krank", StringComparison.Ordinal))
         {
-            return "KRANK";
+            return "Krank";
         }
 
         if (normalizedName.Contains("überstunden", StringComparison.Ordinal)
             || normalizedName.Contains("overtime", StringComparison.Ordinal))
         {
-            return "ÜBERSTUNDEN";
+            return "Überstunden";
         }
 
-        return "BETRIEB";
+        return "Betrieb";
     }
 
     private static bool TryParseTime(string value, out TimeSpan time)
