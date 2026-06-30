@@ -150,6 +150,12 @@
         "NavTodos"
     };
 
+    private static readonly HashSet<string> HiddenMoreNavigationHrefs = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "weekly-reports/grid",
+        "history"
+    };
+
     private string CurrentTheme { get; set; } = "light";
     private string UserDisplayName { get; set; } = "AzubiLog";
     private string UserEmail { get; set; } = string.Empty;
@@ -167,6 +173,7 @@
 
     private IEnumerable<NavigationItem> SecondaryNavigation =>
         Navigation.GetMainNavigation().Where(item => !string.IsNullOrWhiteSpace(item.Href)
+            && !HiddenMoreNavigationHrefs.Contains(item.Href.Trim('/'))
             && (!PrimaryNavigationKeys.Contains(item.ResourceKey) || item.ResourceKey == "NavWeeklyReports"));
 
     private bool IsSecondaryPageActive =>
