@@ -2,8 +2,6 @@ using System.Globalization;
 using AzubiLog.Models;
 using AzubiLog.Services.CalendarDayMarkers;
 using AzubiLog.Services.Dashboard;
-using AzubiLog.Services.DashboardNotes;
-using AzubiLog.Services.Todos;
 using Microsoft.AspNetCore.Components;
 
 namespace AzubiLog.Components.Pages;
@@ -29,21 +27,12 @@ public partial class Dashboard : ComponentBase, IAsyncDisposable
     private CancellationTokenSource? timerCancellationTokenSource;
     private DateTime displayedMonth = DateTime.Today;
     private Dictionary<DateOnly, CalendarDayType> monthMarkers = [];
-    private IReadOnlyList<TodoItemViewModel> OpenTodos { get; set; } = [];
-    private IReadOnlyList<DashboardNoteViewModel> RecentDashboardNotes { get; set; } = [];
-    private DashboardNoteFormModel DashboardNoteForm { get; set; } = new();
 
     [Inject]
     private IDashboardService DashboardService { get; set; } = null!;
 
     [Inject]
     private ICalendarDayMarkerService CalendarDayMarkerService { get; set; } = null!;
-
-    [Inject]
-    private ITodoService TodoService { get; set; } = null!;
-
-    [Inject]
-    private IDashboardNoteService DashboardNoteService { get; set; } = null!;
 
     protected DashboardViewModel? ViewModel { get; private set; }
 
@@ -72,8 +61,6 @@ public partial class Dashboard : ComponentBase, IAsyncDisposable
     protected override async Task OnInitializedAsync()
     {
         ViewModel = await DashboardService.GetDashboardAsync();
-        OpenTodos = await TodoService.GetOpenTodosAsync(5);
-        RecentDashboardNotes = await DashboardNoteService.GetRecentNotesAsync(3);
         await LoadMarkersForDisplayedMonthAsync();
     }
 
@@ -245,34 +232,6 @@ public partial class Dashboard : ComponentBase, IAsyncDisposable
             CalendarDayType.Exam => "Prüfung / Klausur",
             _ => "keine Markierung"
         };
-    }
-
-    private async Task SaveDashboardNoteAsync()
-    {
-        await DashboardNoteService.CreateNoteAsync(DashboardNoteForm);
-        DashboardNoteForm = new DashboardNoteFormModel();
-        RecentDashboardNotes = await DashboardNoteService.GetRecentNotesAsync(3);
-    }
-
-    private string GetTodoDueDateLabel(DateTime? dueDate)
-    {
-        if (dueDate is null)
-        {
-            return "Kein Datum";
-        }
-
-        return dueDate.Value.Date == Today
-            ? "Heute"
-            : dueDate.Value.ToString("dd.MM.yyyy", CurrentCulture);
-    }
-
-    private string GetDashboardNoteDateLabel(DateTime date)
-    {
-        var localDate = date.Kind == DateTimeKind.Utc
-            ? date.ToLocalTime()
-            : date;
-
-        return localDate.ToString("dd.MM.yyyy HH:mm", CurrentCulture);
     }
 
     private void SelectTimerDuration(TimerDurationOption duration)

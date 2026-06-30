@@ -22,7 +22,6 @@ public class ApplicationUser : IdentityUser
     public List<SchoolScheduleDay> SchoolScheduleDays { get; set; } = new();
     public List<CalendarDayMarker> CalendarDayMarkers { get; set; } = new();
     public List<Category> Categories { get; set; } = new();
-    public List<DashboardNote> DashboardNotes { get; set; } = new();
     public List<Trainer> Trainers { get; set; } = new();
     public List<TodoItem> Todos { get; set; } = new();
 }

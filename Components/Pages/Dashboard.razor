@@ -31,118 +31,54 @@ else
 
         <section class="dashboard-layout" aria-label="Dashboard Übersicht">
             <div class="dashboard-left-column">
-                <section class="dashboard-card todo-overview-card" aria-labelledby="todo-overview-title">
+                <section class="dashboard-card todo-action-card" aria-labelledby="todo-action-title">
                     <div class="card-heading">
                         <div class="icon-box icon-box-green" aria-hidden="true">
                             <span class="bi bi-list-check"></span>
                         </div>
                         <div>
-                            <h2 id="todo-overview-title">To-dos</h2>
-                            <p>Deine offenen Aufgaben</p>
+                            <h2 id="todo-action-title">To-do anlegen</h2>
+                            <p>Plane deine nächste Aufgabe für Ausbildung, Schule oder Projekt.</p>
                         </div>
                     </div>
 
-                    <div class="todo-overview-actions">
-                        <a class="btn btn-primary todo-action-button" href="/todos">Neue Aufgabe erstellen</a>
-                    </div>
-
-                    @if (OpenTodos.Count == 0)
-                    {
-                        <p class="todo-empty-state">Keine offenen Aufgaben</p>
-                    }
-                    else
-                    {
-                        <div class="todo-list" aria-label="Offene To-dos">
-                            @foreach (var todo in OpenTodos)
-                            {
-                                <article class="todo-list-item">
-                                    <span class="todo-status-dot" aria-hidden="true"></span>
-                                    <div class="todo-item-copy">
-                                        <div class="todo-item-title-row">
-                                            <h3>@todo.Title</h3>
-                                            <time>@GetTodoDueDateLabel(todo.DueDate)</time>
-                                        </div>
-                                        @if (!string.IsNullOrWhiteSpace(todo.Description))
-                                        {
-                                            <p>@todo.Description</p>
-                                        }
-                                    </div>
-                                </article>
-                            }
-                        </div>
-                    }
-
-                    <a class="todo-all-link" href="/todos">Alle Aufgaben anzeigen</a>
+                    <a class="btn btn-primary todo-action-button" href="/todos">Neue Aufgabe erstellen</a>
                 </section>
 
-                <div class="dashboard-left-widgets">
-                    <section class="dashboard-card timer-card" aria-labelledby="timer-title">
-                        <div class="card-heading">
-                            <span class="icon-box icon-box-blue" aria-hidden="true">
-                                <span class="bi bi-clock-history"></span>
-                            </span>
-                            <div>
-                                <h2 id="timer-title">Timer</h2>
-                                <p>Fokuszeit starten</p>
-                            </div>
+                <section class="dashboard-card timer-card" aria-labelledby="timer-title">
+                    <div class="card-heading">
+                        <span class="icon-box icon-box-blue" aria-hidden="true">
+                            <span class="bi bi-clock-history"></span>
+                        </span>
+                        <div>
+                            <h2 id="timer-title">Timer</h2>
+                            <p>Dauer wählen</p>
                         </div>
+                    </div>
 
-                        <div class="timer-display" aria-live="polite">@TimerDisplay</div>
-
-                        <div class="timer-options" role="group" aria-label="Dauer wählen">
-                            @foreach (var duration in TimerDurations)
-                            {
-                                <button class="@(duration.Label == SelectedTimerLabel ? "active" : null)" type="button" disabled="@isTimerRunning" @onclick="() => SelectTimerDuration(duration)">
-                                    @duration.Label
-                                </button>
-                            }
-                        </div>
-
-                        <label class="custom-duration">
-                            <span>Custom</span>
-                            <input class="form-control" type="number" min="1" value="@customTimerMinutes" disabled="@isTimerRunning" aria-label="Eigene Dauer in Minuten" @onchange="HandleCustomTimerMinutesChanged" />
-                            <small>Minuten</small>
-                        </label>
-
-                        <div class="timer-actions">
-                            <button class="btn btn-primary" type="button" disabled="@(!CanStartTimer)" @onclick="StartTimerAsync">Start</button>
-                            <button class="btn btn-outline-secondary" type="button" disabled="@(!isTimerRunning)" @onclick="PauseTimer">Pause</button>
-                            <button class="btn btn-outline-secondary" type="button" @onclick="ResetTimer">Reset</button>
-                        </div>
-                    </section>
-
-                    <section class="dashboard-card notes-card" aria-labelledby="dashboard-notes-title">
-                        <div class="card-heading">
-                            <span class="icon-box icon-box-note" aria-hidden="true">
-                                <span class="bi bi-journal-text"></span>
-                            </span>
-                            <div>
-                                <h2 id="dashboard-notes-title">Notizen</h2>
-                                <p>Schnelle Notizen</p>
-                            </div>
-                        </div>
-
-                        <EditForm Model="@DashboardNoteForm" OnValidSubmit="SaveDashboardNoteAsync" class="dashboard-note-form">
-                            <DataAnnotationsValidator />
-                            <textarea class="form-control" placeholder="Notiz schreiben..." @bind="DashboardNoteForm.Content"></textarea>
-                            <ValidationMessage For="@(() => DashboardNoteForm.Content)" />
-                            <button class="btn btn-primary" type="submit">Notiz speichern</button>
-                        </EditForm>
-
-                        @if (RecentDashboardNotes.Count > 0)
+                    <div class="timer-options" role="group" aria-label="Dauer wählen">
+                        @foreach (var duration in TimerDurations)
                         {
-                            <div class="dashboard-note-list" aria-label="Letzte Notizen">
-                                @foreach (var note in RecentDashboardNotes)
-                                {
-                                    <article class="dashboard-note-item">
-                                        <p>@note.Content</p>
-                                        <time>@GetDashboardNoteDateLabel(note.CreatedAt)</time>
-                                    </article>
-                                }
-                            </div>
+                            <button class="@(duration.Label == SelectedTimerLabel ? "active" : null)" type="button" disabled="@isTimerRunning" @onclick="() => SelectTimerDuration(duration)">
+                                @duration.Label
+                            </button>
                         }
-                    </section>
-                </div>
+                    </div>
+
+                    <label class="custom-duration">
+                        <span>Custom</span>
+                        <input class="form-control" type="number" min="1" value="@customTimerMinutes" disabled="@isTimerRunning" aria-label="Eigene Dauer in Minuten" @onchange="HandleCustomTimerMinutesChanged" />
+                        <small>Minuten</small>
+                    </label>
+
+                    <div class="timer-display" aria-live="polite">@TimerDisplay</div>
+
+                    <div class="timer-actions">
+                        <button class="btn btn-primary" type="button" disabled="@(!CanStartTimer)" @onclick="StartTimerAsync">Start</button>
+                        <button class="btn btn-outline-secondary" type="button" disabled="@(!isTimerRunning)" @onclick="PauseTimer">Pause</button>
+                        <button class="btn btn-outline-secondary" type="button" @onclick="ResetTimer">Reset</button>
+                    </div>
+                </section>
             </div>
 
             <section class="dashboard-card progress-card" aria-labelledby="progress-title">

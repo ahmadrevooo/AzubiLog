@@ -80,19 +80,6 @@ namespace AzubiLog.Data.Migrations
                     b.ToTable("Categories", (string)null);
                 });
 
-            modelBuilder.Entity("AzubiLog.Models.DashboardNote", b =>
-                {
-                    b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("INTEGER");
-                    b.Property<string>("Content").IsRequired().HasMaxLength(1000).HasColumnType("TEXT");
-                    b.Property<DateTime>("CreatedAt").HasColumnType("TEXT");
-                    b.Property<DateTime?>("UpdatedAt").HasColumnType("TEXT");
-                    b.Property<string>("UserId").IsRequired().HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-                    b.HasIndex("UserId", "CreatedAt");
-                    b.ToTable("DashboardNotes", (string)null);
-                });
-
             modelBuilder.Entity("AzubiLog.Models.ReportEntry", b =>
                 {
                     b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("INTEGER");
@@ -226,17 +213,6 @@ namespace AzubiLog.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("AzubiLog.Models.DashboardNote", b =>
-                {
-                    b.HasOne("AzubiLog.Models.ApplicationUser", "User")
-                        .WithMany("DashboardNotes")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("AzubiLog.Models.CalendarDayMarker", b =>
                 {
                     b.HasOne("AzubiLog.Models.ApplicationUser", "User")
@@ -353,7 +329,6 @@ namespace AzubiLog.Data.Migrations
                 {
                     b.Navigation("CalendarDayMarkers");
                     b.Navigation("Categories");
-                    b.Navigation("DashboardNotes");
                     b.Navigation("ReportEntries");
                     b.Navigation("SchoolScheduleDays");
                     b.Navigation("Todos");
