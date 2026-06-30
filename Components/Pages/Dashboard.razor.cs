@@ -2,6 +2,7 @@ using System.Globalization;
 using AzubiLog.Models;
 using AzubiLog.Services.CalendarDayMarkers;
 using AzubiLog.Services.Dashboard;
+using AzubiLog.Services.Todos;
 using Microsoft.AspNetCore.Components;
 
 namespace AzubiLog.Components.Pages;
@@ -27,12 +28,16 @@ public partial class Dashboard : ComponentBase, IAsyncDisposable
     private CancellationTokenSource? timerCancellationTokenSource;
     private DateTime displayedMonth = DateTime.Today;
     private Dictionary<DateOnly, CalendarDayType> monthMarkers = [];
+    private IReadOnlyList<TodoItemViewModel> OpenTodos { get; set; } = [];
 
     [Inject]
     private IDashboardService DashboardService { get; set; } = null!;
 
     [Inject]
     private ICalendarDayMarkerService CalendarDayMarkerService { get; set; } = null!;
+
+    [Inject]
+    private ITodoService TodoService { get; set; } = null!;
 
     protected DashboardViewModel? ViewModel { get; private set; }
 
@@ -61,6 +66,7 @@ public partial class Dashboard : ComponentBase, IAsyncDisposable
     protected override async Task OnInitializedAsync()
     {
         ViewModel = await DashboardService.GetDashboardAsync();
+        OpenTodos = await TodoService.GetOpenTodosAsync(5);
         await LoadMarkersForDisplayedMonthAsync();
     }
 
@@ -232,6 +238,18 @@ public partial class Dashboard : ComponentBase, IAsyncDisposable
             CalendarDayType.Exam => "Prüfung / Klausur",
             _ => "keine Markierung"
         };
+    }
+
+    private string GetTodoDueDateLabel(DateTime? dueDate)
+    {
+        if (dueDate is null)
+        {
+            return "Kein Datum";
+        }
+
+        return dueDate.Value.Date == Today
+            ? "Heute"
+            : dueDate.Value.ToString("dd.MM.yyyy", CurrentCulture);
     }
 
     private void SelectTimerDuration(TimerDurationOption duration)
