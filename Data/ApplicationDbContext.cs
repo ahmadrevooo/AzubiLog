@@ -9,6 +9,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 {
     public DbSet<Category> Categories => Set<Category>();
     public DbSet<CalendarDayMarker> CalendarDayMarkers => Set<CalendarDayMarker>();
+    public DbSet<DashboardNote> DashboardNotes => Set<DashboardNote>();
     public DbSet<ReportEntry> ReportEntries => Set<ReportEntry>();
     public DbSet<SchoolScheduleDay> SchoolScheduleDays => Set<SchoolScheduleDay>();
     public DbSet<TodoItem> Todos => Set<TodoItem>();
@@ -22,6 +23,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         ConfigureApplicationUser(builder);
         ConfigureCalendarDayMarker(builder);
         ConfigureCategory(builder);
+        ConfigureDashboardNote(builder);
         ConfigureTrainer(builder);
         ConfigureWeeklyReport(builder);
         ConfigureReportEntry(builder);
@@ -112,6 +114,25 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             entity.HasOne(category => category.User)
                 .WithMany(user => user.Categories)
                 .HasForeignKey(category => category.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+    }
+
+    private static void ConfigureDashboardNote(ModelBuilder builder)
+    {
+        builder.Entity<DashboardNote>(entity =>
+        {
+            entity.ToTable("DashboardNotes");
+
+            entity.Property(note => note.Content)
+                .HasMaxLength(1_000)
+                .IsRequired();
+
+            entity.HasIndex(note => new { note.UserId, note.CreatedAt });
+
+            entity.HasOne(note => note.User)
+                .WithMany(user => user.DashboardNotes)
+                .HasForeignKey(note => note.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
     }

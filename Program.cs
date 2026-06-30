@@ -5,6 +5,7 @@ using AzubiLog.Models;
 using AzubiLog.Services;
 using AzubiLog.Services.CalendarDayMarkers;
 using AzubiLog.Services.Dashboard;
+using AzubiLog.Services.DashboardNotes;
 using AzubiLog.Services.Identity;
 using AzubiLog.Services.Pdf;
 using AzubiLog.Services.Profile;
@@ -52,6 +53,7 @@ namespace AzubiLog
             builder.Services.AddScoped<IAccountEmailSender, DevelopmentAccountEmailSender>();
             builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
             builder.Services.AddScoped<ICalendarDayMarkerService, CalendarDayMarkerService>();
+            builder.Services.AddScoped<IDashboardNoteService, DashboardNoteService>();
             builder.Services.AddScoped<IDashboardService, DashboardService>();
             builder.Services.AddScoped<IApprenticeProfileService, ApprenticeProfileService>();
             builder.Services.AddScoped<IReportEntryService, ReportEntryService>();
