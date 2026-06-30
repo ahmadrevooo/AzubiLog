@@ -349,12 +349,53 @@ main {
     white-space: nowrap;
 }
 
-.app-profile-menu a {
+.app-profile-menu a,
+.app-profile-submenu summary {
     border-radius: 6px;
     color: var(--app-text-secondary);
+    cursor: pointer;
     font-size: 0.9rem;
     padding: 0.5rem 0.55rem;
     text-decoration: none !important;
+}
+
+.app-profile-submenu {
+    position: relative;
+}
+
+.app-profile-submenu summary {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    list-style: none;
+}
+
+.app-profile-submenu summary::-webkit-details-marker {
+    display: none;
+}
+
+.app-profile-submenu-panel {
+    background: var(--app-surface);
+    border: 1px solid var(--app-border);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(15, 15, 15, 0.12);
+    display: none;
+    gap: 0.2rem;
+    min-width: 190px;
+    padding: 0.45rem;
+    position: absolute;
+    right: calc(100% + 0.35rem);
+    top: -0.45rem;
+    z-index: 31;
+}
+
+.app-profile-submenu[open] > .app-profile-submenu-panel {
+    display: grid;
+}
+
+.app-profile-submenu-panel a {
+    display: block;
+    padding: 0.5rem 0.6rem;
 }
 
 .app-mobile-menu-button {
@@ -416,11 +457,17 @@ main {
     .app-mobile-nav-link:hover,
     .app-more-menu-link:hover,
     .app-profile-menu a:hover,
+    .app-profile-submenu summary:hover,
     .app-theme-switch:hover,
     .app-avatar-button:hover,
     .app-mobile-menu-button:hover {
         background: var(--app-surface-hover);
         color: var(--app-text);
+    }
+
+    .app-profile-submenu:hover > .app-profile-submenu-panel,
+    .app-profile-submenu:focus-within > .app-profile-submenu-panel {
+        display: grid;
     }
 
     .app-avatar-button:hover {
@@ -438,6 +485,7 @@ main {
 .app-mobile-nav-link:focus-visible,
 .app-more-menu-link:focus-visible,
 .app-profile-menu a:focus-visible,
+.app-profile-submenu summary:focus-visible,
 .app-theme-switch:focus-visible,
 .app-avatar-button:focus-visible,
 .app-mobile-menu-button:focus-visible,
@@ -487,6 +535,19 @@ main {
         max-width: calc(100vw - 28px);
         min-width: min(240px, calc(100vw - 28px));
         right: 0;
+    }
+
+    .app-profile-submenu-panel {
+        border-radius: 6px;
+        box-shadow: none;
+        margin: 0.15rem 0 0.2rem;
+        min-width: 0;
+        padding: 0.2rem 0 0.2rem 0.65rem;
+        position: static;
+    }
+
+    .app-profile-submenu-panel a {
+        padding: 0.48rem 0.55rem;
     }
 
     .app-theme-switch {

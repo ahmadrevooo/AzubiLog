@@ -80,6 +80,17 @@
                                     </div>
                                     <a href="/settings" role="menuitem" @onclick="CloseMenus">Profil</a>
                                     <a href="/settings" role="menuitem" @onclick="CloseMenus">Einstellungen</a>
+                                    <details class="app-profile-submenu">
+                                        <summary role="menuitem" aria-haspopup="menu">
+                                            <span>Rechtliches</span>
+                                            <span aria-hidden="true">›</span>
+                                        </summary>
+                                        <div class="app-profile-submenu-panel" role="menu">
+                                            <a href="/impressum" role="menuitem" @onclick="CloseMenus">Impressum</a>
+                                            <a href="/datenschutz" role="menuitem" @onclick="CloseMenus">Datenschutz</a>
+                                            <a href="/kontakt" role="menuitem" @onclick="CloseMenus">Kontakt</a>
+                                        </div>
+                                    </details>
                                     <a href="/account/logout" role="menuitem">@Localizer["AccountLogoutAction"]</a>
                                 </div>
                             }
