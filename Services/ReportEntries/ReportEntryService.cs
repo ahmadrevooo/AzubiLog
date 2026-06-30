@@ -727,24 +727,40 @@ public class ReportEntryService(
     {
         var trainerEmail = trainers.FirstOrDefault(trainer => trainer.Id == form.TrainerId)?.Email ?? string.Empty;
         var subject = $"Tagesbericht vom {form.Date:dd.MM.yyyy}";
+        const string lineBreak = "\r\n";
+        const string separator = "--------------------------------";
         var lines = new List<string>
         {
+            "TAGESBERICHT",
+            separator,
+            string.Empty,
             $"Datum: {summary.Date:dddd, dd.MM.yyyy}",
             $"Gesamte Arbeitszeit: {summary.TotalHours:0.##} h",
             string.Empty,
-            "EintrÃ¤ge:"
+            "EINTRAEGE",
+            separator,
+            string.Empty
         };
 
         if (summary.Entries.Count == 0)
         {
-            lines.Add("Keine EintrÃ¤ge vorhanden.");
+            lines.Add("Keine Eintraege vorhanden.");
         }
         else
         {
-            lines.AddRange(summary.Entries.Select(entry => $"{entry.TimeRange} Â· {entry.Hours:0.##} h - {entry.Title}"));
+            foreach (var entry in summary.Entries)
+            {
+                lines.Add(entry.TimeRange);
+                lines.Add($"Dauer: {entry.Hours:0.##} h");
+                lines.Add($"Taetigkeit: {entry.Title}");
+                lines.Add(string.Empty);
+            }
         }
 
-        var body = string.Join(Environment.NewLine, lines);
+        lines.Add(separator);
+        lines.Add("Gesendet aus AzubiLog");
+
+        var body = string.Join(lineBreak, lines);
 
         return $"mailto:{Uri.EscapeDataString(trainerEmail)}?subject={Uri.EscapeDataString(subject)}&body={Uri.EscapeDataString(body)}";
     }
