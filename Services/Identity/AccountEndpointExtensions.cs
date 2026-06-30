@@ -9,7 +9,9 @@ public static class AccountEndpointExtensions
     {
         endpoints.MapPost("/account/register/submit", async (
             HttpContext context,
-            AccountFlowService accountFlow) =>
+            AccountFlowService accountFlow,
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager) =>
         {
             var form = await context.Request.ReadFormAsync();
             var firstName = form["firstName"].ToString();
@@ -51,7 +53,14 @@ public static class AccountEndpointExtensions
                 return Results.Redirect("/account/register?error=failed");
             }
 
-            return Results.Redirect($"/account/email-confirmation-notice?email={Uri.EscapeDataString(email)}");
+            var user = await userManager.FindByEmailAsync(email);
+            if (user is null)
+            {
+                return Results.Redirect("/account/login?registered=true");
+            }
+
+            await signInManager.SignInAsync(user, isPersistent: false);
+            return Results.Redirect("/");
         }).AllowAnonymous().DisableAntiforgery();
 
         endpoints.MapPost("/account/login/submit", async (
@@ -74,11 +83,6 @@ public static class AccountEndpointExtensions
             if (!await userManager.CheckPasswordAsync(user, password))
             {
                 return Results.Redirect("/account/login?error=invalid");
-            }
-
-            if (!await userManager.IsEmailConfirmedAsync(user))
-            {
-                return Results.Redirect($"/account/email-confirmation-notice?email={Uri.EscapeDataString(email)}");
             }
 
             await signInManager.SignInAsync(user, rememberMe);
