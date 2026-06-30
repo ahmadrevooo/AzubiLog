@@ -510,11 +510,11 @@
 }
 
 .progress-card {
-    --marker-workday: #4f8fd8;
-    --marker-school-day: #e0b84f;
-    --marker-vacation: #7aa874;
-    --marker-sick-leave: #9b7ad8;
-    --marker-exam: #d97c6c;
+    --marker-workday: #1976d2;
+    --marker-school-day: #f59e0b;
+    --marker-vacation: #16a34a;
+    --marker-sick-leave: #7c3aed;
+    --marker-exam: #ef4444;
     --dashboard-card-accent: var(--app-accent-orange);
     display: flex;
     flex-direction: column;
