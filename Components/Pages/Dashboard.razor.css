@@ -81,7 +81,7 @@
     align-items: start;
     display: grid;
     gap: 20px;
-    grid-template-columns: minmax(420px, 1.1fr) minmax(520px, 1fr);
+    grid-template-columns: minmax(400px, 1fr) minmax(560px, 0.96fr);
 }
 
 .dashboard-left-column {
@@ -369,15 +369,20 @@
     gap: 12px;
 }
 
-.todo-action-button {
-    justify-self: start;
-    margin-top: 2px;
+.todo-card-heading {
+    align-items: center;
+    display: grid;
+    gap: 12px;
+    grid-template-columns: auto minmax(0, 1fr) auto;
 }
 
-.todo-overview-actions {
-    align-items: center;
-    display: flex;
-    justify-content: flex-start;
+.todo-heading-copy {
+    min-width: 0;
+}
+
+.todo-action-button {
+    justify-self: start;
+    white-space: nowrap;
 }
 
 .todo-list {
@@ -500,22 +505,24 @@
     border-top: 1px solid color-mix(in srgb, var(--app-border) 58%, transparent);
     border-radius: 0;
     display: grid;
-    gap: 8px;
-    grid-template-columns: auto minmax(58px, 88px) auto;
-    margin-top: 12px;
-    padding: 10px 0 0;
+    gap: 6px;
+    grid-template-columns: auto 72px auto;
+    justify-content: start;
+    margin-top: 10px;
+    padding: 8px 0 0;
 }
 
 .custom-duration span,
 .custom-duration small {
     color: var(--app-text-muted);
-    font-size: 0.84rem;
+    font-size: 0.76rem;
     font-weight: 500;
 }
 
 .custom-duration .form-control {
-    min-height: 32px;
-    padding-block: 4px;
+    font-size: 0.82rem;
+    min-height: 30px;
+    padding: 3px 8px;
 }
 
 .timer-display {
@@ -539,6 +546,7 @@
 .notes-card {
     --dashboard-card-accent: var(--app-accent-orange);
     display: grid;
+    align-content: start;
 }
 
 .dashboard-note-form {
@@ -643,6 +651,7 @@
 
 .progress-card .section-heading h3 {
     font-size: 1.16rem;
+    white-space: nowrap;
 }
 
 .progress-card .section-heading p {
@@ -864,7 +873,7 @@
 
 @media (max-width: 1120px) {
     .dashboard-layout {
-        grid-template-columns: minmax(360px, 1fr) minmax(500px, 0.92fr);
+        grid-template-columns: minmax(360px, 1fr) minmax(540px, 0.96fr);
     }
 
 }
@@ -954,7 +963,16 @@
     }
 
     .custom-duration {
-        grid-template-columns: 1fr;
+        grid-template-columns: auto 72px auto;
+    }
+
+    .todo-card-heading {
+        grid-template-columns: auto minmax(0, 1fr);
+    }
+
+    .todo-action-button {
+        grid-column: 1 / -1;
+        justify-self: start;
     }
 
     .todo-item-title-row {
