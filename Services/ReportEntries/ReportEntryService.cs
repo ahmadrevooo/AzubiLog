@@ -195,7 +195,7 @@ public class ReportEntryService(
             DailySummary = summary,
             WeeklyOverview = weeklyOverview,
             SchoolDaySuggestion = schoolDaySuggestion,
-            DailyReportEmailHref = BuildDailyReportEmailHref(form, trainers, summary),
+            DailyReportEmailHref = BuildDailyReportEmailHref(form, trainers, summary, user),
             CalculatedHours = CalculateHours(form.StartTime, form.EndTime),
             RestoredDraft = restoredDraft
         };
@@ -721,30 +721,51 @@ public class ReportEntryService(
     }
 
     private static string BuildDailyReportEmailHref(
-        ReportEntryFormModel form,
-        IReadOnlyList<ReportEntryOption> trainers,
-        DailySummaryViewModel summary)
+    ReportEntryFormModel form,
+    IReadOnlyList<ReportEntryOption> trainers,
+    DailySummaryViewModel summary,
+    ApplicationUser user)
     {
-        var trainerEmail = trainers.FirstOrDefault(trainer => trainer.Id == form.TrainerId)?.Email ?? string.Empty;
+        var trainer = trainers.FirstOrDefault(trainer => trainer.Id == form.TrainerId);
+        var trainerEmail = trainer?.Email ?? string.Empty;
+        var trainerName = trainer?.Name ?? string.Empty;
+
+        var userName = $"{user.FirstName} {user.LastName}".Trim();
+
+        if (string.IsNullOrWhiteSpace(userName))
+        {
+            userName = user.Email ?? "Unbekannt";
+        }
+
         var subject = $"Tagesbericht vom {form.Date:dd.MM.yyyy}";
         const string lineBreak = "\r\n";
         const string separator = "--------------------------------";
+
         var lines = new List<string>
+    {
+        $"Tagesbericht von {userName}",
+        separator,
+        string.Empty,
+        $"Datum: {summary.Date:dddd, dd.MM.yyyy}",
+        $"Gesamte Arbeitszeit: {summary.TotalHours:0.##} h"
+    };
+
+        if (!string.IsNullOrWhiteSpace(trainerName))
         {
-            "TAGESBERICHT",
-            separator,
+            // lines.Add($"Ausbilder: {trainerName}");
+        }
+
+        lines.AddRange(
+        [
             string.Empty,
-            $"Datum: {summary.Date:dddd, dd.MM.yyyy}",
-            $"Gesamte Arbeitszeit: {summary.TotalHours:0.##} h",
-            string.Empty,
-            "EINTRAEGE",
-            separator,
-            string.Empty
-        };
+        "Einträge",
+        separator,
+        string.Empty
+        ]);
 
         if (summary.Entries.Count == 0)
         {
-            lines.Add("Keine Eintraege vorhanden.");
+            lines.Add("Keine Einträge vorhanden.");
         }
         else
         {
@@ -752,13 +773,15 @@ public class ReportEntryService(
             {
                 lines.Add(entry.TimeRange);
                 lines.Add($"Dauer: {entry.Hours:0.##} h");
-                lines.Add($"Taetigkeit: {entry.Title}");
+                //lines.Add("");
+                lines.Add($"Tätigkeit: {entry.Title}");
+                lines.Add($"Beschreibung: {entry.DescriptionPreview}");
                 lines.Add(string.Empty);
             }
         }
 
         lines.Add(separator);
-        lines.Add("Gesendet aus AzubiLog");
+        lines.Add("Erstellt mit AzubiLog");
 
         var body = string.Join(lineBreak, lines);
 
