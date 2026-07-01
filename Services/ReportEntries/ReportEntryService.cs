@@ -4,6 +4,7 @@ using System.Text.Json;
 using AzubiLog.Data;
 using AzubiLog.Models;
 using AzubiLog.Services.Identity;
+using AzubiLog.Services.Shared;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -378,15 +379,7 @@ public class ReportEntryService(
             .Include(entry => entry.Category)
             .Where(entry => entry.UserId == userId && entry.Date.Date == targetDate)
             .OrderBy(entry => entry.StartTime)
-            .Select(entry => new ReportEntryListItem(
-                entry.Id,
-                string.IsNullOrWhiteSpace(entry.Title) ? "(Draft)" : entry.Title,
-                entry.Category == null ? "-" : GetCategoryDisplayName(entry.Category.Name),
-                entry.Duration ?? 0m,
-                entry.Status,
-                FormatTimeRange(entry),
-                entry.OrderNumber ?? string.Empty,
-                CreateDescriptionPreview(entry.Description)))
+            .Select(entry => MapToListItem(entry))
             .ToListAsync(cancellationToken);
 
         return new DailySummaryViewModel
@@ -437,15 +430,7 @@ public class ReportEntryService(
                         .Cast<string>()
                         .ToList(),
                     Entries = dayEntries
-                        .Select(entry => new ReportEntryListItem(
-                            entry.Id,
-                            string.IsNullOrWhiteSpace(entry.Title) ? "(Draft)" : entry.Title,
-                            entry.Category is null ? "-" : GetCategoryDisplayName(entry.Category.Name),
-                            entry.Duration ?? 0m,
-                            entry.Status,
-                            FormatTimeRange(entry),
-                            entry.OrderNumber ?? string.Empty,
-                            CreateDescriptionPreview(entry.Description)))
+                        .Select(entry => MapToListItem(entry))
                         .ToList()
                 };
             })
@@ -511,11 +496,7 @@ public class ReportEntryService(
         return date.Date.Add(parsedTime);
     }
 
-    private static DateTime GetMonday(DateTime date)
-    {
-        var offset = ((int)date.DayOfWeek + 6) % 7;
-        return date.Date.AddDays(-offset);
-    }
+    private static DateTime GetMonday(DateTime date) => DateHelpers.GetMonday(date);
 
     private static string GetCategoryDisplayName(string categoryName)
     {
@@ -613,8 +594,7 @@ public class ReportEntryService(
         // Try class timetable first (shared by Klassensprecher for the class)
         if (!string.IsNullOrWhiteSpace(user.School) && !string.IsNullOrWhiteSpace(user.ClassName))
         {
-            var normalizedSchool = user.School.Trim().ToUpperInvariant();
-            var normalizedClass = user.ClassName.Trim().ToUpperInvariant();
+            var (normalizedSchool, normalizedClass) = TimetableNormalizer.Normalize(user.School, user.ClassName);
 
             var classTimetable = await dbContext.ClassTimetableEntries
                 .Include(entry => entry.Cancellations)
@@ -695,37 +675,7 @@ public class ReportEntryService(
     }
 
     private static List<ClassTimetableEntry.StructuredSubjectEntry> TryParseStructuredSubjects(string subjectsText)
-    {
-        if (string.IsNullOrWhiteSpace(subjectsText))
-        {
-            return [];
-        }
-
-        var trimmedSubjectsText = subjectsText.Trim();
-        if (!trimmedSubjectsText.StartsWith("[", StringComparison.Ordinal))
-        {
-            return [];
-        }
-
-        try
-        {
-            var structuredSubjects = JsonSerializer.Deserialize<List<ClassTimetableEntry.StructuredSubjectEntry>>(
-                trimmedSubjectsText,
-                new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                });
-
-            return structuredSubjects?
-                .Where(subject => !string.IsNullOrWhiteSpace(subject.Fach))
-                .ToList()
-                ?? [];
-        }
-        catch (JsonException)
-        {
-            return [];
-        }
-    }
+        => StructuredSubjectParser.Parse(subjectsText);
 
     private static string FormatStructuredSubject(ClassTimetableEntry.StructuredSubjectEntry subject)
     {
@@ -796,6 +746,19 @@ public class ReportEntryService(
             .FirstOrDefaultAsync(cancellationToken);
     }
 
+    private static ReportEntryListItem MapToListItem(ReportEntry entry)
+    {
+        return new ReportEntryListItem(
+            entry.Id,
+            string.IsNullOrWhiteSpace(entry.Title) ? "(Draft)" : entry.Title,
+            entry.Category is null ? "-" : GetCategoryDisplayName(entry.Category.Name),
+            entry.Duration ?? 0m,
+            entry.Status,
+            FormatTimeRange(entry),
+            entry.OrderNumber ?? string.Empty,
+            CreateDescriptionPreview(entry.Description));
+    }
+
     private static string FormatTimeRange(ReportEntry entry)
     {
         if (entry.StartTime == default || entry.EndTime == default)
@@ -846,9 +809,5 @@ public class ReportEntryService(
         return $"mailto:{Uri.EscapeDataString(trainerEmail)}?subject={Uri.EscapeDataString(subject)}&body={Uri.EscapeDataString(body)}";
     }
 
-    private static void ValidateForSave(ReportEntryFormModel form)
-    {
-        var context = new ValidationContext(form);
-        Validator.ValidateObject(form, context, validateAllProperties: true);
-    }
+    private static void ValidateForSave(ReportEntryFormModel form) => ValidationHelper.ValidateModel(form);
 }

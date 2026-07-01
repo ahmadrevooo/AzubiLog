@@ -1,7 +1,7 @@
-using System.ComponentModel.DataAnnotations;
 using AzubiLog.Data;
 using AzubiLog.Models;
 using AzubiLog.Services.Identity;
+using AzubiLog.Services.Shared;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,14 +12,7 @@ public sealed class ApprenticeProfileService(
     ICurrentUserService currentUserService,
     UserManager<ApplicationUser> userManager) : IApprenticeProfileService
 {
-    private static readonly IReadOnlyList<(DayOfWeek Day, string Label)> SchoolDays =
-    [
-        (DayOfWeek.Monday, "Montag"),
-        (DayOfWeek.Tuesday, "Dienstag"),
-        (DayOfWeek.Wednesday, "Mittwoch"),
-        (DayOfWeek.Thursday, "Donnerstag"),
-        (DayOfWeek.Friday, "Freitag")
-    ];
+    private static IReadOnlyList<(DayOfWeek Day, string Label)> SchoolDays => GermanDayNames.WorkWeek;
 
     public async Task<ApprenticeProfileViewModel> GetProfileAsync(CancellationToken cancellationToken = default)
     {
@@ -59,20 +52,14 @@ public sealed class ApprenticeProfileService(
         ApprenticeProfileFormModel profile,
         CancellationToken cancellationToken = default)
     {
-        Validator.ValidateObject(profile, new ValidationContext(profile), validateAllProperties: true);
+        ValidationHelper.ValidateModel(profile);
         foreach (var scheduleDay in profile.SchoolScheduleDays)
         {
-            Validator.ValidateObject(
-                scheduleDay,
-                new ValidationContext(scheduleDay),
-                validateAllProperties: true);
+            ValidationHelper.ValidateModel(scheduleDay);
         }
         foreach (var trainer in profile.Trainers)
         {
-            Validator.ValidateObject(
-                trainer,
-                new ValidationContext(trainer),
-                validateAllProperties: true);
+            ValidationHelper.ValidateModel(trainer);
         }
 
         var user = await currentUserService.GetRequiredUserAsync(cancellationToken);

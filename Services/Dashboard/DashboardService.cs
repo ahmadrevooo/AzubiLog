@@ -1,5 +1,6 @@
 using System.Globalization;
 using AzubiLog.Services.Identity;
+using AzubiLog.Services.Shared;
 using AzubiLog.Services.Todos;
 
 namespace AzubiLog.Services.Dashboard;
@@ -19,7 +20,7 @@ public class DashboardService(
         var model = new DashboardViewModel
         {
             CalendarWeek = calendarWeek,
-            ApprenticeName = FormatApprenticeName(user.FirstName, user.LastName),
+            ApprenticeName = FormatHelpers.FormatApprenticeName(user.FirstName, user.LastName),
             RecordedHours = recordedHours,
             OpenTodoCount = openTodoCount,
             Metrics =
@@ -47,10 +48,5 @@ public class DashboardService(
     private static string FormatHours(decimal hours)
     {
         return string.Create(CultureInfo.CurrentCulture, $"{hours:0.#} h");
-    }
-
-    private static string FormatApprenticeName(string firstName, string lastName)
-    {
-        return $"{firstName} {lastName}".Trim();
     }
 }

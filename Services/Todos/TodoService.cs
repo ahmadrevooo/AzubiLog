@@ -1,7 +1,7 @@
-using System.ComponentModel.DataAnnotations;
 using AzubiLog.Data;
 using AzubiLog.Models;
 using AzubiLog.Services.Identity;
+using AzubiLog.Services.Shared;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -112,9 +112,5 @@ public class TodoService(
             todo.IsCompleted);
     }
 
-    private static void Validate(TodoFormModel form)
-    {
-        var context = new ValidationContext(form);
-        Validator.ValidateObject(form, context, validateAllProperties: true);
-    }
+    private static void Validate(TodoFormModel form) => ValidationHelper.ValidateModel(form);
 }

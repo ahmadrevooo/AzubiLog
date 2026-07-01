@@ -1,5 +1,6 @@
 using AzubiLog.Data;
 using AzubiLog.Models;
+using AzubiLog.Services.Shared;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
@@ -54,8 +55,7 @@ public sealed class TimetableService(ApplicationDbContext dbContext) : ITimetabl
         string className,
         CancellationToken cancellationToken = default)
     {
-        var normalizedSchool = school.Trim().ToUpperInvariant();
-        var normalizedClass = className.Trim().ToUpperInvariant();
+        var (normalizedSchool, normalizedClass) = TimetableNormalizer.Normalize(school, className);
 
         return await dbContext.ClassTimetableEntries
             .Include(entry => entry.Cancellations)
@@ -72,8 +72,7 @@ public sealed class TimetableService(ApplicationDbContext dbContext) : ITimetabl
         DayOfWeek dayOfWeek,
         CancellationToken cancellationToken = default)
     {
-        var normalizedSchool = school.Trim().ToUpperInvariant();
-        var normalizedClass = className.Trim().ToUpperInvariant();
+        var (normalizedSchool, normalizedClass) = TimetableNormalizer.Normalize(school, className);
 
         return await dbContext.ClassTimetableEntries
             .Include(entry => entry.Cancellations)
@@ -92,8 +91,7 @@ public sealed class TimetableService(ApplicationDbContext dbContext) : ITimetabl
         string subjectsText,
         CancellationToken cancellationToken = default)
     {
-        var normalizedSchool = school.Trim().ToUpperInvariant();
-        var normalizedClass = className.Trim().ToUpperInvariant();
+        var (normalizedSchool, normalizedClass) = TimetableNormalizer.Normalize(school, className);
 
         var existing = await dbContext.ClassTimetableEntries
             .FirstOrDefaultAsync(entry =>
@@ -156,8 +154,7 @@ public sealed class TimetableService(ApplicationDbContext dbContext) : ITimetabl
         DateTime date,
         CancellationToken cancellationToken = default)
     {
-        var normalizedSchool = school.Trim().ToUpperInvariant();
-        var normalizedClass = className.Trim().ToUpperInvariant();
+        var (normalizedSchool, normalizedClass) = TimetableNormalizer.Normalize(school, className);
         var dateOnly = date.Date;
 
         return await dbContext.TimetableCancellations
@@ -222,10 +219,8 @@ public sealed class TimetableService(ApplicationDbContext dbContext) : ITimetabl
         string sourceClassName,
         CancellationToken cancellationToken = default)
     {
-        var normalizedTargetSchool = targetSchool.Trim().ToUpperInvariant();
-        var normalizedTargetClass = targetClassName.Trim().ToUpperInvariant();
-        var normalizedSourceSchool = sourceSchool.Trim().ToUpperInvariant();
-        var normalizedSourceClass = sourceClassName.Trim().ToUpperInvariant();
+        var (normalizedTargetSchool, normalizedTargetClass) = TimetableNormalizer.Normalize(targetSchool, targetClassName);
+        var (normalizedSourceSchool, normalizedSourceClass) = TimetableNormalizer.Normalize(sourceSchool, sourceClassName);
 
         var sourceEntries = await dbContext.ClassTimetableEntries
             .Include(entry => entry.Cancellations)
@@ -277,5 +272,5 @@ public sealed class TimetableService(ApplicationDbContext dbContext) : ITimetabl
     }
 
     private static string BuildNormalizedClassKey(string school, string className)
-        => $"{school.Trim().ToUpperInvariant()}|{className.Trim().ToUpperInvariant()}";
+        => $"{TimetableNormalizer.NormalizeSchool(school)}|{TimetableNormalizer.NormalizeClassName(className)}";
 }
