@@ -14,17 +14,17 @@ public sealed class GermanIdentityErrorDescriber : IdentityErrorDescriber
 
     public override IdentityError LoginAlreadyAssociated() => new() { Code = nameof(LoginAlreadyAssociated), Description = "Es existiert bereits ein Konto mit diesem Login." };
 
-    public override IdentityError InvalidUserName(string userName) => new() { Code = nameof(InvalidUserName), Description = $"Der Benutzername '{userName}' ist ungültig." };
+    public override IdentityError InvalidUserName(string? userName) => new() { Code = nameof(InvalidUserName), Description = $"Der Benutzername '{userName ?? string.Empty}' ist ungültig." };
 
-    public override IdentityError InvalidEmail(string email) => new() { Code = nameof(InvalidEmail), Description = $"Die E-Mail-Adresse '{email}' ist ungültig." };
+    public override IdentityError InvalidEmail(string? email) => new() { Code = nameof(InvalidEmail), Description = $"Die E-Mail-Adresse '{email ?? string.Empty}' ist ungültig." };
 
-    public override IdentityError DuplicateUserName(string userName) => new() { Code = nameof(DuplicateUserName), Description = "Dieser Benutzername wird bereits verwendet." };
+    public override IdentityError DuplicateUserName(string? userName) => new() { Code = nameof(DuplicateUserName), Description = "Dieser Benutzername wird bereits verwendet." };
 
-    public override IdentityError DuplicateEmail(string email) => new() { Code = nameof(DuplicateEmail), Description = "Diese E-Mail-Adresse wird bereits verwendet." };
+    public override IdentityError DuplicateEmail(string? email) => new() { Code = nameof(DuplicateEmail), Description = "Diese E-Mail-Adresse wird bereits verwendet." };
 
-    public override IdentityError InvalidRoleName(string role) => new() { Code = nameof(InvalidRoleName), Description = $"Der Rollenname '{role}' ist ungültig." };
+    public override IdentityError InvalidRoleName(string? role) => new() { Code = nameof(InvalidRoleName), Description = $"Der Rollenname '{role ?? string.Empty}' ist ungültig." };
 
-    public override IdentityError DuplicateRoleName(string role) => new() { Code = nameof(DuplicateRoleName), Description = "Dieser Rollenname ist bereits vergeben." };
+    public override IdentityError DuplicateRoleName(string? role) => new() { Code = nameof(DuplicateRoleName), Description = "Dieser Rollenname ist bereits vergeben." };
 
     public override IdentityError PasswordTooShort(int length) => new() { Code = nameof(PasswordTooShort), Description = $"Passwörter müssen mindestens {length} Zeichen lang sein." };
 
