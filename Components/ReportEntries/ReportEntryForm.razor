@@ -92,7 +92,7 @@
                     <label>
                         <span>@Localizer["ReportEntryStartTime"]</span>
                         <div class="report-entry-time-control">
-                            <input class="form-control report-entry-time-input" type="text" inputmode="numeric" maxlength="5" placeholder="08:00" value="@Model.StartTime" @oninput="HandleStartTimeInputAsync" />
+                            <input class="form-control report-entry-time-input" type="text" inputmode="numeric" maxlength="5" placeholder="08:00" value="@Model.StartTime" @oninput="HandleStartTimeTypingAsync" @onchange="HandleStartTimeCommitAsync" />
                             <div class="report-entry-time-stepper">
                                 <button type="button" title="Startzeit erhöhen" aria-label="Startzeit erhöhen" @onclick="IncreaseStartTimeAsync">+</button>
                                 <button type="button" title="Startzeit verringern" aria-label="Startzeit verringern" @onclick="DecreaseStartTimeAsync">-</button>
@@ -107,7 +107,7 @@
                     <label>
                         <span>@Localizer["ReportEntryEndTime"]</span>
                         <div class="report-entry-time-control">
-                            <input class="form-control report-entry-time-input" type="text" inputmode="numeric" maxlength="5" placeholder="16:00" value="@Model.EndTime" @oninput="HandleEndTimeInputAsync" />
+                            <input class="form-control report-entry-time-input" type="text" inputmode="numeric" maxlength="5" placeholder="16:00" value="@Model.EndTime" @oninput="HandleEndTimeTypingAsync" @onchange="HandleEndTimeCommitAsync" />
                             <div class="report-entry-time-stepper">
                                 <button type="button" title="Endzeit erhöhen" aria-label="Endzeit erhöhen" @onclick="IncreaseEndTimeAsync">+</button>
                                 <button type="button" title="Endzeit verringern" aria-label="Endzeit verringern" @onclick="DecreaseEndTimeAsync">-</button>
@@ -396,16 +396,74 @@
         return OnFieldChanged.InvokeAsync(Model);
     }
 
-    private Task HandleStartTimeInputAsync(ChangeEventArgs args)
+    private void HandleStartTimeTypingAsync(ChangeEventArgs args)
     {
         Model.StartTime = args.Value?.ToString() ?? string.Empty;
+    }
+
+    private Task HandleStartTimeCommitAsync(ChangeEventArgs args)
+    {
+        Model.StartTime = FormatTimeInput(args.Value?.ToString() ?? string.Empty);
         return FieldChangedAsync();
     }
 
-    private Task HandleEndTimeInputAsync(ChangeEventArgs args)
+    private void HandleEndTimeTypingAsync(ChangeEventArgs args)
     {
         Model.EndTime = args.Value?.ToString() ?? string.Empty;
+    }
+
+    private Task HandleEndTimeCommitAsync(ChangeEventArgs args)
+    {
+        Model.EndTime = FormatTimeInput(args.Value?.ToString() ?? string.Empty);
         return FieldChangedAsync();
+    }
+
+    private static string FormatTimeInput(string raw)
+    {
+        var digits = new string(raw.Where(char.IsDigit).ToArray());
+
+        if (digits.Length == 0)
+        {
+            return raw;
+        }
+
+        if (digits.Length <= 2)
+        {
+            var hour = int.Parse(digits);
+            if (hour >= 0 && hour <= 23)
+            {
+                return $"{hour:D2}:00";
+            }
+        }
+
+        if (digits.Length == 3)
+        {
+            var hour = int.Parse(digits[..1]);
+            var min = int.Parse(digits[1..]);
+            if (hour >= 0 && hour <= 23 && min >= 0 && min <= 59)
+            {
+                return $"{hour:D2}:{min:D2}";
+            }
+
+            hour = int.Parse(digits[..2]);
+            min = int.Parse(digits[2..]);
+            if (hour >= 0 && hour <= 23 && min >= 0 && min <= 9)
+            {
+                return $"{hour:D2}:0{min}";
+            }
+        }
+
+        if (digits.Length >= 4)
+        {
+            var hour = int.Parse(digits[..2]);
+            var min = int.Parse(digits[2..4]);
+            if (hour >= 0 && hour <= 23 && min >= 0 && min <= 59)
+            {
+                return $"{hour:D2}:{min:D2}";
+            }
+        }
+
+        return raw;
     }
 
     private Task IncreaseStartTimeAsync()
