@@ -293,6 +293,13 @@
     margin: 0 !important;
 }
 
+.report-entry-school-mode-toggle {
+    background: color-mix(in srgb, var(--app-primary) 5%, var(--app-surface-muted));
+    border: 1px solid color-mix(in srgb, var(--app-primary) 18%, var(--app-border));
+    border-radius: 8px;
+    padding: 0.55rem 0.7rem;
+}
+
 .report-entry-note-toggle {
     background: var(--app-surface-muted);
     font-size: 0.88rem;
@@ -473,9 +480,18 @@
 }
 
 .report-entry-subject-teacher,
-.report-entry-subject-room {
+.report-entry-subject-room,
+.report-entry-subject-time {
     color: var(--app-text-muted);
     font-size: 0.75rem;
+}
+
+.report-entry-subject-time {
+    background: color-mix(in srgb, var(--app-accent-blue-soft) 70%, var(--app-surface-muted));
+    border: 1px solid color-mix(in srgb, var(--app-accent-blue) 28%, var(--app-border));
+    border-radius: 999px;
+    color: color-mix(in srgb, var(--app-accent-blue) 62%, var(--app-text));
+    padding: 0.08rem 0.45rem;
 }
 
 .report-entry-subject-entfall {

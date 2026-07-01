@@ -19,5 +19,8 @@ public class ClassTimetableEntry
         public string Fach { get; set; } = string.Empty;
         public string Lehrer { get; set; } = string.Empty;
         public string? Raum { get; set; }
+        public string? StartTime { get; set; }
+        public string? EndTime { get; set; }
+        public int? BreakMinutes { get; set; }
     }
 }

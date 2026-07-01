@@ -44,6 +44,7 @@
                                     <strong>@UserDisplayName</strong>
                                     <span>@UserEmail</span>
                                 </div>
+                                <a href="/timetable" role="menuitem" @onclick="CloseProfileMenu">Stundenplan</a>
                                 <a href="/settings" role="menuitem" @onclick="CloseProfileMenu">Einstellungen</a>
                                 <details class="app-profile-submenu">
                                     <summary role="menuitem" aria-haspopup="menu">
@@ -96,6 +97,7 @@
                                 <strong>@UserDisplayName</strong>
                                 <span>@UserEmail</span>
                             </div>
+                            <NavLink class="app-navbar__mobile-link" href="/timetable" @onclick="CloseMenuAsync">Stundenplan</NavLink>
                             <NavLink class="app-navbar__mobile-link" href="/settings" @onclick="CloseMenuAsync">Einstellungen</NavLink>
                             <NavLink class="app-navbar__mobile-link" href="/impressum" @onclick="CloseMenuAsync">Impressum</NavLink>
                             <NavLink class="app-navbar__mobile-link" href="/datenschutz" @onclick="CloseMenuAsync">Datenschutz</NavLink>
