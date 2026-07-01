@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using AzubiLog.Services.ReportEntries;
 using Microsoft.AspNetCore.Components;
 
@@ -11,6 +12,9 @@ public partial class ReportEntryPage : ComponentBase
     [Inject]
     private NavigationManager Navigation { get; set; } = null!;
 
+    [Inject]
+    private ILogger<ReportEntryPage> Logger { get; set; } = null!;
+
     [Parameter]
     public int? EntryId { get; set; }
 
@@ -21,6 +25,7 @@ public partial class ReportEntryPage : ComponentBase
     private ReportEntryFormModel? SubmittedEntry { get; set; }
 
     protected ReportEntryEditorViewModel? ViewModel { get; private set; }
+    protected string? ErrorMessage { get; private set; }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -57,8 +62,17 @@ public partial class ReportEntryPage : ComponentBase
             return;
         }
 
-        var draft = await ReportEntryService.SaveDraftAsync(form);
-        ViewModel = await ReportEntryService.RefreshEditorAsync(draft);
+        ErrorMessage = null;
+        try
+        {
+            var draft = await ReportEntryService.SaveDraftAsync(form);
+            ViewModel = await ReportEntryService.RefreshEditorAsync(draft);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Failed to save draft for date {Date}", form.Date);
+            ErrorMessage = "Entwurf konnte nicht gespeichert werden.";
+        }
     }
 
     protected async Task HandleSaveAsync(ReportEntryFormModel form)
@@ -68,11 +82,25 @@ public partial class ReportEntryPage : ComponentBase
             return;
         }
 
-        var selectedDate = form.Date.Date;
-        await ReportEntryService.SaveEntryAsync(form);
-        ViewModel = await ReportEntryService.GetFreshEditorAsync(selectedDate);
-        SubmittedEntry = null;
-        Navigation.NavigateTo($"report-entries/new?date={selectedDate:yyyy-MM-dd}", replace: true);
+        ErrorMessage = null;
+        try
+        {
+            var selectedDate = form.Date.Date;
+            await ReportEntryService.SaveEntryAsync(form);
+            ViewModel = await ReportEntryService.GetFreshEditorAsync(selectedDate);
+            SubmittedEntry = null;
+            Navigation.NavigateTo($"report-entries/new?date={selectedDate:yyyy-MM-dd}", replace: true);
+        }
+        catch (ValidationException ex)
+        {
+            Logger.LogWarning(ex, "Validation failed when saving report entry");
+            ErrorMessage = ex.Message;
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Failed to save report entry for date {Date}", form.Date);
+            ErrorMessage = "Eintrag konnte nicht gespeichert werden.";
+        }
     }
 
     protected async Task HandleDateChangedAsync(DateTime date)
@@ -103,8 +131,17 @@ public partial class ReportEntryPage : ComponentBase
             return;
         }
 
-        await ReportEntryService.DeleteEntryAsync(ViewModel.Entry.Id.Value);
-        Navigation.NavigateTo("report-entries/new");
+        ErrorMessage = null;
+        try
+        {
+            await ReportEntryService.DeleteEntryAsync(ViewModel.Entry.Id.Value);
+            Navigation.NavigateTo("report-entries/new");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Failed to delete report entry {EntryId}", ViewModel.Entry.Id.Value);
+            ErrorMessage = "Eintrag konnte nicht gelöscht werden.";
+        }
     }
 
     protected async Task HandleCreateCategoryAsync(string name)
@@ -114,9 +151,23 @@ public partial class ReportEntryPage : ComponentBase
             return;
         }
 
-        var categoryId = await ReportEntryService.CreateCategoryAsync(name);
-        ViewModel.Entry.CategoryId = categoryId;
-        ViewModel = await ReportEntryService.RefreshEditorAsync(ViewModel.Entry);
+        ErrorMessage = null;
+        try
+        {
+            var categoryId = await ReportEntryService.CreateCategoryAsync(name);
+            ViewModel.Entry.CategoryId = categoryId;
+            ViewModel = await ReportEntryService.RefreshEditorAsync(ViewModel.Entry);
+        }
+        catch (ValidationException ex)
+        {
+            Logger.LogWarning(ex, "Validation failed when creating category");
+            ErrorMessage = ex.Message;
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Failed to create category '{CategoryName}'", name);
+            ErrorMessage = "Kategorie konnte nicht erstellt werden.";
+        }
     }
 
     protected async Task HandleApplySchoolDayAsync()

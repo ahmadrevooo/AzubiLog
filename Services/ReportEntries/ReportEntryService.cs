@@ -11,7 +11,8 @@ namespace AzubiLog.Services.ReportEntries;
 
 public class ReportEntryService(
     ApplicationDbContext dbContext,
-    ICurrentUserService currentUserService) : IReportEntryService
+    ICurrentUserService currentUserService,
+    ILogger<ReportEntryService> logger) : IReportEntryService
 {
     public async Task<ReportEntryEditorViewModel> GetEditorAsync(
         int? entryId,
@@ -669,7 +670,7 @@ public class ReportEntryService(
             ?.Id;
     }
 
-    private static string BuildSchoolDayDescription(string subjectsText)
+    private string BuildSchoolDayDescription(string subjectsText)
     {
         var structuredSubjects = TryParseStructuredSubjects(subjectsText);
         if (structuredSubjects.Count > 0)
@@ -694,7 +695,7 @@ public class ReportEntryService(
                 subjects.Select(subject => $"{subject}:{Environment.NewLine}- "));
     }
 
-    private static List<ClassTimetableEntry.StructuredSubjectEntry> TryParseStructuredSubjects(string subjectsText)
+    private List<ClassTimetableEntry.StructuredSubjectEntry> TryParseStructuredSubjects(string subjectsText)
     {
         if (string.IsNullOrWhiteSpace(subjectsText))
         {
@@ -721,8 +722,9 @@ public class ReportEntryService(
                 .ToList()
                 ?? [];
         }
-        catch (JsonException)
+        catch (JsonException ex)
         {
+            logger.LogWarning(ex, "Failed to parse structured subjects from text: {SubjectsText}", trimmedSubjectsText);
             return [];
         }
     }

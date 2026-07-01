@@ -9,6 +9,9 @@ namespace AzubiLog.Components.Pages;
 
 public partial class TimetablePage : ComponentBase
 {
+    [Inject]
+    private ILogger<TimetablePage> Logger { get; set; } = null!;
+
     private const string EmptyDaySubtitle = "Noch keine Einträge eingetragen";
     private ApplicationUser? CurrentUser { get; set; }
     private string? StatusMessage { get; set; }
@@ -102,8 +105,9 @@ public partial class TimetablePage : ComponentBase
             await ReloadTimetableAsync();
             StatusMessage = "Stundenplan wurde gespeichert.";
         }
-        catch
+        catch (Exception ex)
         {
+            Logger.LogError(ex, "Failed to save timetable for user {UserId}", CurrentUser.Id);
             StatusMessage = "Stundenplan konnte nicht gespeichert werden.";
         }
         finally
@@ -159,8 +163,9 @@ public partial class TimetablePage : ComponentBase
             await JS.InvokeVoidAsync("navigator.clipboard.writeText", ShareCode);
             ShareStatusMessage = "Freigabecode wurde in die Zwischenablage kopiert.";
         }
-        catch
+        catch (JSException ex)
         {
+            Logger.LogWarning(ex, "Clipboard API not available, user must copy share code manually");
             ShareStatusMessage = "Freigabecode konnte nicht kopiert werden. Bitte manuell kopieren.";
         }
         finally
@@ -207,8 +212,9 @@ public partial class TimetablePage : ComponentBase
             await ReloadTimetableAsync();
             ShareStatusMessage = "Stundenplan wurde für deine Klasse übernommen.";
         }
-        catch
+        catch (Exception ex)
         {
+            Logger.LogError(ex, "Failed to apply share code for user {UserId}", CurrentUser.Id);
             ShareStatusMessage = "Stundenplan konnte nicht übernommen werden.";
         }
         finally
@@ -286,6 +292,7 @@ public partial class TimetablePage : ComponentBase
         }
         catch (JsonException)
         {
+            // Fall through to comma-separated parsing below
         }
 
         return subjectsText
