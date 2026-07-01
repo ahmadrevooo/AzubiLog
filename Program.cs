@@ -101,6 +101,9 @@ namespace AzubiLog
                 .AddSignInManager()
                 .AddDefaultTokenProviders();
 
+            // Use German Identity error descriptions so Identity messages are displayed in German
+            builder.Services.AddScoped<Microsoft.AspNetCore.Identity.IdentityErrorDescriber, AzubiLog.Services.Identity.GermanIdentityErrorDescriber>();
+
             builder.Services.Configure<RequestLocalizationOptions>(options =>
             {
                 var supportedCultures = new[] { new CultureInfo("de-DE") };

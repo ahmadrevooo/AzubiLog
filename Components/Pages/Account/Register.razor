@@ -16,7 +16,15 @@
         @if (!string.IsNullOrWhiteSpace(Error))
         {
             <div class="account-status account-status-error">
-                <div>@Localizer["AccountRegistrationFailed"]</div>
+                @if (Error == "invalid")
+                {
+                    <div>@Localizer["AccountRegistrationInvalid"]</div>
+                }
+                else
+                {
+                    <div>@Localizer["AccountRegistrationFailed"]</div>
+                }
+
                 @if (RegistrationErrors.Count > 0)
                 {
                     <ul>
