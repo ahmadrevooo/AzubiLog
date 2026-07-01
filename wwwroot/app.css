@@ -674,3 +674,25 @@ h1:focus {
         display: none;
     }
 }
+
+/* Theme toggle button */
+.app-navbar__theme-toggle {
+    align-items: center;
+    background: transparent;
+    border: 1px solid var(--app-border);
+    border-radius: 0.375rem;
+    color: var(--app-text-muted);
+    cursor: pointer;
+    display: inline-flex;
+    font-size: 1rem;
+    height: 2rem;
+    justify-content: center;
+    padding: 0;
+    transition: color 150ms ease, border-color 150ms ease;
+    width: 2rem;
+}
+
+.app-navbar__theme-toggle:hover {
+    color: var(--app-text);
+    border-color: var(--app-text-muted);
+}

@@ -160,17 +160,7 @@
                     </div>
                 }
 
-                <label>
-                    <span>@Localizer["ReportEntryOrderNumber"]</span>
-                    <InputText class="form-control" list="report-entry-order-codes" @bind-Value="Model.OrderNumber" @bind-Value:after="OrderNumberChangedAsync" />
-                    <datalist id="report-entry-order-codes">
-                        @foreach (var option in OrderNumberOptions)
-                        {
-                            <option value="@option.Code">@option.Label</option>
-                        }
-                    </datalist>
-                    <ValidationMessage For="() => Model.OrderNumber" />
-                </label>
+
 
                 @if (IsNoteOpen || !string.IsNullOrWhiteSpace(Model.Notes))
                 {

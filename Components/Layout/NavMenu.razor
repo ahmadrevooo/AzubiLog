@@ -41,6 +41,16 @@
         </nav>
 
         <div class="app-navbar__actions">
+            <button class="app-navbar__theme-toggle" type="button" title="@(CurrentTheme == "dark" ? "Light Mode" : "Dark Mode")" @onclick="ToggleThemeAsync">
+                @if (CurrentTheme == "dark")
+                {
+                    <span class="bi bi-sun" aria-hidden="true"></span>
+                }
+                else
+                {
+                    <span class="bi bi-moon" aria-hidden="true"></span>
+                }
+            </button>
             <AuthorizeView>
                 <Authorized>
                     <a class="app-navbar__account-link" href="/account/logout">@Localizer["AccountLogoutAction"]</a>
@@ -94,6 +104,22 @@
 @code {
     private bool IsMenuOpen { get; set; }
     private bool IsMoreOpen { get; set; }
+    private string CurrentTheme { get; set; } = "light";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            CurrentTheme = await JsRuntime.InvokeAsync<string>("azubiLogPreferences.getTheme") ?? "light";
+            StateHasChanged();
+        }
+    }
+
+    private async Task ToggleThemeAsync()
+    {
+        CurrentTheme = CurrentTheme == "dark" ? "light" : "dark";
+        await JsRuntime.InvokeVoidAsync("azubiLogPreferences.setTheme", CurrentTheme);
+    }
 
     private Task ToggleMenuAsync()
     {

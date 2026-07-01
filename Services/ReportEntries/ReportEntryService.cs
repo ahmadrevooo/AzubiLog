@@ -84,6 +84,9 @@ public class ReportEntryService(
         ValidateForSave(form);
 
         var user = await currentUserService.GetRequiredUserAsync(cancellationToken);
+
+        // Check for overlapping entries
+        await ValidateNoOverlapAsync(form, user.Id, cancellationToken);
         await ApplySmartOrderNumberAsync(form, user.Id, cancellationToken);
         var entry = await GetOrCreateEntryAsync(form, user.Id, cancellationToken);
         var previousWeeklyReportId = entry.WeeklyReportId;
@@ -601,6 +604,43 @@ public class ReportEntryService(
         return "BETRIEB";
     }
 
+    private async Task ValidateNoOverlapAsync(
+        ReportEntryFormModel form,
+        string userId,
+        CancellationToken cancellationToken)
+    {
+        if (!TimeSpan.TryParseExact(form.StartTime, "hh\\:mm", System.Globalization.CultureInfo.InvariantCulture, out var newStart)
+            || !TimeSpan.TryParseExact(form.EndTime, "hh\\:mm", System.Globalization.CultureInfo.InvariantCulture, out var newEnd))
+        {
+            return;
+        }
+
+        var entryDate = form.Date.Date;
+        var newStartDt = entryDate.Add(newStart);
+        var newEndDt = entryDate.Add(newEnd);
+
+        var existingEntries = await dbContext.ReportEntries
+            .Where(e => e.UserId == userId
+                && e.Date.Date == entryDate
+                && e.Status == ReportEntryStatus.Saved
+                && (!form.Id.HasValue || e.Id != form.Id.Value))
+            .ToListAsync(cancellationToken);
+
+        foreach (var existing in existingEntries)
+        {
+            if (existing.StartTime != default && existing.EndTime != default)
+            {
+                if (newStartDt < existing.EndTime && newEndDt > existing.StartTime)
+                {
+                    var existStart = existing.StartTime.ToString("HH:mm");
+                    var existEnd = existing.EndTime.ToString("HH:mm");
+                    throw new ValidationException(
+                        $"Zeitüberschneidung: Es gibt bereits einen Eintrag von {existStart} bis {existEnd}.");
+                }
+            }
+        }
+    }
+
     private async Task<SchoolDaySuggestionViewModel?> BuildSchoolDaySuggestionAsync(
         string userId,
         DateTime date,
@@ -644,7 +684,33 @@ public class ReportEntryService(
             }
         }
 
-        // Fall back to personal schedule
+        // Fall back to personal timetable (_personal + userId)
+        var personalTimetable = await dbContext.ClassTimetableEntries
+            .Include(entry => entry.Cancellations)
+            .FirstOrDefaultAsync(entry =>
+                entry.School == "_personal" &&
+                entry.ClassName == userId &&
+                entry.DayOfWeek == date.DayOfWeek,
+                cancellationToken);
+
+        if (personalTimetable is not null)
+        {
+            var isCancelled = personalTimetable.Cancellations
+                .Any(c => c.Date.Date == date.Date);
+
+            if (!isCancelled)
+            {
+                return new SchoolDaySuggestionViewModel
+                {
+                    IsSchoolDay = true,
+                    SubjectsText = BuildSchoolDayDescription(personalTimetable.SubjectsText),
+                    VocationalSchoolCategoryId = FindVocationalSchoolCategoryId(categories),
+                    Subjects = ParseSubjectsForDisplay(personalTimetable.SubjectsText)
+                };
+            }
+        }
+
+        // Fall back to personal schedule (legacy)
         var scheduleDay = await dbContext.SchoolScheduleDays
             .FirstOrDefaultAsync(
                 day => day.UserId == userId && day.DayOfWeek == date.DayOfWeek,

@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using AzubiLog.Services.ReportEntries;
 using Microsoft.AspNetCore.Components;
 
@@ -84,6 +85,8 @@ public partial class ReportEntryPage : ComponentBase
         ViewModel = await ReportEntryService.RefreshEditorAsync(draft);
     }
 
+    protected string? SaveErrorMessage { get; private set; }
+
     protected async Task HandleSaveAsync(ReportEntryFormModel form)
     {
         if (ViewModel is null)
@@ -91,12 +94,21 @@ public partial class ReportEntryPage : ComponentBase
             return;
         }
 
-        var selectedDate = form.Date.Date;
-        await ReportEntryService.SaveEntryAsync(form);
-        ViewModel = await ReportEntryService.GetFreshEditorAsync(selectedDate);
-        AutoApplySchoolDay();
-        SubmittedEntry = null;
-        Navigation.NavigateTo($"report-entries/new?date={selectedDate:yyyy-MM-dd}", replace: true);
+        SaveErrorMessage = null;
+
+        try
+        {
+            var selectedDate = form.Date.Date;
+            await ReportEntryService.SaveEntryAsync(form);
+            ViewModel = await ReportEntryService.GetFreshEditorAsync(selectedDate);
+            AutoApplySchoolDay();
+            SubmittedEntry = null;
+            Navigation.NavigateTo($"report-entries/new?date={selectedDate:yyyy-MM-dd}", replace: true);
+        }
+        catch (ValidationException ex)
+        {
+            SaveErrorMessage = ex.Message;
+        }
     }
 
     protected async Task HandleDateChangedAsync(DateTime date)
