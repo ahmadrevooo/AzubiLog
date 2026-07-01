@@ -64,7 +64,7 @@
         }
 
         <div class="report-entry-main-fields">
-            @if (!ShowSchoolDayHint)
+            @if (!ShowSchoolDayHint || AllSubjectsCancelled)
             {
             <section class="report-entry-section">
                 <label>
@@ -293,6 +293,8 @@
 
     private bool HasValidTimeRange => IsStartTimeValid && IsEndTimeValid && HasChronologicalTimes;
 
+    private bool AllSubjectsCancelled => SchoolDaySubjects.Count > 0 && SchoolDaySubjects.All(s => s.Entfall);
+
     protected override void OnParametersSet()
     {
         if (!ReferenceEquals(PreviousModel, Model))
@@ -304,19 +306,22 @@
             {
                 AutoSetSchoolCategory();
 
-                if (string.IsNullOrWhiteSpace(Model.Title))
+                if (!AllSubjectsCancelled)
                 {
-                    Model.Title = "Berufsschultag";
-                }
+                    if (string.IsNullOrWhiteSpace(Model.Title))
+                    {
+                        Model.Title = "Berufsschultag";
+                    }
 
-                if (string.IsNullOrWhiteSpace(Model.StartTime))
-                {
-                    Model.StartTime = "08:00";
-                }
+                    if (string.IsNullOrWhiteSpace(Model.StartTime))
+                    {
+                        Model.StartTime = "08:00";
+                    }
 
-                if (string.IsNullOrWhiteSpace(Model.EndTime))
-                {
-                    Model.EndTime = "16:00";
+                    if (string.IsNullOrWhiteSpace(Model.EndTime))
+                    {
+                        Model.EndTime = "16:00";
+                    }
                 }
 
                 if (SchoolDaySubjects.Count > 0)

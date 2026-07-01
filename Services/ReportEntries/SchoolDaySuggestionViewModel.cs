@@ -13,4 +13,5 @@ public sealed class SchoolSubjectEntry
     public string Fach { get; init; } = string.Empty;
     public string Lehrer { get; init; } = string.Empty;
     public string? Raum { get; init; }
+    public bool Entfall { get; init; }
 }

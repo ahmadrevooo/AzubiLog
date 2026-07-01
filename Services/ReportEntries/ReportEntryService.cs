@@ -820,7 +820,34 @@ public class ReportEntryService(
 
     private static List<SchoolSubjectEntry> ParseSubjectsForDisplay(string subjectsText)
     {
-        var structured = TryParseStructuredSubjects(subjectsText);
+        var trimmed = subjectsText?.Trim() ?? string.Empty;
+
+        if (trimmed.StartsWith("{", StringComparison.Ordinal))
+        {
+            try
+            {
+                var dayData = JsonSerializer.Deserialize<DayDataJsonDto>(
+                    trimmed,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                if (dayData?.Entries is not null)
+                {
+                    return dayData.Entries
+                        .Where(e => !string.IsNullOrWhiteSpace(e.Fach))
+                        .Select(e => new SchoolSubjectEntry
+                        {
+                            Fach = e.Fach.Trim(),
+                            Lehrer = e.Lehrer?.Trim() ?? string.Empty,
+                            Raum = e.Raum?.Trim(),
+                            Entfall = e.Entfall
+                        })
+                        .ToList();
+                }
+            }
+            catch (JsonException) { }
+        }
+
+        var structured = TryParseStructuredSubjects(subjectsText ?? string.Empty);
         return structured
             .Select(s => new SchoolSubjectEntry
             {
