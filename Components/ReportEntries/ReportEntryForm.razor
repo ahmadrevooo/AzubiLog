@@ -294,6 +294,21 @@
             {
                 AutoSetSchoolCategory();
 
+                if (string.IsNullOrWhiteSpace(Model.Title))
+                {
+                    Model.Title = "Berufsschultag";
+                }
+
+                if (string.IsNullOrWhiteSpace(Model.StartTime))
+                {
+                    Model.StartTime = "08:00";
+                }
+
+                if (string.IsNullOrWhiteSpace(Model.EndTime))
+                {
+                    Model.EndTime = "16:00";
+                }
+
                 if (SchoolDaySubjects.Count > 0)
                 {
                     InitSubjectNotes();
