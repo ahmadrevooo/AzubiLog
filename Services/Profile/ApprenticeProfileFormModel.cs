@@ -36,6 +36,9 @@ public sealed class ApprenticeProfileFormModel
     [StringLength(500, ErrorMessage = "Die Fächer dürfen maximal 500 Zeichen lang sein.")]
     public string Subjects { get; set; } = string.Empty;
 
+    [RegularExpression(@"^#([0-9A-Fa-f]{6})$", ErrorMessage = "Bitte einen gültigen Hex-Farbcode eingeben (z.B. #2563eb).")]
+    public string PdfAccentColor { get; set; } = "#2563eb";
+
     [Range(1, 80, ErrorMessage = "Die wöchentliche Sollarbeitszeit muss zwischen 1 und 80 Stunden liegen.")]
     public double WeeklyTargetHours { get; set; } = 40;
 

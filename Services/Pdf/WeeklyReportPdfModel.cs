@@ -7,8 +7,11 @@ public sealed class WeeklyReportPdfModel
     public string Occupation { get; init; } = string.Empty;
     public int TrainingYear { get; init; }
     public string TrainerName { get; init; } = string.Empty;
+    public string School { get; init; } = string.Empty;
+    public string ClassName { get; init; } = string.Empty;
     public int CalendarWeek { get; init; }
     public int Year { get; init; }
     public decimal TotalHours { get; init; }
+    public string AccentColor { get; init; } = "#2563eb";
     public IReadOnlyList<WeeklyReportPdfDay> Days { get; init; } = [];
 }

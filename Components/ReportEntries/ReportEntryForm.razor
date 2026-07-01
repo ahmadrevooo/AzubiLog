@@ -125,7 +125,7 @@
                     </label>
                 </div>
 
-@*                 @if (IsCategoryCreatorOpen)
+                @if (IsCategoryCreatorOpen)
                 {
                     <div class="report-entry-category-popover">
                         <InputText class="form-control" @bind-Value="NewCategoryName" placeholder="@Localizer["ReportEntryNewCategory"]" />
@@ -134,32 +134,20 @@
                         </button>
                     </div>
                 }
-                
+
+                <label class="report-entry-check">
+                    <InputCheckbox @bind-Value="Model.IsVocationalSchoolDay" @bind-Value:after="FieldChangedAsync" />
+                    <span>@Localizer["ReportEntryVocationalSchoolDay"]</span>
+                </label>
+
                 @if (Model.IsVocationalSchoolDay)
                 {
                     <label>
                         <span>@Localizer["ReportEntrySubject"]</span>
-                        <InputText class="form-control" @bind-Value="Model.Subject" @bind-Value:after="FieldChangedAsync" />
+                        <InputText class="form-control" @bind-Value="Model.Subject" @bind-Value:after="FieldChangedAsync" placeholder="z.B. Mathe, Deutsch, IT" />
                         <ValidationMessage For="() => Model.Subject" />
                     </label>
                 }
-
-                <label>
-                    <span>@Localizer["ReportEntryOrderNumber"]</span>
-                    <InputText class="form-control" list="report-entry-order-codes" @bind-Value="Model.OrderNumber" @bind-Value:after="OrderNumberChangedAsync" />
-                    <datalist id="report-entry-order-codes">
-                        @foreach (var option in OrderNumberOptions)
-                        {
-                            <option value="@option.Code">@option.Label</option>
-                        }
-                    </datalist>
-                    <ValidationMessage For="() => Model.OrderNumber" />
-                </label> *@
-
-@*                 <label class="report-entry-check">
-                    <InputCheckbox @bind-Value="Model.IsVocationalSchoolDay" @bind-Value:after="FieldChangedAsync" />
-                    <span>@Localizer["ReportEntryVocationalSchoolDay"]</span>
-                </label> *@
 
                 @if (IsNoteOpen || !string.IsNullOrWhiteSpace(Model.Notes))
                 {
@@ -240,16 +228,6 @@
 
     [Parameter]
     public EventCallback OnDelete { get; set; }
-
-    private static readonly IReadOnlyList<OrderNumberOption> OrderNumberOptions =
-    [
-        new("BETRIEB", "Betrieb"),
-        new("SCHULE", "Berufsschule"),
-        new("URLAUB", "Urlaub"),
-        new("KRANK", "Krankheit"),
-        new("ÜBERSTUNDEN", "Überstunden"),
-        new("SONSTIGES", "Sonstiges")
-    ];
 
     private string NewCategoryName { get; set; } = string.Empty;
     private bool IsCategoryCreatorOpen { get; set; }
@@ -343,18 +321,6 @@
 
     private Task CategoryChangedAsync()
     {
-        if (!Model.IsOrderNumberOverridden)
-        {
-            var categoryName = Categories.FirstOrDefault(category => category.Id == Model.CategoryId)?.Name;
-            Model.OrderNumber = GetDefaultOrderNumber(categoryName);
-        }
-
-        return FieldChangedAsync();
-    }
-
-    private Task OrderNumberChangedAsync()
-    {
-        Model.IsOrderNumberOverridden = true;
         return FieldChangedAsync();
     }
 
@@ -418,34 +384,6 @@
         }
     }
 
-    private static string GetDefaultOrderNumber(string? categoryName)
-    {
-        var normalizedName = (categoryName ?? string.Empty).Trim().ToLowerInvariant();
-
-        if (normalizedName.Contains("berufsschule", StringComparison.Ordinal))
-        {
-            return "Schule";
-        }
-
-        if (normalizedName.Contains("urlaub", StringComparison.Ordinal))
-        {
-            return "Urlaub";
-        }
-
-        if (normalizedName.Contains("krank", StringComparison.Ordinal))
-        {
-            return "Krank";
-        }
-
-        if (normalizedName.Contains("überstunden", StringComparison.Ordinal)
-            || normalizedName.Contains("overtime", StringComparison.Ordinal))
-        {
-            return "Überstunden";
-        }
-
-        return "Betrieb";
-    }
-
     private static bool TryParseTime(string value, out TimeSpan time)
     {
         return TimeSpan.TryParseExact(value, "hh\\:mm", CultureInfo.InvariantCulture, out time)
@@ -472,5 +410,4 @@
         return stepped.ToString("hh\\:mm", CultureInfo.InvariantCulture);
     }
 
-    private sealed record OrderNumberOption(string Code, string Label);
 }

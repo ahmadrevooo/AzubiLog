@@ -133,9 +133,18 @@ public partial class ReportEntryPage : ComponentBase
             ViewModel.Entry.CategoryId = categoryId;
         }
 
-        if (!ViewModel.Entry.IsOrderNumberOverridden)
+        if (string.IsNullOrWhiteSpace(ViewModel.Entry.Subject))
         {
-            ViewModel.Entry.OrderNumber = "SCHULE";
+            var subjects = suggestion.SubjectsText
+                .Split(["\r\n", "\n"], StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
+                .Where(line => !line.StartsWith("Berufsschultag", StringComparison.Ordinal)
+                    && !line.StartsWith("•", StringComparison.Ordinal))
+                .ToList();
+
+            if (subjects.Count > 0)
+            {
+                ViewModel.Entry.Subject = string.Join(", ", subjects);
+            }
         }
 
         if (string.IsNullOrWhiteSpace(ViewModel.Entry.Description))

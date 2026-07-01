@@ -642,12 +642,8 @@ public class ReportEntryService(
             return "Berufsschultag";
         }
 
-        return "Berufsschultag"
-            + Environment.NewLine
-            + Environment.NewLine
-            + string.Join(
-                Environment.NewLine + Environment.NewLine,
-                subjects.Select(subject => $"{subject}:{Environment.NewLine}- "));
+        return "Berufsschultag\n\n"
+            + string.Join("\n", subjects.Select(subject => $"• {subject}"));
     }
 
     private static string NormalizeCategoryName(string? categoryName)
@@ -752,15 +748,15 @@ public class ReportEntryService(
 
         if (!string.IsNullOrWhiteSpace(trainerName))
         {
-            // lines.Add($"Ausbilder: {trainerName}");
+            lines.Add($"Ausbilder: {trainerName}");
         }
 
         lines.AddRange(
         [
             string.Empty,
-        "Einträge",
-        separator,
-        string.Empty
+            "Einträge",
+            separator,
+            string.Empty
         ]);
 
         if (summary.Entries.Count == 0)
@@ -773,7 +769,7 @@ public class ReportEntryService(
             {
                 lines.Add(entry.TimeRange);
                 lines.Add($"Dauer: {entry.Hours:0.##} h");
-                //lines.Add("");
+
                 lines.Add($"Tätigkeit: {entry.Title}");
                 lines.Add($"Beschreibung: {entry.DescriptionPreview}");
                 lines.Add(string.Empty);
