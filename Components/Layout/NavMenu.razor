@@ -1,6 +1,8 @@
 @inject IApplicationNavigationService Navigation
 @inject IStringLocalizer<SharedResource> Localizer
 @inject IJSRuntime JsRuntime
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserManager<ApplicationUser> UserManager
 
 <header class="app-navbar">
     <div class="app-navbar__inner">
@@ -9,51 +11,55 @@
         </a>
 
         <nav class="app-navbar__desktop-nav" aria-label="@Localizer["AppName"]">
-            @foreach (var item in Navigation.GetMainNavigation().Take(4))
+            @foreach (var item in Navigation.GetMainNavigation().Where(i => i.IsEnabled && i.ResourceKey != "NavSettings"))
             {
-                @if (item.IsEnabled)
-                {
-                    <NavLink class="app-navbar__tab" href="@item.Href" Match="@GetMatch(item)">
-                        @Localizer[item.ResourceKey]
-                    </NavLink>
-                }
+                <NavLink class="app-navbar__tab" href="@item.Href" Match="@GetMatch(item)">
+                    @Localizer[item.ResourceKey]
+                </NavLink>
             }
-            <div class="app-navbar__more">
-                <button class="app-navbar__more-btn" type="button" @onclick="ToggleMoreAsync" @onclick:stopPropagation="true">
-                    Mehr <span class="app-navbar__more-arrow">&#9662;</span>
-                </button>
-                @if (IsMoreOpen)
-                {
-                    <div class="app-navbar__more-overlay" @onclick="CloseMoreAsync"></div>
-                    <div class="app-navbar__more-dropdown is-open">
-                        @foreach (var item in Navigation.GetMainNavigation().Skip(4))
-                        {
-                            @if (item.IsEnabled)
-                            {
-                                <NavLink class="app-navbar__more-item" href="@item.Href" Match="@GetMatch(item)" @onclick="CloseMoreAsync">
-                                    @Localizer[item.ResourceKey]
-                                </NavLink>
-                            }
-                        }
-                    </div>
-                }
-            </div>
         </nav>
 
         <div class="app-navbar__actions">
-            <button class="app-navbar__theme-toggle" type="button" title="@(CurrentTheme == "dark" ? "Light Mode" : "Dark Mode")" @onclick="ToggleThemeAsync">
-                @if (CurrentTheme == "dark")
-                {
-                    <span aria-hidden="true">&#9788;</span>
-                }
-                else
-                {
-                    <span aria-hidden="true">&#9790;</span>
-                }
+            <button class="app-theme-switch" type="button" role="switch" aria-checked="@ThemeSwitchState" aria-label="Darstellung wechseln" title="Darstellung wechseln" @onclick="ToggleThemeAsync">
+                <span class="app-theme-icon app-theme-icon-sun" aria-hidden="true"></span>
+                <span class="app-theme-track">
+                    <span class="app-theme-thumb"></span>
+                </span>
+                <span class="app-theme-icon app-theme-icon-moon" aria-hidden="true"></span>
             </button>
+
             <AuthorizeView>
                 <Authorized>
-                    <a class="app-navbar__account-link" href="/account/logout">@Localizer["AccountLogoutAction"]</a>
+                    <div class="app-profile">
+                        <button class="app-avatar-button" type="button" aria-label="Profilmenü öffnen" aria-expanded="@IsProfileMenuOpen" @onclick="ToggleProfileMenu" @onclick:stopPropagation="true">
+                            <span class="app-avatar-initials">@UserInitials</span>
+                            <span class="app-avatar-arrow" aria-hidden="true">&#9662;</span>
+                        </button>
+
+                        @if (IsProfileMenuOpen)
+                        {
+                            <div class="app-navbar__more-overlay" @onclick="CloseProfileMenu"></div>
+                            <div class="app-profile-menu" role="menu">
+                                <div class="app-profile-identity">
+                                    <strong>@UserDisplayName</strong>
+                                    <span>@UserEmail</span>
+                                </div>
+                                <a href="/settings" role="menuitem" @onclick="CloseProfileMenu">Einstellungen</a>
+                                <details class="app-profile-submenu">
+                                    <summary role="menuitem" aria-haspopup="menu">
+                                        <span>Rechtliches</span>
+                                        <span aria-hidden="true">&#8250;</span>
+                                    </summary>
+                                    <div class="app-profile-submenu-panel" role="menu">
+                                        <a href="/impressum" role="menuitem" @onclick="CloseProfileMenu">Impressum</a>
+                                        <a href="/datenschutz" role="menuitem" @onclick="CloseProfileMenu">Datenschutz</a>
+                                        <a href="/kontakt" role="menuitem" @onclick="CloseProfileMenu">Kontakt</a>
+                                    </div>
+                                </details>
+                                <a href="/account/logout" role="menuitem">@Localizer["AccountLogoutAction"]</a>
+                            </div>
+                        }
+                    </div>
                 </Authorized>
                 <NotAuthorized>
                     <a class="app-navbar__account-link" href="/account/login">@Localizer["AccountLoginAction"]</a>
@@ -77,24 +83,32 @@
         <div class="app-navbar__mobile-panel is-open">
             <div class="app-navbar__mobile-backdrop" @onclick="CloseMenuAsync"></div>
             <nav class="app-navbar__mobile-menu" aria-label="@Localizer["AppName"]">
-                @foreach (var item in Navigation.GetMainNavigation())
+                @foreach (var item in Navigation.GetMainNavigation().Where(i => i.IsEnabled && i.ResourceKey != "NavSettings"))
                 {
-                    @if (item.IsEnabled)
-                    {
-                        <NavLink class="app-navbar__mobile-link" href="@item.Href" Match="@GetMatch(item)" @onclick="CloseMenuAsync">
-                            @Localizer[item.ResourceKey]
-                        </NavLink>
-                    }
+                    <NavLink class="app-navbar__mobile-link" href="@item.Href" Match="@GetMatch(item)" @onclick="CloseMenuAsync">
+                        @Localizer[item.ResourceKey]
+                    </NavLink>
                 }
                 <div class="app-navbar__mobile-meta">
-                    <button class="app-navbar__mobile-link" type="button" @onclick="ToggleThemeAsync">
-                        @(CurrentTheme == "dark" ? "Light Mode" : "Dark Mode")
-                    </button>
                     <AuthorizeView>
                         <Authorized>
+                            <div class="app-navbar__mobile-identity">
+                                <strong>@UserDisplayName</strong>
+                                <span>@UserEmail</span>
+                            </div>
+                            <NavLink class="app-navbar__mobile-link" href="/settings" @onclick="CloseMenuAsync">Einstellungen</NavLink>
+                            <NavLink class="app-navbar__mobile-link" href="/impressum" @onclick="CloseMenuAsync">Impressum</NavLink>
+                            <NavLink class="app-navbar__mobile-link" href="/datenschutz" @onclick="CloseMenuAsync">Datenschutz</NavLink>
+                            <NavLink class="app-navbar__mobile-link" href="/kontakt" @onclick="CloseMenuAsync">Kontakt</NavLink>
+                            <button class="app-navbar__mobile-link" type="button" @onclick="ToggleThemeAsync">
+                                @(CurrentTheme == "dark" ? "Light Mode" : "Dark Mode")
+                            </button>
                             <a class="app-navbar__account-link app-navbar__account-link--mobile" href="/account/logout" @onclick="CloseMenuAsync">@Localizer["AccountLogoutAction"]</a>
                         </Authorized>
                         <NotAuthorized>
+                            <button class="app-navbar__mobile-link" type="button" @onclick="ToggleThemeAsync">
+                                @(CurrentTheme == "dark" ? "Light Mode" : "Dark Mode")
+                            </button>
                             <a class="app-navbar__account-link app-navbar__account-link--mobile" href="/account/login" @onclick="CloseMenuAsync">@Localizer["AccountLoginAction"]</a>
                         </NotAuthorized>
                     </AuthorizeView>
@@ -107,15 +121,44 @@
 @code {
     private bool IsMenuOpen { get; set; }
     private bool IsMoreOpen { get; set; }
+    private bool IsProfileMenuOpen { get; set; }
     private string CurrentTheme { get; set; } = "light";
+    private string UserDisplayName { get; set; } = "AzubiLog";
+    private string UserEmail { get; set; } = string.Empty;
+    private string UserInitials { get; set; } = "AL";
+
+    private string ThemeSwitchState => CurrentTheme == "dark" ? "true" : "false";
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             CurrentTheme = await JsRuntime.InvokeAsync<string>("azubiLogPreferences.getTheme") ?? "light";
+            await LoadUserAsync();
             StateHasChanged();
         }
+    }
+
+    private async Task LoadUserAsync()
+    {
+        var state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = state.User;
+
+        if (user.Identity?.IsAuthenticated != true)
+        {
+            return;
+        }
+
+        var applicationUser = await UserManager.GetUserAsync(user);
+        UserEmail = applicationUser?.Email
+            ?? user.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value
+            ?? user.Identity.Name
+            ?? string.Empty;
+
+        var name = string.Join(" ", new[] { applicationUser?.FirstName, applicationUser?.LastName }
+            .Where(value => !string.IsNullOrWhiteSpace(value)));
+        UserDisplayName = string.IsNullOrWhiteSpace(name) ? UserEmail : name;
+        UserInitials = GetInitials(UserDisplayName, UserEmail);
     }
 
     private async Task ToggleThemeAsync()
@@ -128,6 +171,7 @@
     {
         IsMenuOpen = !IsMenuOpen;
         IsMoreOpen = false;
+        IsProfileMenuOpen = false;
         return Task.CompletedTask;
     }
 
@@ -140,6 +184,7 @@
     private Task ToggleMoreAsync()
     {
         IsMoreOpen = !IsMoreOpen;
+        IsProfileMenuOpen = false;
         return Task.CompletedTask;
     }
 
@@ -149,10 +194,34 @@
         return Task.CompletedTask;
     }
 
+    private void ToggleProfileMenu()
+    {
+        IsProfileMenuOpen = !IsProfileMenuOpen;
+        IsMoreOpen = false;
+    }
+
+    private void CloseProfileMenu()
+    {
+        IsProfileMenuOpen = false;
+    }
+
     private static NavLinkMatch GetMatch(NavigationItem item)
     {
         return string.IsNullOrWhiteSpace(item.Href)
             ? NavLinkMatch.All
             : NavLinkMatch.Prefix;
+    }
+
+    private static string GetInitials(string displayName, string email)
+    {
+        var source = string.IsNullOrWhiteSpace(displayName) ? email : displayName;
+        var parts = source.Split([' ', '.', '@', '-', '_'], StringSplitOptions.RemoveEmptyEntries);
+
+        if (parts.Length == 0)
+        {
+            return "AL";
+        }
+
+        return string.Concat(parts.Take(2).Select(part => char.ToUpperInvariant(part[0])));
     }
 }

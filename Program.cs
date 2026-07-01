@@ -64,7 +64,6 @@ namespace AzubiLog
             builder.Services.AddScoped<ICalendarDayMarkerService, CalendarDayMarkerService>();
             builder.Services.AddScoped<IDashboardService, DashboardService>();
             builder.Services.AddScoped<IApprenticeProfileService, ApprenticeProfileService>();
-            builder.Services.AddScoped<AzubiLog.Services.Account.IAccountOverviewService, AzubiLog.Services.Account.AccountOverviewService>();
             builder.Services.AddScoped<IReportEntryService, ReportEntryService>();
             builder.Services.AddScoped<ITodoService, TodoService>();
             builder.Services.AddScoped<ITimetableService, TimetableService>();
