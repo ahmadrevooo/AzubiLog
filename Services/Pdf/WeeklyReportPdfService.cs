@@ -3,6 +3,7 @@ using AzubiLog.Data;
 using AzubiLog.Models;
 using AzubiLog.Services.Identity;
 using AzubiLog.Services.ReportEntries;
+using AzubiLog.Services.Shared;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using QuestPDF.Fluent;
@@ -69,7 +70,7 @@ public class WeeklyReportPdfService(
                         entry.Duration ?? 0m))
                     .ToList();
 
-                return new WeeklyReportPdfDay(day, GetGermanDayLabel(offset), dayEntries);
+                return new WeeklyReportPdfDay(day, GermanDayNames.GetNameByOffset(offset), dayEntries);
             })
             .ToList();
 
@@ -251,26 +252,7 @@ public class WeeklyReportPdfService(
     }
 
     private static string FormatApprenticeName(ApplicationUser user)
-    {
-        var name = $"{user.FirstName} {user.LastName}".Trim();
-        return string.IsNullOrWhiteSpace(name) ? user.Email ?? "Auszubildende/r" : name;
-    }
+        => FormatHelpers.FormatApprenticeName(user.FirstName, user.LastName, user.Email ?? "Auszubildende/r");
 
-    private static DateTime GetMonday(DateTime date)
-    {
-        var offset = ((int)date.DayOfWeek + 6) % 7;
-        return date.Date.AddDays(-offset);
-    }
-
-    private static string GetGermanDayLabel(int offset)
-    {
-        return offset switch
-        {
-            0 => "Montag",
-            1 => "Dienstag",
-            2 => "Mittwoch",
-            3 => "Donnerstag",
-            _ => "Freitag"
-        };
-    }
+    private static DateTime GetMonday(DateTime date) => DateHelpers.GetMonday(date);
 }

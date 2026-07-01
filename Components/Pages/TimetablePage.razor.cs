@@ -1,5 +1,6 @@
 using AzubiLog.Models;
 using AzubiLog.Services.Identity;
+using AzubiLog.Services.Shared;
 using AzubiLog.Services.Timetable;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
@@ -268,24 +269,18 @@ public partial class TimetablePage : ComponentBase
             return new List<SubjectRow>();
         }
 
-        try
+        var structured = StructuredSubjectParser.Parse(subjectsText);
+        if (structured.Count > 0)
         {
-            var structuredEntries = JsonSerializer.Deserialize<List<ClassTimetableEntry.StructuredSubjectEntry>>(subjectsText);
-            if (structuredEntries is not null)
-            {
-                return structuredEntries
-                    .Where(entry => !string.IsNullOrWhiteSpace(entry.Fach) && !string.IsNullOrWhiteSpace(entry.Lehrer))
-                    .Select(entry => new SubjectRow
-                    {
-                        Fach = entry.Fach.Trim(),
-                        Lehrer = entry.Lehrer.Trim(),
-                        Raum = entry.Raum?.Trim() ?? string.Empty
-                    })
-                    .ToList();
-            }
-        }
-        catch (JsonException)
-        {
+            return structured
+                .Where(entry => !string.IsNullOrWhiteSpace(entry.Lehrer))
+                .Select(entry => new SubjectRow
+                {
+                    Fach = entry.Fach.Trim(),
+                    Lehrer = entry.Lehrer.Trim(),
+                    Raum = entry.Raum?.Trim() ?? string.Empty
+                })
+                .ToList();
         }
 
         return subjectsText
@@ -330,17 +325,7 @@ public partial class TimetablePage : ComponentBase
                 : $"{row.Fach} — {row.Lehrer} ({row.Raum})"));
     }
 
-    private static string GetDayName(DayOfWeek day) => day switch
-    {
-        DayOfWeek.Monday => "Montag",
-        DayOfWeek.Tuesday => "Dienstag",
-        DayOfWeek.Wednesday => "Mittwoch",
-        DayOfWeek.Thursday => "Donnerstag",
-        DayOfWeek.Friday => "Freitag",
-        DayOfWeek.Saturday => "Samstag",
-        DayOfWeek.Sunday => "Sonntag",
-        _ => day.ToString()
-    };
+    private static string GetDayName(DayOfWeek day) => GermanDayNames.GetName(day);
 
     private sealed class DayEntry(DayOfWeek dayOfWeek)
     {
