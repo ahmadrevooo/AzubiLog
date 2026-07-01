@@ -108,6 +108,15 @@ else
                                             <InputText class="form-control"
                                                        @bind-Value="row.Raum"
                                                        placeholder="Raum (optional)" />
+                                            <InputText class="form-control"
+                                                       @bind-Value="row.StartTime"
+                                                       placeholder="Von (08:00)" />
+                                            <InputText class="form-control"
+                                                       @bind-Value="row.EndTime"
+                                                       placeholder="Bis (09:30)" />
+                                            <InputNumber class="form-control"
+                                                         @bind-Value="row.BreakMinutes"
+                                                         placeholder="Pause" />
                                         </div>
                                         <div class="timetable-subject-actions">
                                             <button type="button"

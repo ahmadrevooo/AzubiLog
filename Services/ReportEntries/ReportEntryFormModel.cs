@@ -35,6 +35,8 @@ public class ReportEntryFormModel
 
     public bool IsVocationalSchoolDay { get; set; }
 
+    public bool UseManualEntryForSchoolDay { get; set; }
+
     [StringLength(150)]
     public string? Subject { get; set; }
 

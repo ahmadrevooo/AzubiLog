@@ -308,7 +308,7 @@ public class ReportEntryService(
         entry.Note = form.Notes.Trim();
         entry.OrderNumber = string.IsNullOrWhiteSpace(form.OrderNumber) ? null : form.OrderNumber.Trim();
         entry.Subject = string.IsNullOrWhiteSpace(form.Subject) ? null : form.Subject.Trim();
-        entry.DayType = form.IsVocationalSchoolDay
+        entry.DayType = form.IsVocationalSchoolDay && !form.UseManualEntryForSchoolDay
             ? ReportEntryDayType.VocationalSchool
             : ReportEntryDayType.Company;
         entry.StartTime = CombineDateAndTime(form.Date, form.StartTime);
@@ -498,6 +498,7 @@ public class ReportEntryService(
             StartTime = entry.StartTime == default ? "08:00" : entry.StartTime.ToString("HH:mm", CultureInfo.InvariantCulture),
             EndTime = entry.EndTime == default ? "16:00" : entry.EndTime.ToString("HH:mm", CultureInfo.InvariantCulture),
             IsVocationalSchoolDay = entry.DayType == ReportEntryDayType.VocationalSchool,
+            UseManualEntryForSchoolDay = entry.DayType != ReportEntryDayType.VocationalSchool,
             Subject = entry.Subject,
             IsDraft = entry.Status == ReportEntryStatus.Draft,
             IsOrderNumberOverridden = !string.IsNullOrWhiteSpace(entry.OrderNumber)
@@ -789,7 +790,10 @@ public class ReportEntryService(
                         {
                             Fach = e.Fach,
                             Lehrer = e.Lehrer ?? string.Empty,
-                            Raum = e.Raum
+                            Raum = e.Raum,
+                            StartTime = e.StartTime,
+                            EndTime = e.EndTime,
+                            BreakMinutes = e.BreakMinutes
                         })
                         .ToList();
                 }
@@ -844,6 +848,9 @@ public class ReportEntryService(
                             Fach = e.Fach.Trim(),
                             Lehrer = e.Lehrer?.Trim() ?? string.Empty,
                             Raum = e.Raum?.Trim(),
+                            StartTime = e.StartTime?.Trim(),
+                            EndTime = e.EndTime?.Trim(),
+                            BreakMinutes = e.BreakMinutes,
                             Entfall = e.Entfall
                         })
                         .ToList();
@@ -858,7 +865,10 @@ public class ReportEntryService(
             {
                 Fach = s.Fach.Trim(),
                 Lehrer = s.Lehrer?.Trim() ?? string.Empty,
-                Raum = s.Raum?.Trim()
+                Raum = s.Raum?.Trim(),
+                StartTime = s.StartTime?.Trim(),
+                EndTime = s.EndTime?.Trim(),
+                BreakMinutes = s.BreakMinutes
             })
             .ToList();
     }
@@ -874,6 +884,9 @@ public class ReportEntryService(
         public string Fach { get; set; } = string.Empty;
         public string? Lehrer { get; set; }
         public string? Raum { get; set; }
+        public string? StartTime { get; set; }
+        public string? EndTime { get; set; }
+        public int? BreakMinutes { get; set; }
         public bool Entfall { get; set; }
     }
 
@@ -889,6 +902,18 @@ public class ReportEntryService(
         if (!string.IsNullOrWhiteSpace(subject.Raum))
         {
             details.Add(subject.Raum.Trim());
+        }
+
+        var hasStart = !string.IsNullOrWhiteSpace(subject.StartTime);
+        var hasEnd = !string.IsNullOrWhiteSpace(subject.EndTime);
+        if (hasStart || hasEnd)
+        {
+            details.Add($"{subject.StartTime?.Trim() ?? "?"}-{subject.EndTime?.Trim() ?? "?"}");
+        }
+
+        if (subject.BreakMinutes is > 0)
+        {
+            details.Add($"{subject.BreakMinutes} Min. Pause");
         }
 
         var subjectName = subject.Fach.Trim();

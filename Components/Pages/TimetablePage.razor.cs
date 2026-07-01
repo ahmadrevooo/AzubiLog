@@ -148,6 +148,9 @@ public partial class TimetablePage : ComponentBase
                         Fach = e.Fach.Trim(),
                         Lehrer = e.Lehrer?.Trim() ?? string.Empty,
                         Raum = e.Raum?.Trim() ?? string.Empty,
+                        StartTime = e.StartTime?.Trim() ?? string.Empty,
+                        EndTime = e.EndTime?.Trim() ?? string.Empty,
+                        BreakMinutes = e.BreakMinutes,
                         Entfall = e.Entfall
                     })
                     .ToList();
@@ -168,6 +171,9 @@ public partial class TimetablePage : ComponentBase
                         Fach = e.Fach.Trim(),
                         Lehrer = e.Lehrer?.Trim() ?? string.Empty,
                         Raum = e.Raum?.Trim() ?? string.Empty,
+                        StartTime = e.StartTime?.Trim() ?? string.Empty,
+                        EndTime = e.EndTime?.Trim() ?? string.Empty,
+                        BreakMinutes = e.BreakMinutes,
                         Entfall = false
                     })
                     .ToList();
@@ -191,6 +197,9 @@ public partial class TimetablePage : ComponentBase
                 Fach = row.Fach.Trim(),
                 Lehrer = string.IsNullOrWhiteSpace(row.Lehrer) ? "-" : row.Lehrer.Trim(),
                 Raum = string.IsNullOrWhiteSpace(row.Raum) ? null : row.Raum.Trim(),
+                StartTime = string.IsNullOrWhiteSpace(row.StartTime) ? null : row.StartTime.Trim(),
+                EndTime = string.IsNullOrWhiteSpace(row.EndTime) ? null : row.EndTime.Trim(),
+                BreakMinutes = row.BreakMinutes,
                 Entfall = row.Entfall
             })
             .ToList();
@@ -250,6 +259,9 @@ public partial class TimetablePage : ComponentBase
         public string Fach { get; set; } = string.Empty;
         public string Lehrer { get; set; } = string.Empty;
         public string Raum { get; set; } = string.Empty;
+        public string StartTime { get; set; } = string.Empty;
+        public string EndTime { get; set; } = string.Empty;
+        public int? BreakMinutes { get; set; }
         public bool Entfall { get; set; }
     }
 
@@ -264,6 +276,9 @@ public partial class TimetablePage : ComponentBase
         public string Fach { get; set; } = string.Empty;
         public string Lehrer { get; set; } = string.Empty;
         public string? Raum { get; set; }
+        public string? StartTime { get; set; }
+        public string? EndTime { get; set; }
+        public int? BreakMinutes { get; set; }
         public bool Entfall { get; set; }
     }
 }

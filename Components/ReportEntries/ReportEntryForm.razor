@@ -25,7 +25,17 @@
             </button>
         </div>
 
-        @if (ShowSchoolDayHint && SchoolDaySubjects.Count > 0)
+        @if (ShowSchoolDayHint)
+        {
+            <label class="report-entry-check report-entry-school-mode-toggle">
+                <input type="checkbox"
+                       checked="@Model.UseManualEntryForSchoolDay"
+                       @onchange="HandleManualSchoolEntryChangedAsync" />
+                <span>Normale Eingabe statt Stundenplan verwenden</span>
+            </label>
+        }
+
+        @if (UseSchoolTimetableView && SchoolDaySubjects.Count > 0)
         {
             <div class="report-entry-school-section">
                 <div class="report-entry-school-badge">Berufsschultag</div>
@@ -49,6 +59,10 @@
                                 {
                                     <span class="report-entry-subject-room">@subject.Raum</span>
                                 }
+                                @if (HasSubjectTimeInfo(subject))
+                                {
+                                    <span class="report-entry-subject-time">@FormatSubjectTimeInfo(subject)</span>
+                                }
                             </div>
                             @if (!subject.Entfall)
                             {
@@ -62,7 +76,7 @@
                 </div>
             </div>
         }
-        else if (ShowSchoolDayHint)
+        else if (UseSchoolTimetableView)
         {
             <div class="report-entry-school-section">
                 <div class="report-entry-school-badge">Berufsschultag</div>
@@ -71,7 +85,7 @@
         }
 
         <div class="report-entry-main-fields">
-            @if (!ShowSchoolDayHint || AllSubjectsCancelled)
+            @if (!UseSchoolTimetableView || AllSubjectsCancelled)
             {
             <section class="report-entry-section">
                 <label>
@@ -314,6 +328,8 @@
 
     private bool AllSubjectsCancelled => SchoolDaySubjects.Count > 0 && SchoolDaySubjects.All(s => s.Entfall);
 
+    private bool UseSchoolTimetableView => ShowSchoolDayHint && !Model.UseManualEntryForSchoolDay;
+
     protected override void OnParametersSet()
     {
         if (!ReferenceEquals(PreviousModel, Model))
@@ -321,7 +337,7 @@
             IsNoteOpen = !string.IsNullOrWhiteSpace(Model.Notes);
             PreviousModel = Model;
 
-            if (ShowSchoolDayHint)
+            if (UseSchoolTimetableView)
             {
                 AutoSetSchoolCategory();
 
@@ -341,6 +357,8 @@
                     {
                         Model.EndTime = "16:00";
                     }
+
+                    ApplySchoolDayTimeRange();
                 }
 
                 if (SchoolDaySubjects.Count > 0)
@@ -400,17 +418,25 @@
         {
             var subject = SchoolDaySubjects[i];
             var note = SubjectNotes[i];
+            var prefix = FormatSubjectDescriptionPrefix(subject);
             if (!string.IsNullOrWhiteSpace(note))
             {
-                parts.Add($"{subject.Fach}: {note.Trim()}");
+                parts.Add($"{prefix}: {note.Trim()}");
             }
             else
             {
-                parts.Add($"{subject.Fach}: -");
+                parts.Add($"{prefix}: -");
             }
         }
 
         Model.Description = string.Join(Environment.NewLine, parts);
+    }
+
+    private Task HandleManualSchoolEntryChangedAsync(ChangeEventArgs args)
+    {
+        Model.UseManualEntryForSchoolDay = args.Value is bool value && value;
+        Model.IsVocationalSchoolDay = !Model.UseManualEntryForSchoolDay && ShowSchoolDayHint;
+        return FieldChangedAsync();
     }
 
     private Task FieldChangedAsync()
@@ -541,12 +567,14 @@
 
     private Task HandleSaveRequestedAsync()
     {
-        if (ShowSchoolDayHint)
+        if (UseSchoolTimetableView)
         {
             if (string.IsNullOrWhiteSpace(Model.Title))
             {
                 Model.Title = "Berufsschultag";
             }
+
+            ApplySchoolDayTimeRange();
 
             if (string.IsNullOrWhiteSpace(Model.StartTime))
             {
@@ -579,6 +607,72 @@
     private Task MoveToToday()
     {
         return OnDateChanged.InvokeAsync(DateTime.Today);
+    }
+
+    private void ApplySchoolDayTimeRange()
+    {
+        var timedSubjects = SchoolDaySubjects
+            .Where(subject => !subject.Entfall)
+            .Select(subject => new
+            {
+                HasStart = TryParseTime(subject.StartTime ?? string.Empty, out var start),
+                Start = start,
+                HasEnd = TryParseTime(subject.EndTime ?? string.Empty, out var end),
+                End = end
+            })
+            .Where(item => item.HasStart || item.HasEnd)
+            .ToList();
+
+        if (timedSubjects.Count == 0)
+        {
+            return;
+        }
+
+        var starts = timedSubjects.Where(item => item.HasStart).Select(item => item.Start).ToList();
+        var ends = timedSubjects.Where(item => item.HasEnd).Select(item => item.End).ToList();
+
+        if (starts.Count > 0
+            && (string.IsNullOrWhiteSpace(Model.StartTime) || Model.StartTime == "08:00"))
+        {
+            Model.StartTime = starts.Min().ToString("hh\\:mm", CultureInfo.InvariantCulture);
+        }
+
+        if (ends.Count > 0
+            && (string.IsNullOrWhiteSpace(Model.EndTime) || Model.EndTime is "16:00" or "15:00"))
+        {
+            Model.EndTime = ends.Max().ToString("hh\\:mm", CultureInfo.InvariantCulture);
+        }
+    }
+
+    private static bool HasSubjectTimeInfo(SchoolSubjectEntry subject)
+    {
+        return !string.IsNullOrWhiteSpace(subject.StartTime)
+            || !string.IsNullOrWhiteSpace(subject.EndTime)
+            || subject.BreakMinutes is > 0;
+    }
+
+    private static string FormatSubjectTimeInfo(SchoolSubjectEntry subject)
+    {
+        var parts = new List<string>();
+        if (!string.IsNullOrWhiteSpace(subject.StartTime) || !string.IsNullOrWhiteSpace(subject.EndTime))
+        {
+            parts.Add($"{subject.StartTime ?? "?"}-{subject.EndTime ?? "?"}");
+        }
+
+        if (subject.BreakMinutes is > 0)
+        {
+            parts.Add($"{subject.BreakMinutes} Min. Pause");
+        }
+
+        return string.Join(" · ", parts);
+    }
+
+    private static string FormatSubjectDescriptionPrefix(SchoolSubjectEntry subject)
+    {
+        var timeInfo = FormatSubjectTimeInfo(subject);
+        return string.IsNullOrWhiteSpace(timeInfo)
+            ? subject.Fach
+            : $"{subject.Fach} ({timeInfo})";
     }
 
     private void ShowNote()
