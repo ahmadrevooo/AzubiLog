@@ -66,7 +66,7 @@ public sealed class TrainerFormModel
     [StringLength(150, ErrorMessage = "Der Name darf maximal 150 Zeichen lang sein.")]
     public string Name { get; set; } = string.Empty;
 
-    [EmailAddress(ErrorMessage = "Bitte gib eine gültige E-Mail-Adresse ein.")]
+    [RegularExpression(@"^$|^[^@\s]+@[^@\s]+\.[^@\s]+$", ErrorMessage = "Bitte gib eine gültige E-Mail-Adresse ein.")]
     [StringLength(256, ErrorMessage = "Die E-Mail-Adresse darf maximal 256 Zeichen lang sein.")]
     public string Email { get; set; } = string.Empty;
 
