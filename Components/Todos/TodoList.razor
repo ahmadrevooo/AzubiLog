@@ -22,7 +22,7 @@
         <div class="todo-list">
             @foreach (var todo in Items)
             {
-                <article class="todo-list-item @(todo.IsCompleted ? "is-completed" : null)">
+                <article class="todo-list-item @(todo.IsCompleted ? "is-completed" : "is-open")">
                     <div class="todo-list-check">
                         @if (ShowCompleteAction && !todo.IsCompleted)
                         {
@@ -53,9 +53,17 @@
                     <div class="todo-list-actions">
                         <details>
                             <summary aria-label="Aufgabenmenü">...</summary>
-                            <button type="button" @onclick="() => Delete.InvokeAsync(todo.Id)">
-                                @Localizer["TodoDelete"]
-                            </button>
+                            <div class="todo-list-menu">
+                                @if (todo.IsCompleted)
+                                {
+                                    <button class="todo-list-reopen" type="button" @onclick="() => Reopen.InvokeAsync(todo.Id)">
+                                        Wieder öffnen
+                                    </button>
+                                }
+                                <button class="todo-list-delete" type="button" @onclick="() => Delete.InvokeAsync(todo.Id)">
+                                    @Localizer["TodoDelete"]
+                                </button>
+                            </div>
                         </details>
                     </div>
                 </article>
@@ -79,6 +87,9 @@
 
     [Parameter]
     public EventCallback<int> Complete { get; set; }
+
+    [Parameter]
+    public EventCallback<int> Reopen { get; set; }
 
     [Parameter]
     public EventCallback<int> Delete { get; set; }

@@ -41,6 +41,12 @@ public partial class TodosPage : ComponentBase
         await ReloadAsync();
     }
 
+    protected async Task HandleReopenAsync(int todoId)
+    {
+        await TodoService.ReopenTodoAsync(todoId);
+        await ReloadAsync();
+    }
+
     protected async Task HandleDeleteAsync(int todoId)
     {
         var confirmed = await JsRuntime.InvokeAsync<bool>(
@@ -58,6 +64,14 @@ public partial class TodosPage : ComponentBase
     private async Task ReloadAsync()
     {
         ViewModel = await TodoService.GetTodoPageAsync();
-        NewTodo = new TodoFormModel();
+        NewTodo = CreateDefaultTodoForm();
+    }
+
+    private static TodoFormModel CreateDefaultTodoForm()
+    {
+        return new TodoFormModel
+        {
+            DueDate = DateTime.Today
+        };
     }
 }

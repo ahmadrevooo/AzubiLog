@@ -83,6 +83,17 @@ public class TodoService(
         await dbContext.SaveChangesAsync(cancellationToken);
     }
 
+    public async Task ReopenTodoAsync(int todoId, CancellationToken cancellationToken = default)
+    {
+        var user = await currentUserService.GetRequiredUserAsync(cancellationToken);
+        var todo = await GetTodoForUserAsync(todoId, user.Id, cancellationToken);
+
+        todo.IsCompleted = false;
+        todo.CompletedAt = null;
+
+        await dbContext.SaveChangesAsync(cancellationToken);
+    }
+
     public async Task DeleteTodoAsync(int todoId, CancellationToken cancellationToken = default)
     {
         var user = await currentUserService.GetRequiredUserAsync(cancellationToken);
