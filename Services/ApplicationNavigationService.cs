@@ -10,7 +10,6 @@ public class ApplicationNavigationService : IApplicationNavigationService
         new("NavWeeklyReportsGrid", "weekly-reports/grid", "bi-grid-nav-menu", true),
         new("NavWeeklyReportsVertical", "weekly-reports/vertical", "bi-list-nested-nav-menu", true),
         new("NavTodos", "todos", "bi-list-nested-nav-menu", true),
-        new("NavHistory", "history", "bi-list-nested-nav-menu", false),
         new("NavSettings", "settings", "bi-gear-fill-nav-menu", true)
     ];
 

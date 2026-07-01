@@ -9,6 +9,7 @@ using AzubiLog.Services.Identity;
 using AzubiLog.Services.Pdf;
 using AzubiLog.Services.Profile;
 using AzubiLog.Services.ReportEntries;
+using AzubiLog.Services.Timetable;
 using AzubiLog.Services.Todos;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -29,7 +30,6 @@ namespace AzubiLog
             builder.Logging.AddConsole();
             builder.Logging.AddDebug();
 
-            // Add services to the container.
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
             builder.Services.AddCascadingAuthenticationState();
@@ -37,7 +37,7 @@ namespace AzubiLog
             builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
             var dataProtectionKeysPath = Path.Combine(
                 builder.Environment.ContentRootPath,
-                "App_Data",
+                "..",
                 "DataProtectionKeys");
             Directory.CreateDirectory(dataProtectionKeysPath);
             builder.Services.AddDataProtection()
@@ -49,18 +49,31 @@ namespace AzubiLog
             builder.Services.AddScoped<ApplicationDataInitializer>();
             builder.Services.AddScoped<DefaultUserData>();
             builder.Services.AddScoped<AccountFlowService>();
-            builder.Services.AddScoped<IAccountEmailSender, DevelopmentAccountEmailSender>();
+            builder.Services.AddHttpClient();
+            builder.Services.Configure<BrevoSettings>(options =>
+            {
+                builder.Configuration.GetSection("Brevo").Bind(options);
+                var envKey = Environment.GetEnvironmentVariable("BREVO_API_KEY");
+                if (!string.IsNullOrWhiteSpace(envKey))
+                {
+                    options.ApiKey = envKey;
+                }
+            });
+            builder.Services.AddScoped<IAccountEmailSender, BrevoEmailSender>();
             builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
             builder.Services.AddScoped<ICalendarDayMarkerService, CalendarDayMarkerService>();
             builder.Services.AddScoped<IDashboardService, DashboardService>();
             builder.Services.AddScoped<IApprenticeProfileService, ApprenticeProfileService>();
             builder.Services.AddScoped<IReportEntryService, ReportEntryService>();
             builder.Services.AddScoped<ITodoService, TodoService>();
+            builder.Services.AddScoped<ITimetableService, TimetableService>();
+
             builder.Services.AddScoped<IWeeklyReportPdfService, WeeklyReportPdfService>();
             builder.Services.AddScoped<IAuthorizationHandler, ConfirmedEmailHandler>();
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"))
+                    .ConfigureWarnings(w => w.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning)));
 
             builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme)
                 .AddIdentityCookies();
@@ -103,17 +116,13 @@ namespace AzubiLog
 
             using (var scope = app.Services.CreateScope())
             {
-                // Database initialization happens once at startup:
-                // apply EF Core migrations, then seed the single apprentice defaults.
                 var initializer = scope.ServiceProvider.GetRequiredService<ApplicationDataInitializer>();
                 initializer.InitializeAsync().GetAwaiter().GetResult();
             }
 
-            // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
