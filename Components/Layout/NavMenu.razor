@@ -4,7 +4,9 @@
 
 <header class="app-navbar">
     <div class="app-navbar__inner">
-        <a class="app-navbar__brand" href="">@Localizer["AppName"]</a>
+        <a class="app-navbar__brand" href="">
+            <img src="/images/logo.png" alt="@Localizer["AppName"]" class="app-navbar__logo" />
+        </a>
 
         <nav class="app-navbar__desktop-nav" aria-label="@Localizer["AppName"]">
             @foreach (var item in Navigation.GetMainNavigation())
