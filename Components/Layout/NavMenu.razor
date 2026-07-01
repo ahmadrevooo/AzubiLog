@@ -18,21 +18,25 @@
                     </NavLink>
                 }
             }
-            <div class="app-navbar__more" @onfocusout="CloseMoreAsync">
-                <button class="app-navbar__more-btn" type="button" @onclick="ToggleMoreAsync">
+            <div class="app-navbar__more">
+                <button class="app-navbar__more-btn" type="button" @onclick="ToggleMoreAsync" @onclick:stopPropagation="true">
                     Mehr <span class="app-navbar__more-arrow">&#9662;</span>
                 </button>
-                <div class="app-navbar__more-dropdown @(IsMoreOpen ? "is-open" : null)">
-                    @foreach (var item in Navigation.GetMainNavigation().Skip(4))
-                    {
-                        @if (item.IsEnabled)
+                @if (IsMoreOpen)
+                {
+                    <div class="app-navbar__more-overlay" @onclick="CloseMoreAsync"></div>
+                    <div class="app-navbar__more-dropdown is-open">
+                        @foreach (var item in Navigation.GetMainNavigation().Skip(4))
                         {
-                            <NavLink class="app-navbar__more-item" href="@item.Href" Match="@GetMatch(item)" @onclick="CloseMoreAsync">
-                                @Localizer[item.ResourceKey]
-                            </NavLink>
+                            @if (item.IsEnabled)
+                            {
+                                <NavLink class="app-navbar__more-item" href="@item.Href" Match="@GetMatch(item)" @onclick="CloseMoreAsync">
+                                    @Localizer[item.ResourceKey]
+                                </NavLink>
+                            }
                         }
-                    }
-                </div>
+                    </div>
+                }
             </div>
         </nav>
 
@@ -58,51 +62,43 @@
         </div>
     </div>
 
-    <div class="app-navbar__mobile-panel @(IsMenuOpen ? "is-open" : null)">
-        <div class="app-navbar__mobile-backdrop" @onclick="CloseMenuAsync"></div>
-        <nav class="app-navbar__mobile-menu" aria-label="@Localizer["AppName"]">
-            @foreach (var item in Navigation.GetMainNavigation())
-            {
-                @if (item.IsEnabled)
+    @if (IsMenuOpen)
+    {
+        <div class="app-navbar__mobile-panel is-open">
+            <div class="app-navbar__mobile-backdrop" @onclick="CloseMenuAsync"></div>
+            <nav class="app-navbar__mobile-menu" aria-label="@Localizer["AppName"]">
+                @foreach (var item in Navigation.GetMainNavigation())
                 {
-                    <NavLink class="app-navbar__mobile-link" href="@item.Href" Match="@GetMatch(item)" @onclick="CloseMenuAsync">
-                        @Localizer[item.ResourceKey]
-                    </NavLink>
+                    @if (item.IsEnabled)
+                    {
+                        <NavLink class="app-navbar__mobile-link" href="@item.Href" Match="@GetMatch(item)" @onclick="CloseMenuAsync">
+                            @Localizer[item.ResourceKey]
+                        </NavLink>
+                    }
                 }
-            }
-            <div class="app-navbar__mobile-meta">
-                <AuthorizeView>
-                    <Authorized>
-                        <a class="app-navbar__account-link app-navbar__account-link--mobile" href="/account/logout" @onclick="CloseMenuAsync">@Localizer["AccountLogoutAction"]</a>
-                    </Authorized>
-                    <NotAuthorized>
-                        <a class="app-navbar__account-link app-navbar__account-link--mobile" href="/account/login" @onclick="CloseMenuAsync">@Localizer["AccountLoginAction"]</a>
-                    </NotAuthorized>
-                </AuthorizeView>
-            </div>
-        </nav>
-    </div>
+                <div class="app-navbar__mobile-meta">
+                    <AuthorizeView>
+                        <Authorized>
+                            <a class="app-navbar__account-link app-navbar__account-link--mobile" href="/account/logout" @onclick="CloseMenuAsync">@Localizer["AccountLogoutAction"]</a>
+                        </Authorized>
+                        <NotAuthorized>
+                            <a class="app-navbar__account-link app-navbar__account-link--mobile" href="/account/login" @onclick="CloseMenuAsync">@Localizer["AccountLoginAction"]</a>
+                        </NotAuthorized>
+                    </AuthorizeView>
+                </div>
+            </nav>
+        </div>
+    }
 </header>
 
 @code {
     private bool IsMenuOpen { get; set; }
     private bool IsMoreOpen { get; set; }
-    private string CurrentTheme { get; set; } = "light";
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (!firstRender)
-        {
-            return;
-        }
-
-        CurrentTheme = await JsRuntime.InvokeAsync<string>("azubiLogPreferences.getTheme");
-        StateHasChanged();
-    }
 
     private Task ToggleMenuAsync()
     {
         IsMenuOpen = !IsMenuOpen;
+        IsMoreOpen = false;
         return Task.CompletedTask;
     }
 

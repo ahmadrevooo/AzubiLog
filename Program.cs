@@ -131,6 +131,24 @@ namespace AzubiLog
             app.UseHttpsRedirection();
 
             app.UseAuthentication();
+
+            // Clear stale auth cookies if user no longer exists
+            app.Use(async (context, next) =>
+            {
+                if (context.User.Identity?.IsAuthenticated == true)
+                {
+                    var userManager = context.RequestServices.GetRequiredService<Microsoft.AspNetCore.Identity.UserManager<AzubiLog.Models.ApplicationUser>>();
+                    var user = await userManager.GetUserAsync(context.User);
+                    if (user == null)
+                    {
+                        var signInManager = context.RequestServices.GetRequiredService<Microsoft.AspNetCore.Identity.SignInManager<AzubiLog.Models.ApplicationUser>>();
+                        await signInManager.SignOutAsync();
+                        context.Response.Redirect("/account/login");
+                        return;
+                    }
+                }
+                await next();
+            });
             app.UseAuthorization();
             app.UseAntiforgery();
 
