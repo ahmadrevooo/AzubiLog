@@ -399,6 +399,12 @@
   <data name="AccountLoginAction" xml:space="preserve">
     <value>Anmelden</value>
   </data>
+  <data name="ErrorLoginInvalid" xml:space="preserve">
+    <value>Ungültiger Anmeldeversuch. Bitte überprüfe deine E-Mail-Adresse und dein Passwort.</value>
+  </data>
+  <data name="ErrorLoginLocked" xml:space="preserve">
+    <value>Das Konto wurde gesperrt. Bitte kontaktiere den Administrator.</value>
+  </data>
   <data name="AccountLoginFailed" xml:space="preserve">
     <value>Anmeldung fehlgeschlagen. Bitte prüfe E-Mail und Passwort.</value>
   </data>
@@ -428,6 +434,12 @@
   </data>
   <data name="AccountRegistrationFailed" xml:space="preserve">
     <value>Registrierung fehlgeschlagen. Bitte prüfe deine Eingaben.</value>
+  </data>
+  <data name="AccountRegistrationInvalid" xml:space="preserve">
+    <value>Ungültige Eingaben. Bitte überprüfe deine Angaben und versuche es erneut. Beispiel: Das Passwort und die Passwortbestätigung stimmen nicht überein.</value>
+  </data>
+  <data name="AccountPasswordMismatch" xml:space="preserve">
+    <value>Das Passwort und die Passwortbestätigung stimmen nicht überein.</value>
   </data>
   <data name="AccountEmailConfirmationNoticeTitle" xml:space="preserve">
     <value>E-Mail bestätigen</value>
@@ -482,6 +494,9 @@
   </data>
   <data name="AccountLoggedOut" xml:space="preserve">
     <value>Du wurdest abgemeldet.</value>
+  </data>
+  <data name="AccountRegistered" xml:space="preserve">
+    <value>Dein Konto wurde erstellt. Du kannst dich jetzt anmelden.</value>
   </data>
   <data name="Retry" xml:space="preserve">
     <value>Erneut versuchen</value>

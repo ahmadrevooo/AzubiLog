@@ -83,7 +83,7 @@ public class WeeklyReportPdfService(
             CalendarWeek = ISOWeek.GetWeekOfYear(date),
             Year = ISOWeek.GetYear(date),
             TotalHours = entries.Sum(entry => entry.Duration ?? 0m),
-            AccentColor = string.IsNullOrWhiteSpace(user.PdfAccentColor) ? "#2563eb" : user.PdfAccentColor,
+            AccentColor = string.IsNullOrWhiteSpace(user.PdfAccentColor) ? "#000000" : user.PdfAccentColor,
             Days = days
         };
     }
@@ -127,13 +127,7 @@ public class WeeklyReportPdfService(
                         .FontSize(10)
                         .FontColor(Colors.Grey.Darken2);
                 });
-                row.AutoItem().AlignRight().AlignMiddle()
-                    .Background(accentLight)
-                    .Padding(8)
-                    .Text($"{model.TotalHours:0.##} h")
-                    .FontSize(14)
-                    .Bold()
-                    .FontColor(accent);
+ 
             });
 
             column.Item().PaddingTop(6).BorderBottom(2).BorderColor(accent);
@@ -183,12 +177,20 @@ public class WeeklyReportPdfService(
     {
         container.PaddingTop(12).Column(column =>
         {
-            column.Spacing(8);
+
 
             foreach (var day in model.Days)
             {
                 column.Item().Element(item => ComposeDay(item, day, accent, accentLight));
             }
+
+            column.Spacing(8);
+            column.Item()
+            .AlignRight()
+            .Text($"Gesamtstunden: {model.TotalHours:0.##} h")
+            .FontSize(11)
+            .Bold();
+
         });
     }
 
