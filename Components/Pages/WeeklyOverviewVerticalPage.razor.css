@@ -171,6 +171,12 @@
     color: #fff;
 }
 
+[data-theme="dark"] .weekly-vertical-export-button {
+    background: var(--app-text);
+    border-color: var(--app-text);
+    color: var(--app-bg);
+}
+
 .weekly-vertical-date-picker .form-control {
     font-size: 0.9rem;
     padding: 0.3rem 0.55rem;
@@ -356,6 +362,12 @@
     .weekly-vertical-view-option:hover {
         background: var(--app-surface-hover);
         color: var(--app-text);
+    }
+
+    [data-theme="dark"] .weekly-vertical-export-button:hover {
+        background: var(--app-primary-hover);
+        border-color: var(--app-primary-hover);
+        color: var(--app-primary-contrast);
     }
 }
 
