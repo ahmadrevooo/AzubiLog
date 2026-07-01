@@ -2,8 +2,9 @@
     display: grid;
     gap: 1.15rem;
     margin-inline: auto;
-    max-width: min(100%, 118rem);
-    padding: 1rem 0 2.75rem;
+    max-width: 1420px;
+    width: 100%;
+    padding: 1rem 1.5rem 2.75rem;
 }
 
 .weekly-grid-loading {
