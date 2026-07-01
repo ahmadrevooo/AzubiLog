@@ -1011,5 +1011,10 @@ public class ReportEntryService(
     {
         var context = new ValidationContext(form);
         Validator.ValidateObject(form, context, validateAllProperties: true);
+
+        if (form.Date.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday)
+        {
+            throw new ValidationException("Einträge können nur für Werktage (Montag bis Freitag) erstellt werden.");
+        }
     }
 }

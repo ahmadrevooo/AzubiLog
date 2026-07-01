@@ -1,0 +1,152 @@
+@page "/konto"
+@attribute [Authorize(Policy = "ConfirmedEmail")]
+@inject IStringLocalizer<SharedResource> Localizer
+
+<PageTitle>Kontoübersicht</PageTitle>
+
+@if (ViewModel is null)
+{
+    <div class="konto-loading">Lädt…</div>
+}
+else
+{
+    <div class="konto-page">
+        <header class="konto-hero">
+            <div class="konto-avatar" aria-hidden="true">@Initials</div>
+            <div class="konto-hero-copy">
+                <p class="konto-eyebrow">Kontoübersicht</p>
+                <h1>@ViewModel.FullName</h1>
+                <span class="konto-hero-meta">
+                    @if (!string.IsNullOrWhiteSpace(ViewModel.TrainingOccupation))
+                    {
+                        <span>@ViewModel.TrainingOccupation</span>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(ViewModel.CompanyName))
+                    {
+                        <span>@ViewModel.CompanyName</span>
+                    }
+                    <span>@ViewModel.TrainingYear. Ausbildungsjahr</span>
+                </span>
+            </div>
+        </header>
+
+        <EditForm Model="Account" FormName="konto-form" OnValidSubmit="HandleSaveAccountAsync">
+            <DataAnnotationsValidator />
+
+            <section class="konto-card">
+                <div class="konto-card-header">
+                    <div>
+                        <p>Persönliche Daten</p>
+                        <h2>Name, E-Mail & Arbeitszeiten</h2>
+                    </div>
+                    @if (!string.IsNullOrWhiteSpace(AccountStatus))
+                    {
+                        <span class="konto-status @(AccountHasError ? "is-error" : null)">@AccountStatus</span>
+                    }
+                </div>
+
+                <div class="konto-grid">
+                    <label>
+                        <span>Vorname *</span>
+                        <InputText class="form-control" @bind-Value="Account.FirstName" />
+                        <ValidationMessage For="() => Account.FirstName" />
+                    </label>
+                    <label>
+                        <span>Nachname *</span>
+                        <InputText class="form-control" @bind-Value="Account.LastName" />
+                        <ValidationMessage For="() => Account.LastName" />
+                    </label>
+                    <label class="konto-grid-wide">
+                        <span>E-Mail *</span>
+                        <InputText class="form-control" type="email" @bind-Value="Account.Email" />
+                        <ValidationMessage For="() => Account.Email" />
+                    </label>
+                    <label>
+                        <span>Betrieb</span>
+                        <InputText class="form-control" @bind-Value="Account.CompanyName" />
+                        <ValidationMessage For="() => Account.CompanyName" />
+                    </label>
+                    <label>
+                        <span>Ausbildungsberuf</span>
+                        <InputText class="form-control" @bind-Value="Account.TrainingOccupation" />
+                        <ValidationMessage For="() => Account.TrainingOccupation" />
+                    </label>
+                    <label>
+                        <span>Ausbildungsjahr</span>
+                        <InputNumber class="form-control" @bind-Value="Account.TrainingYear" />
+                        <ValidationMessage For="() => Account.TrainingYear" />
+                    </label>
+                    <label>
+                        <span>Wochenstunden (Soll)</span>
+                        <InputNumber class="form-control" @bind-Value="Account.WeeklyTargetHours" />
+                        <ValidationMessage For="() => Account.WeeklyTargetHours" />
+                    </label>
+                    <label>
+                        <span>Urlaubstage / Jahr</span>
+                        <InputNumber class="form-control" @bind-Value="Account.AnnualVacationDays" />
+                        <ValidationMessage For="() => Account.AnnualVacationDays" />
+                    </label>
+                </div>
+
+                <ValidationSummary />
+
+                <div class="konto-actions">
+                    <button class="btn btn-primary" type="submit" disabled="@IsSavingAccount">
+                        @(IsSavingAccount ? "Speichert…" : "Speichern")
+                    </button>
+                </div>
+            </section>
+        </EditForm>
+
+        <EditForm Model="Password" FormName="password-form" OnValidSubmit="HandleChangePasswordAsync">
+            <DataAnnotationsValidator />
+
+            <section class="konto-card">
+                <div class="konto-card-header">
+                    <div>
+                        <p>Sicherheit</p>
+                        <h2>Passwort ändern</h2>
+                    </div>
+                    @if (!string.IsNullOrWhiteSpace(PasswordStatus))
+                    {
+                        <span class="konto-status @(PasswordHasError ? "is-error" : null)">@PasswordStatus</span>
+                    }
+                </div>
+
+                <div class="konto-grid">
+                    <label class="konto-grid-wide">
+                        <span>Aktuelles Passwort *</span>
+                        <InputText class="form-control" type="password" @bind-Value="Password.CurrentPassword" />
+                        <ValidationMessage For="() => Password.CurrentPassword" />
+                    </label>
+                    <label>
+                        <span>Neues Passwort *</span>
+                        <InputText class="form-control" type="password" @bind-Value="Password.NewPassword" />
+                        <ValidationMessage For="() => Password.NewPassword" />
+                    </label>
+                    <label>
+                        <span>Neues Passwort bestätigen *</span>
+                        <InputText class="form-control" type="password" @bind-Value="Password.ConfirmPassword" />
+                        <ValidationMessage For="() => Password.ConfirmPassword" />
+                    </label>
+                </div>
+
+                <ValidationSummary />
+
+                <div class="konto-actions">
+                    <button class="btn btn-primary" type="submit" disabled="@IsChangingPassword">
+                        @(IsChangingPassword ? "Ändert…" : "Passwort ändern")
+                    </button>
+                </div>
+            </section>
+        </EditForm>
+
+        <section class="konto-card konto-card--logout">
+            <div>
+                <h2>Abmelden</h2>
+                <p>Beende deine aktuelle Sitzung auf diesem Gerät.</p>
+            </div>
+            <a class="btn btn-outline-secondary" href="/account/logout">Abmelden</a>
+        </section>
+    </div>
+}

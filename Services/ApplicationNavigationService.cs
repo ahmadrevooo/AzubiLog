@@ -9,6 +9,7 @@ public class ApplicationNavigationService : IApplicationNavigationService
         new("NavWeeklyReports", "weekly-reports/grid", "bi-journal-text-nav-menu", true),
         new("NavTodos", "todos", "bi-list-nested-nav-menu", true),
         new("TimetableNavItem", "timetable", "bi-calendar-week-nav-menu", true),
+        new("NavAccountOverview", "konto", "bi-person-circle-nav-menu", true),
         new("NavSettings", "settings", "bi-gear-fill-nav-menu", true)
     ];
 

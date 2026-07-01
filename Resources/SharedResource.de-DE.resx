@@ -39,6 +39,9 @@
   <data name="NavTrainers" xml:space="preserve">
     <value>Ausbilder</value>
   </data>
+  <data name="NavAccountOverview" xml:space="preserve">
+    <value>Kontoübersicht</value>
+  </data>
   <data name="NavSettings" xml:space="preserve">
     <value>Einstellungen</value>
   </data>
