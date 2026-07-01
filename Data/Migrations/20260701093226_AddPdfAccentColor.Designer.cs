@@ -3,6 +3,7 @@ using System;
 using AzubiLog.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AzubiLog.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260701093226_AddPdfAccentColor")]
+    partial class AddPdfAccentColor
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.0");
@@ -81,18 +84,18 @@ namespace AzubiLog.Data.Migrations
                     b.Property<string>("PasswordHash")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("PdfAccentColor")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(7)
+                        .HasColumnType("TEXT")
+                        .HasDefaultValue("#2563eb");
+
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(40)
-                        .HasColumnType("TEXT")
-                        .HasDefaultValue("Azubi");
 
                     b.Property<string>("School")
                         .IsRequired()
@@ -102,13 +105,6 @@ namespace AzubiLog.Data.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("TEXT");
 
-
-                    b.Property<string>("PdfAccentColor")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(7)
-                        .HasColumnType("TEXT")
-                        .HasDefaultValue("#2563eb");
                     b.Property<string>("Subjects")
                         .IsRequired()
                         .HasMaxLength(500)
@@ -153,6 +149,42 @@ namespace AzubiLog.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("AzubiLog.Models.CalendarDayMarker", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Note")
+                        .HasMaxLength(1000)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId", "Date")
+                        .IsUnique();
+
+                    b.ToTable("CalendarDayMarkers", (string)null);
+                });
+
             modelBuilder.Entity("AzubiLog.Models.Category", b =>
                 {
                     b.Property<int>("Id")
@@ -182,52 +214,6 @@ namespace AzubiLog.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("Categories", (string)null);
-                });
-
-            modelBuilder.Entity("AzubiLog.Models.ClassTimetableEntry", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("ClassName")
-                        .IsRequired()
-                        .HasMaxLength(80)
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("CreatedByUserId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("DayOfWeek")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("School")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("SubjectsText")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatedByUserId");
-
-                    b.HasIndex("School", "ClassName", "DayOfWeek")
-                        .IsUnique();
-
-                    b.ToTable("ClassTimetableEntries", (string)null);
                 });
 
             modelBuilder.Entity("AzubiLog.Models.ReportEntry", b =>
@@ -340,37 +326,6 @@ namespace AzubiLog.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("SchoolScheduleDays", (string)null);
-                });
-
-            modelBuilder.Entity("AzubiLog.Models.TimetableCancellation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("ClassTimetableEntryId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("CreatedByUserId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Reason")
-                        .HasMaxLength(500)
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ClassTimetableEntryId", "Date")
-                        .IsUnique();
-
-                    b.ToTable("TimetableCancellations", (string)null);
                 });
 
             modelBuilder.Entity("AzubiLog.Models.TodoItem", b =>
@@ -550,6 +505,17 @@ namespace AzubiLog.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("AzubiLog.Models.CalendarDayMarker", b =>
+                {
+                    b.HasOne("AzubiLog.Models.ApplicationUser", "User")
+                        .WithMany("CalendarDayMarkers")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("AzubiLog.Models.Category", b =>
                 {
                     b.HasOne("AzubiLog.Models.ApplicationUser", "User")
@@ -559,17 +525,6 @@ namespace AzubiLog.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("AzubiLog.Models.ClassTimetableEntry", b =>
-                {
-                    b.HasOne("AzubiLog.Models.ApplicationUser", "CreatedByUser")
-                        .WithMany("ClassTimetableEntries")
-                        .HasForeignKey("CreatedByUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CreatedByUser");
                 });
 
             modelBuilder.Entity("AzubiLog.Models.ReportEntry", b =>
@@ -614,17 +569,6 @@ namespace AzubiLog.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("AzubiLog.Models.TimetableCancellation", b =>
-                {
-                    b.HasOne("AzubiLog.Models.ClassTimetableEntry", "ClassTimetableEntry")
-                        .WithMany("Cancellations")
-                        .HasForeignKey("ClassTimetableEntryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ClassTimetableEntry");
                 });
 
             modelBuilder.Entity("AzubiLog.Models.TodoItem", b =>
@@ -689,9 +633,9 @@ namespace AzubiLog.Data.Migrations
 
             modelBuilder.Entity("AzubiLog.Models.ApplicationUser", b =>
                 {
-                    b.Navigation("Categories");
+                    b.Navigation("CalendarDayMarkers");
 
-                    b.Navigation("ClassTimetableEntries");
+                    b.Navigation("Categories");
 
                     b.Navigation("ReportEntries");
 
@@ -707,11 +651,6 @@ namespace AzubiLog.Data.Migrations
             modelBuilder.Entity("AzubiLog.Models.Category", b =>
                 {
                     b.Navigation("ReportEntries");
-                });
-
-            modelBuilder.Entity("AzubiLog.Models.ClassTimetableEntry", b =>
-                {
-                    b.Navigation("Cancellations");
                 });
 
             modelBuilder.Entity("AzubiLog.Models.Trainer", b =>

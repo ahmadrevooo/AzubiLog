@@ -754,12 +754,8 @@ public class ReportEntryService(
             return "Berufsschultag";
         }
 
-        return "Berufsschultag"
-            + Environment.NewLine
-            + Environment.NewLine
-            + string.Join(
-                Environment.NewLine + Environment.NewLine,
-                subjects.Select(subject => $"{subject}:{Environment.NewLine}- "));
+        return "Berufsschultag\n\n"
+            + string.Join("\n", subjects.Select(subject => $"• {subject}"));
     }
 
     private static List<ClassTimetableEntry.StructuredSubjectEntry> TryParseStructuredSubjects(string subjectsText)

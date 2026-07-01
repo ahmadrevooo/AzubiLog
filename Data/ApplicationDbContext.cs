@@ -65,6 +65,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             entity.Property(user => user.Subjects)
                 .HasMaxLength(500);
 
+            entity.Property(user => user.PdfAccentColor)
+                .HasMaxLength(7)
+                .HasDefaultValue("#2563eb");
+
             entity.Property(user => user.TrainingYear)
                 .HasDefaultValue(1);
 

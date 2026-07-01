@@ -47,6 +47,7 @@ public sealed class ApprenticeProfileService(
                 School = user.School,
                 ClassName = user.ClassName,
                 Subjects = user.Subjects,
+                PdfAccentColor = string.IsNullOrWhiteSpace(user.PdfAccentColor) ? "#2563eb" : user.PdfAccentColor,
                 WeeklyTargetHours = user.WeeklyTargetHours <= 0 ? 40 : user.WeeklyTargetHours,
                 AnnualVacationDays = user.AnnualVacationDays <= 0 ? 30 : user.AnnualVacationDays,
                 SchoolScheduleDays = BuildScheduleForm(scheduleDays),
@@ -85,6 +86,7 @@ public sealed class ApprenticeProfileService(
         user.School = profile.School.Trim();
         user.ClassName = profile.ClassName.Trim();
         user.Subjects = profile.Subjects.Trim();
+        user.PdfAccentColor = string.IsNullOrWhiteSpace(profile.PdfAccentColor) ? "#2563eb" : profile.PdfAccentColor.Trim();
         user.WeeklyTargetHours = profile.WeeklyTargetHours;
         user.AnnualVacationDays = profile.AnnualVacationDays;
 

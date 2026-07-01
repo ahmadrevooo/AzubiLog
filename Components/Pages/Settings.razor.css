@@ -229,6 +229,26 @@
     outline-offset: 2px;
 }
 
+.profile-color-picker {
+    align-items: center;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.profile-color-input {
+    block-size: 2.5rem;
+    border: 1px solid color-mix(in srgb, var(--app-border) 70%, transparent);
+    border-radius: 6px;
+    cursor: pointer;
+    inline-size: 3rem;
+    padding: 2px;
+}
+
+.profile-color-hex {
+    flex: 1;
+    font-family: monospace;
+}
+
 .profile-actions {
     border-top: 1px solid color-mix(in srgb, var(--app-border) 58%, transparent);
     display: flex;
