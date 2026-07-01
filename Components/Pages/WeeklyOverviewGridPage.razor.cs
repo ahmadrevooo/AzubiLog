@@ -19,6 +19,8 @@ public partial class WeeklyOverviewGridPage : ComponentBase
     protected DateTime SelectedDate => (Date ?? DateTime.Today).Date;
     protected string SelectedDateString => SelectedDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
     protected string ExportHref => $"/weekly-reports/export?date={SelectedDateString}";
+    protected string GridViewHref => $"/weekly-reports/grid?date={SelectedDateString}";
+    protected string ListViewHref => $"/weekly-reports/vertical?date={SelectedDateString}";
 
     protected override async Task OnParametersSetAsync()
     {

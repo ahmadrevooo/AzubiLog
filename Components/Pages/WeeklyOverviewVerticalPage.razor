@@ -33,7 +33,22 @@ else
                     &gt;
                 </button>
             </section>
-            <a class="weekly-vertical-export-button" href="@ExportHref" download data-enhance-nav="false">@Localizer["DashboardExportPdf"]</a>
+            <div class="weekly-vertical-action-tools">
+                <div class="weekly-vertical-view-switch" aria-label="Ansicht wechseln">
+                    <span class="weekly-vertical-view-label">Ansicht</span>
+                    <div class="weekly-vertical-view-options" role="group" aria-label="Ansicht">
+                        <a class="weekly-vertical-view-option" href="@GridViewHref">
+                            <span class="weekly-vertical-view-icon weekly-vertical-view-icon-grid" aria-hidden="true"></span>
+                            Raster
+                        </a>
+                        <a class="weekly-vertical-view-option active" href="@ListViewHref" aria-current="page">
+                            <span class="weekly-vertical-view-icon weekly-vertical-view-icon-list" aria-hidden="true"></span>
+                            Liste
+                        </a>
+                    </div>
+                </div>
+                <a class="weekly-vertical-export-button" href="@ExportHref" download data-enhance-nav="false">@Localizer["DashboardExportPdf"]</a>
+            </div>
         </div>
 
         <section class="weekly-vertical-total">

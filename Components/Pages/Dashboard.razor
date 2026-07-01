@@ -32,17 +32,43 @@ else
         <section class="dashboard-layout" aria-label="Dashboard Übersicht">
             <div class="dashboard-left-column">
                 <section class="dashboard-card todo-action-card" aria-labelledby="todo-action-title">
-                    <div class="card-heading">
+                    <div class="card-heading todo-card-heading">
                         <div class="icon-box icon-box-green" aria-hidden="true">
                             <span class="bi bi-list-check"></span>
                         </div>
-                        <div>
-                            <h2 id="todo-action-title">To-do anlegen</h2>
-                            <p>Plane deine nächste Aufgabe für Ausbildung, Schule oder Projekt.</p>
+                        <div class="todo-heading-copy">
+                            <h2 id="todo-action-title">To-dos</h2>
+                            <p>Deine offenen Aufgaben</p>
                         </div>
+                        <a class="btn btn-primary todo-action-button" href="/todos">Neue Aufgabe erstellen</a>
                     </div>
 
-                    <a class="btn btn-primary todo-action-button" href="/todos">Neue Aufgabe erstellen</a>
+                    <div class="todo-overview">
+                        <h3>Offene Aufgaben</h3>
+
+                        @if (OpenTodos.Count == 0)
+                        {
+                            <p class="todo-empty-state">Keine offenen Aufgaben</p>
+                        }
+                        else
+                        {
+                            <div class="todo-list" aria-label="Offene To-dos">
+                                @foreach (var todo in OpenTodos)
+                                {
+                                    <div class="todo-list-item">
+                                        <span class="todo-status-dot" aria-hidden="true"></span>
+                                        <span class="todo-item-title">@todo.Title</span>
+                                        <span class="todo-item-date">@GetTodoDueDateLabel(todo.DueDate)</span>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+
+                    <a class="todo-all-link" href="/todos">
+                        <span>Alle Aufgaben anzeigen</span>
+                        <span aria-hidden="true">&gt;</span>
+                    </a>
                 </section>
 
                 <section class="dashboard-card timer-card" aria-labelledby="timer-title">
@@ -86,7 +112,7 @@ else
                     <div class="month-progress" aria-labelledby="progress-title">
                         <div class="section-heading">
                             <div>
-                                <h3 id="progress-title">Wochenfortschritt @DisplayedMonthLabel</h3>
+                                <h3 id="progress-title">Kalender - @DisplayedMonthLabel</h3>
                                 <p>Markiere deine Tage nach Arbeit, Schule, Urlaub, Krankheit oder Prüfung.</p>
                             </div>
                             <div class="calendar-nav" aria-label="Monatsnavigation">

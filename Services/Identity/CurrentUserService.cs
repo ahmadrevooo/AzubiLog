@@ -26,11 +26,6 @@ public sealed class CurrentUserService(
         var user = await userManager.GetUserAsync(principal)
             ?? throw new UnauthorizedAccessException("The signed-in apprentice could not be found.");
 
-        if (!user.EmailConfirmed)
-        {
-            throw new UnauthorizedAccessException("The signed-in apprentice must confirm their email address.");
-        }
-
         return user;
     }
 }

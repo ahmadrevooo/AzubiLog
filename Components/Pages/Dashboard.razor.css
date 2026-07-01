@@ -22,7 +22,7 @@
 
 .dashboard-eyebrow {
     color: var(--app-text-muted);
-    font-size: 0.84rem;
+    font-size: 0.95rem;
     font-weight: 500;
     letter-spacing: 0;
     margin: 0 0 0.42rem;
@@ -81,7 +81,7 @@
     align-items: start;
     display: grid;
     gap: 20px;
-    grid-template-columns: minmax(280px, 0.68fr) minmax(0, 1.56fr);
+    grid-template-columns: minmax(380px, 0.95fr) minmax(0, 1.25fr);
 }
 
 .dashboard-left-column {
@@ -335,11 +335,100 @@
 .todo-action-card {
     --dashboard-card-accent: var(--app-accent-green);
     display: grid;
+    gap: 14px;
+}
+
+.todo-card-heading {
+    align-items: center;
+    display: grid;
+    gap: 12px;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    margin-bottom: 0;
+}
+
+.todo-heading-copy {
+    min-width: 0;
 }
 
 .todo-action-button {
     justify-self: start;
-    margin-top: 2px;
+    white-space: nowrap;
+}
+
+.todo-overview {
+    display: grid;
+    gap: 10px;
+}
+
+.todo-overview h3 {
+    color: var(--app-text);
+    font-size: 0.94rem;
+    font-weight: 650;
+    line-height: 1.2;
+    margin: 0;
+}
+
+.todo-list {
+    display: grid;
+    gap: 8px;
+}
+
+.todo-list-item,
+.todo-empty-state {
+    background: color-mix(in srgb, var(--app-surface-muted) 42%, transparent);
+    border: 1px solid color-mix(in srgb, var(--app-border) 66%, transparent);
+    border-radius: 8px;
+}
+
+.todo-list-item {
+    align-items: center;
+    display: grid;
+    gap: 10px;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    min-height: 42px;
+    padding: 9px 11px;
+}
+
+.todo-status-dot {
+    border: 1.7px solid color-mix(in srgb, var(--app-accent-green) 76%, var(--app-border));
+    border-radius: 999px;
+    height: 12px;
+    width: 12px;
+}
+
+.todo-item-title {
+    color: var(--app-text);
+    font-size: 0.9rem;
+    font-weight: 560;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.todo-item-date {
+    color: var(--app-text-muted);
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.todo-empty-state {
+    color: var(--app-text-muted);
+    font-size: 0.86rem;
+    margin: 0;
+    padding: 11px;
+}
+
+.todo-all-link {
+    align-items: center;
+    color: var(--app-accent-green);
+    display: inline-flex;
+    font-size: 0.88rem;
+    font-weight: 650;
+    gap: 6px;
+    justify-self: start;
+    text-decoration: none;
 }
 
 .timer-card {
@@ -421,11 +510,11 @@
 }
 
 .progress-card {
-    --marker-workday: #4f8fd8;
-    --marker-school-day: #e0b84f;
-    --marker-vacation: #7aa874;
-    --marker-sick-leave: #9b7ad8;
-    --marker-exam: #d97c6c;
+    --marker-workday: #1976d2;
+    --marker-school-day: #f59e0b;
+    --marker-vacation: #16a34a;
+    --marker-sick-leave: #7c3aed;
+    --marker-exam: #ef4444;
     --dashboard-card-accent: var(--app-accent-orange);
     display: flex;
     flex-direction: column;
@@ -671,6 +760,10 @@
         color: var(--app-text);
     }
 
+    .todo-all-link:hover {
+        color: var(--app-text);
+    }
+
     .progress-day:hover {
         background: var(--app-surface-hover);
         border-color: color-mix(in srgb, var(--app-text-muted) 34%, var(--app-border));
@@ -694,7 +787,7 @@
 
 @media (max-width: 1120px) {
     .dashboard-layout {
-        grid-template-columns: minmax(260px, 0.7fr) minmax(0, 1.3fr);
+        grid-template-columns: minmax(340px, 0.9fr) minmax(0, 1.5fr);
     }
 
 }
@@ -776,6 +869,23 @@
 
     .custom-duration {
         grid-template-columns: 1fr;
+    }
+
+    .todo-card-heading {
+        grid-template-columns: auto minmax(0, 1fr);
+    }
+
+    .todo-action-button {
+        grid-column: 1 / -1;
+    }
+
+    .todo-list-item {
+        align-items: start;
+        grid-template-columns: auto minmax(0, 1fr);
+    }
+
+    .todo-item-date {
+        grid-column: 2;
     }
 
     .today-card strong {

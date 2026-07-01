@@ -20,7 +20,7 @@ else
 
         <div class="weekly-grid-actions">
             <section class="weekly-grid-navigation" aria-label="@Localizer["WeeklyOverviewNavigation"]">
-                <button class="weekly-grid-today-button" type="button" @onclick="GoToToday">@Localizer["ReportEntryToday"]</button>
+                <button class="weekly-grid-today-button" type="button" @onclick="GoToToday">@Localizer["WeeklyOverviewCurrentWeek"]</button>
                 <button class="weekly-grid-nav-button" type="button" title="@Localizer["WeeklyOverviewPreviousWeek"]" aria-label="@Localizer["WeeklyOverviewPreviousWeek"]" @onclick="GoToPreviousWeek">
                     &lt;
                 </button>
@@ -32,7 +32,22 @@ else
                     &gt;
                 </button>
             </section>
-            <a class="weekly-grid-export-button" href="@ExportHref" download data-enhance-nav="false">@Localizer["DashboardExportPdf"]</a>
+            <div class="weekly-grid-action-tools">
+                <div class="weekly-grid-view-switch" aria-label="Ansicht wechseln">
+                    <span class="weekly-grid-view-label">Ansicht</span>
+                    <div class="weekly-grid-view-options" role="group" aria-label="Ansicht">
+                        <a class="weekly-grid-view-option active" href="@GridViewHref" aria-current="page">
+                            <span class="weekly-grid-view-icon weekly-grid-view-icon-grid" aria-hidden="true"></span>
+                            Raster
+                        </a>
+                        <a class="weekly-grid-view-option" href="@ListViewHref">
+                            <span class="weekly-grid-view-icon weekly-grid-view-icon-list" aria-hidden="true"></span>
+                            Liste
+                        </a>
+                    </div>
+                </div>
+                <a class="weekly-grid-export-button" href="@ExportHref" download data-enhance-nav="false">@Localizer["DashboardExportPdf"]</a>
+            </div>
         </div>
 
         <section class="weekly-grid-summary">

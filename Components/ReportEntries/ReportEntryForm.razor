@@ -125,7 +125,7 @@
                     </label>
                 </div>
 
-                @if (IsCategoryCreatorOpen)
+@*                 @if (IsCategoryCreatorOpen)
                 {
                     <div class="report-entry-category-popover">
                         <InputText class="form-control" @bind-Value="NewCategoryName" placeholder="@Localizer["ReportEntryNewCategory"]" />
@@ -134,7 +134,7 @@
                         </button>
                     </div>
                 }
-
+                
                 @if (Model.IsVocationalSchoolDay)
                 {
                     <label>
@@ -154,12 +154,12 @@
                         }
                     </datalist>
                     <ValidationMessage For="() => Model.OrderNumber" />
-                </label>
+                </label> *@
 
-                <label class="report-entry-check">
+@*                 <label class="report-entry-check">
                     <InputCheckbox @bind-Value="Model.IsVocationalSchoolDay" @bind-Value:after="FieldChangedAsync" />
                     <span>@Localizer["ReportEntryVocationalSchoolDay"]</span>
-                </label>
+                </label> *@
 
                 @if (IsNoteOpen || !string.IsNullOrWhiteSpace(Model.Notes))
                 {

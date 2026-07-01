@@ -24,7 +24,7 @@ else
                 <EditForm Model="TodoForm" FormName="todo-create-form" OnValidSubmit="HandleCreateAsync" class="todo-create-form">
                     <DataAnnotationsValidator />
                     <div class="todo-create-heading">
-                        <span class="todo-create-icon" aria-hidden="true">+</span>
+                        <span class="todo-create-icon" aria-hidden="true"></span>
                         <h2 id="todo-create-title">@Localizer["TodoCreateTitle"]</h2>
                     </div>
 
@@ -45,10 +45,12 @@ else
                         <InputDate id="todo-due-date" class="form-control" @bind-Value="TodoForm.DueDate" />
                     </div>
 
-                    <button class="btn btn-primary todo-add-button" type="submit">
-                        <span>@Localizer["TodoAdd"]</span>
-                        <span aria-hidden="true">+</span>
-                    </button>
+                    <div class="todo-create-actions">
+                        <button class="btn btn-primary todo-add-button" type="submit">
+                            <span>@Localizer["TodoAdd"]</span>
+                            <span aria-hidden="true">+</span>
+                        </button>
+                    </div>
                 </EditForm>
             </section>
 
@@ -64,6 +66,7 @@ else
                 TitleKey="TodoCompletedTitle"
                 EmptyTextKey="TodoNoCompleted"
                 Items="ViewModel.CompletedTodos"
+                Reopen="HandleReopenAsync"
                 Delete="HandleDeleteAsync" />
         </section>
     </div>
