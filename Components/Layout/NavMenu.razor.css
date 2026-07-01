@@ -38,7 +38,7 @@
 .app-navbar__desktop-nav {
     align-items: center;
     display: none;
-    gap: 0;
+    gap: 0.25rem;
     min-width: 0;
 }
 
