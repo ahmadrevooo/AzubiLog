@@ -34,9 +34,13 @@
                     {
                         var subject = SchoolDaySubjects[i];
                         var idx = i;
-                        <div class="report-entry-subject-row">
+                        <div class="report-entry-subject-row @(subject.Entfall ? "is-entfall" : "")">
                             <div class="report-entry-subject-header">
                                 <strong>@subject.Fach</strong>
+                                @if (subject.Entfall)
+                                {
+                                    <span class="report-entry-subject-entfall">Entfall</span>
+                                }
                                 @if (!string.IsNullOrWhiteSpace(subject.Lehrer))
                                 {
                                     <span class="report-entry-subject-teacher">@subject.Lehrer</span>
@@ -46,10 +50,13 @@
                                     <span class="report-entry-subject-room">@subject.Raum</span>
                                 }
                             </div>
+                            @if (!subject.Entfall)
+                            {
                             <textarea class="form-control report-entry-subject-notes"
                                       placeholder="Was wurde gemacht?"
                                       value="@GetSubjectNote(idx)"
                                       @oninput="@(e => SetSubjectNote(idx, e.Value?.ToString()))"></textarea>
+                            }
                         </div>
                     }
                 </div>

@@ -470,6 +470,19 @@
     font-size: 0.75rem;
 }
 
+.report-entry-subject-entfall {
+    background: #fee2e2;
+    border-radius: 4px;
+    color: #dc2626;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.1rem 0.4rem;
+}
+
+.report-entry-subject-row.is-entfall {
+    opacity: 0.6;
+}
+
 .report-entry-subject-notes {
     font-size: 0.82rem;
     min-height: 2.2rem;
