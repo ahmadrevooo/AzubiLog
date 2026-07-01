@@ -616,12 +616,14 @@ public class ReportEntryService(
         }
 
         var entryDate = form.Date.Date;
+        var dayStart = entryDate;
+        var dayEnd = entryDate.AddDays(1);
         var newStartDt = entryDate.Add(newStart);
         var newEndDt = entryDate.Add(newEnd);
 
         var existingEntries = await dbContext.ReportEntries
             .Where(e => e.UserId == userId
-                && e.Date.Date == entryDate
+                && e.Date >= dayStart && e.Date < dayEnd
                 && e.Status == ReportEntryStatus.Saved
                 && (!form.Id.HasValue || e.Id != form.Id.Value))
             .ToListAsync(cancellationToken);
@@ -630,12 +632,15 @@ public class ReportEntryService(
         {
             if (existing.StartTime != default && existing.EndTime != default)
             {
-                if (newStartDt < existing.EndTime && newEndDt > existing.StartTime)
+                var existingStart = existing.StartTime.TimeOfDay;
+                var existingEnd = existing.EndTime.TimeOfDay;
+
+                if (newStart < existingEnd && newEnd > existingStart)
                 {
-                    var existStart = existing.StartTime.ToString("HH:mm");
-                    var existEnd = existing.EndTime.ToString("HH:mm");
+                    var existStartStr = existing.StartTime.ToString("HH:mm");
+                    var existEndStr = existing.EndTime.ToString("HH:mm");
                     throw new ValidationException(
-                        $"Zeitüberschneidung: Es gibt bereits einen Eintrag von {existStart} bis {existEnd}.");
+                        $"Zeitüberschneidung: Es gibt bereits einen Eintrag von {existStartStr} bis {existEndStr}.");
                 }
             }
         }
