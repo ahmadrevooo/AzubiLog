@@ -64,6 +64,8 @@
         }
 
         <div class="report-entry-main-fields">
+            @if (!ShowSchoolDayHint)
+            {
             <section class="report-entry-section">
                 <label>
                     <span>@Localizer["ReportEntryTitle"] *</span>
@@ -119,6 +121,7 @@
                     </div>
                 </div>
             </section>
+            }
 
             <section class="report-entry-section">
                 <div class="report-entry-info-grid">
@@ -297,9 +300,14 @@
             IsNoteOpen = !string.IsNullOrWhiteSpace(Model.Notes);
             PreviousModel = Model;
 
-            if (ShowSchoolDayHint && SchoolDaySubjects.Count > 0)
+            if (ShowSchoolDayHint)
             {
-                InitSubjectNotes();
+                AutoSetSchoolCategory();
+
+                if (SchoolDaySubjects.Count > 0)
+                {
+                    InitSubjectNotes();
+                }
             }
 
             return;
@@ -308,6 +316,18 @@
         if (!IsNoteOpen && !string.IsNullOrWhiteSpace(Model.Notes))
         {
             IsNoteOpen = true;
+        }
+    }
+
+    private void AutoSetSchoolCategory()
+    {
+        var schoolCategory = Categories.FirstOrDefault(c =>
+            c.Name.Contains("Berufsschule", StringComparison.OrdinalIgnoreCase)
+            || c.Name.Contains("Schule", StringComparison.OrdinalIgnoreCase));
+
+        if (schoolCategory is not null)
+        {
+            Model.CategoryId = schoolCategory.Id;
         }
     }
 
@@ -436,7 +456,24 @@
 
     private Task HandleSaveRequestedAsync()
     {
-        if (!HasValidTimeRange)
+        if (ShowSchoolDayHint)
+        {
+            if (string.IsNullOrWhiteSpace(Model.Title))
+            {
+                Model.Title = "Berufsschultag";
+            }
+
+            if (string.IsNullOrWhiteSpace(Model.StartTime))
+            {
+                Model.StartTime = "08:00";
+            }
+
+            if (string.IsNullOrWhiteSpace(Model.EndTime))
+            {
+                Model.EndTime = "15:00";
+            }
+        }
+        else if (!HasValidTimeRange)
         {
             return Task.CompletedTask;
         }
