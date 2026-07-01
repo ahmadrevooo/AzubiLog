@@ -6,6 +6,7 @@ public class ApplicationUser : IdentityUser
 {
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
+    public string Role { get; set; } = UserRole.Azubi;
     public string CompanyName { get; set; } = string.Empty;
     public string School { get; set; } = string.Empty;
     public string ClassName { get; set; } = string.Empty;
@@ -25,4 +26,5 @@ public class ApplicationUser : IdentityUser
     public List<Category> Categories { get; set; } = new();
     public List<Trainer> Trainers { get; set; } = new();
     public List<TodoItem> Todos { get; set; } = new();
+    public List<ClassTimetableEntry> ClassTimetableEntries { get; set; } = new();
 }

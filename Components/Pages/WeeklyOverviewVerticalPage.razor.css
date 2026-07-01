@@ -1,9 +1,10 @@
 .weekly-vertical-page {
     display: grid;
-    gap: 1rem;
+    gap: 1.15rem;
     margin-inline: auto;
-    max-width: min(100%, 104rem);
-    padding: 0.75rem clamp(0rem, 1vw, 0.8rem) 2.5rem;
+    max-width: 1320px;
+    width: 100%;
+    padding: 1rem 1.5rem 2.75rem;
 }
 
 .weekly-vertical-loading {

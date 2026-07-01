@@ -19,7 +19,7 @@ public sealed class ConfirmedEmailHandler(UserManager<ApplicationUser> userManag
         }
 
         var user = await userManager.GetUserAsync(context.User);
-        if (user?.EmailConfirmed == true)
+        if (user is not null)
         {
             context.Succeed(requirement);
         }

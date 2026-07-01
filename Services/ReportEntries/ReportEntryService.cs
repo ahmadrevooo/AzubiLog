@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
+using System.Text.Json;
 using AzubiLog.Data;
 using AzubiLog.Models;
 using AzubiLog.Services.Identity;
@@ -83,6 +84,9 @@ public class ReportEntryService(
         ValidateForSave(form);
 
         var user = await currentUserService.GetRequiredUserAsync(cancellationToken);
+
+        // Check for overlapping entries
+        await ValidateNoOverlapAsync(form, user.Id, cancellationToken);
         await ApplySmartOrderNumberAsync(form, user.Id, cancellationToken);
         var entry = await GetOrCreateEntryAsync(form, user.Id, cancellationToken);
         var previousWeeklyReportId = entry.WeeklyReportId;
@@ -600,12 +604,113 @@ public class ReportEntryService(
         return "BETRIEB";
     }
 
+    private async Task ValidateNoOverlapAsync(
+        ReportEntryFormModel form,
+        string userId,
+        CancellationToken cancellationToken)
+    {
+        if (!TimeSpan.TryParseExact(form.StartTime, "hh\\:mm", System.Globalization.CultureInfo.InvariantCulture, out var newStart)
+            || !TimeSpan.TryParseExact(form.EndTime, "hh\\:mm", System.Globalization.CultureInfo.InvariantCulture, out var newEnd))
+        {
+            return;
+        }
+
+        var entryDate = form.Date.Date;
+        var newStartDt = entryDate.Add(newStart);
+        var newEndDt = entryDate.Add(newEnd);
+
+        var existingEntries = await dbContext.ReportEntries
+            .Where(e => e.UserId == userId
+                && e.Date.Date == entryDate
+                && e.Status == ReportEntryStatus.Saved
+                && (!form.Id.HasValue || e.Id != form.Id.Value))
+            .ToListAsync(cancellationToken);
+
+        foreach (var existing in existingEntries)
+        {
+            if (existing.StartTime != default && existing.EndTime != default)
+            {
+                if (newStartDt < existing.EndTime && newEndDt > existing.StartTime)
+                {
+                    var existStart = existing.StartTime.ToString("HH:mm");
+                    var existEnd = existing.EndTime.ToString("HH:mm");
+                    throw new ValidationException(
+                        $"Zeitüberschneidung: Es gibt bereits einen Eintrag von {existStart} bis {existEnd}.");
+                }
+            }
+        }
+    }
+
     private async Task<SchoolDaySuggestionViewModel?> BuildSchoolDaySuggestionAsync(
         string userId,
         DateTime date,
         IReadOnlyList<ReportEntryOption> categories,
         CancellationToken cancellationToken)
     {
+        var user = await dbContext.Users.FindAsync([userId], cancellationToken);
+        if (user is null) return null;
+
+        // Try class timetable first (shared by Klassensprecher for the class)
+        if (!string.IsNullOrWhiteSpace(user.School) && !string.IsNullOrWhiteSpace(user.ClassName))
+        {
+            var normalizedSchool = user.School.Trim().ToUpperInvariant();
+            var normalizedClass = user.ClassName.Trim().ToUpperInvariant();
+
+            var classTimetable = await dbContext.ClassTimetableEntries
+                .Include(entry => entry.Cancellations)
+                .FirstOrDefaultAsync(entry =>
+                    entry.School.ToUpper() == normalizedSchool &&
+                    entry.ClassName.ToUpper() == normalizedClass &&
+                    entry.DayOfWeek == date.DayOfWeek,
+                    cancellationToken);
+
+            if (classTimetable is not null)
+            {
+                var isCancelled = classTimetable.Cancellations
+                    .Any(c => c.Date.Date == date.Date);
+
+                if (isCancelled)
+                {
+                    return null;
+                }
+
+                return new SchoolDaySuggestionViewModel
+                {
+                    IsSchoolDay = true,
+                    SubjectsText = BuildSchoolDayDescription(classTimetable.SubjectsText),
+                    VocationalSchoolCategoryId = FindVocationalSchoolCategoryId(categories),
+                    Subjects = ParseSubjectsForDisplay(classTimetable.SubjectsText)
+                };
+            }
+        }
+
+        // Fall back to personal timetable (_personal + userId)
+        var personalTimetable = await dbContext.ClassTimetableEntries
+            .Include(entry => entry.Cancellations)
+            .FirstOrDefaultAsync(entry =>
+                entry.School == "_personal" &&
+                entry.ClassName == userId &&
+                entry.DayOfWeek == date.DayOfWeek,
+                cancellationToken);
+
+        if (personalTimetable is not null)
+        {
+            var isCancelled = personalTimetable.Cancellations
+                .Any(c => c.Date.Date == date.Date);
+
+            if (!isCancelled)
+            {
+                return new SchoolDaySuggestionViewModel
+                {
+                    IsSchoolDay = true,
+                    SubjectsText = BuildSchoolDayDescription(personalTimetable.SubjectsText),
+                    VocationalSchoolCategoryId = FindVocationalSchoolCategoryId(categories),
+                    Subjects = ParseSubjectsForDisplay(personalTimetable.SubjectsText)
+                };
+            }
+        }
+
+        // Fall back to personal schedule (legacy)
         var scheduleDay = await dbContext.SchoolScheduleDays
             .FirstOrDefaultAsync(
                 day => day.UserId == userId && day.DayOfWeek == date.DayOfWeek,
@@ -620,7 +725,8 @@ public class ReportEntryService(
         {
             IsSchoolDay = true,
             SubjectsText = BuildSchoolDayDescription(scheduleDay.SubjectsText),
-            VocationalSchoolCategoryId = FindVocationalSchoolCategoryId(categories)
+            VocationalSchoolCategoryId = FindVocationalSchoolCategoryId(categories),
+            Subjects = ParseSubjectsForDisplay(scheduleDay.SubjectsText)
         };
     }
 
@@ -633,8 +739,14 @@ public class ReportEntryService(
 
     private static string BuildSchoolDayDescription(string subjectsText)
     {
+        var structuredSubjects = TryParseStructuredSubjects(subjectsText);
+        if (structuredSubjects.Count > 0)
+        {
+            return "Berufsschultag: " + string.Join(", ", structuredSubjects.Select(FormatStructuredSubject));
+        }
+
         var subjects = subjectsText
-            .Split(["\r\n", "\n"], StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
+            .Split(["\r\n", "\n", ","], StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
             .ToList();
 
         if (subjects.Count == 0)
@@ -644,6 +756,113 @@ public class ReportEntryService(
 
         return "Berufsschultag\n\n"
             + string.Join("\n", subjects.Select(subject => $"• {subject}"));
+    }
+
+    private static List<ClassTimetableEntry.StructuredSubjectEntry> TryParseStructuredSubjects(string subjectsText)
+    {
+        if (string.IsNullOrWhiteSpace(subjectsText))
+        {
+            return [];
+        }
+
+        var trimmedSubjectsText = subjectsText.Trim();
+
+        // Try new DayDataJson format (object with Status and Entries)
+        if (trimmedSubjectsText.StartsWith("{", StringComparison.Ordinal))
+        {
+            try
+            {
+                var dayData = JsonSerializer.Deserialize<DayDataJsonDto>(
+                    trimmedSubjectsText,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                if (dayData?.Entries is not null)
+                {
+                    return dayData.Entries
+                        .Where(e => !string.IsNullOrWhiteSpace(e.Fach))
+                        .Select(e => new ClassTimetableEntry.StructuredSubjectEntry
+                        {
+                            Fach = e.Fach,
+                            Lehrer = e.Lehrer ?? string.Empty,
+                            Raum = e.Raum
+                        })
+                        .ToList();
+                }
+            }
+            catch (JsonException) { }
+        }
+
+        // Try legacy array format
+        if (!trimmedSubjectsText.StartsWith("[", StringComparison.Ordinal))
+        {
+            return [];
+        }
+
+        try
+        {
+            var structuredSubjects = JsonSerializer.Deserialize<List<ClassTimetableEntry.StructuredSubjectEntry>>(
+                trimmedSubjectsText,
+                new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+
+            return structuredSubjects?
+                .Where(subject => !string.IsNullOrWhiteSpace(subject.Fach))
+                .ToList()
+                ?? [];
+        }
+        catch (JsonException)
+        {
+            return [];
+        }
+    }
+
+    private static List<SchoolSubjectEntry> ParseSubjectsForDisplay(string subjectsText)
+    {
+        var structured = TryParseStructuredSubjects(subjectsText);
+        return structured
+            .Select(s => new SchoolSubjectEntry
+            {
+                Fach = s.Fach.Trim(),
+                Lehrer = s.Lehrer?.Trim() ?? string.Empty,
+                Raum = s.Raum?.Trim()
+            })
+            .ToList();
+    }
+
+    private sealed class DayDataJsonDto
+    {
+        public string? Status { get; set; }
+        public List<DayDataEntryDto>? Entries { get; set; }
+    }
+
+    private sealed class DayDataEntryDto
+    {
+        public string Fach { get; set; } = string.Empty;
+        public string? Lehrer { get; set; }
+        public string? Raum { get; set; }
+        public bool Entfall { get; set; }
+    }
+
+    private static string FormatStructuredSubject(ClassTimetableEntry.StructuredSubjectEntry subject)
+    {
+        var details = new List<string>();
+
+        if (!string.IsNullOrWhiteSpace(subject.Lehrer))
+        {
+            details.Add(subject.Lehrer.Trim());
+        }
+
+        if (!string.IsNullOrWhiteSpace(subject.Raum))
+        {
+            details.Add(subject.Raum.Trim());
+        }
+
+        var subjectName = subject.Fach.Trim();
+        return details.Count > 0
+            ? $"{subjectName} ({string.Join(", ", details)})"
+            : subjectName;
     }
 
     private static string NormalizeCategoryName(string? categoryName)
@@ -788,5 +1007,10 @@ public class ReportEntryService(
     {
         var context = new ValidationContext(form);
         Validator.ValidateObject(form, context, validateAllProperties: true);
+
+        if (form.Date.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday)
+        {
+            throw new ValidationException("Einträge können nur für Werktage (Montag bis Freitag) erstellt werden.");
+        }
     }
 }

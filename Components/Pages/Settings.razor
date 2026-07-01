@@ -78,11 +78,7 @@ else
                         <InputText class="form-control" @bind-Value="Profile.ClassName" />
                         <ValidationMessage For="() => Profile.ClassName" />
                     </label>
-                    <label class="profile-grid-wide">
-                        <span>@Localizer["ProfileSubjects"]</span>
-                        <InputTextArea class="form-control profile-subjects" @bind-Value="Profile.Subjects" />
-                        <ValidationMessage For="() => Profile.Subjects" />
-                    </label>
+                    <label>
                     <label>
                         <span>PDF-Akzentfarbe</span>
                         <div class="profile-color-picker">
@@ -91,7 +87,6 @@ else
                         </div>
                         <ValidationMessage For="() => Profile.PdfAccentColor" />
                     </label>
-                    <label>
                         <span>@Localizer["ProfileWeeklyTargetHours"] *</span>
                         <InputNumber class="form-control" @bind-Value="Profile.WeeklyTargetHours" />
                         <ValidationMessage For="() => Profile.WeeklyTargetHours" />
@@ -103,32 +98,7 @@ else
                     </label>
                 </div>
 
-                <section class="profile-schedule-section">
-                    <div class="profile-section-heading">
-                        <p>@Localizer["ProfileSchoolScheduleEyebrow"]</p>
-                        <h3>@Localizer["ProfileSchoolScheduleTitle"]</h3>
-                    </div>
 
-                    <div class="profile-schedule-grid">
-                        @for (var index = 0; index < Profile.SchoolScheduleDays.Count; index++)
-                        {
-                            var scheduleDay = Profile.SchoolScheduleDays[index];
-
-                            <div class="profile-schedule-day" @key="scheduleDay.DayOfWeek">
-                                <label class="profile-schedule-check">
-                                    <InputCheckbox @bind-Value="scheduleDay.IsSelected" />
-                                    <span>@scheduleDay.Label</span>
-                                </label>
-
-                                <InputTextArea
-                                    class="form-control profile-schedule-subjects"
-                                    @bind-Value="scheduleDay.SubjectsText"
-                                    disabled="@(!scheduleDay.IsSelected)"
-                                    placeholder="@Localizer["ProfileSchoolScheduleSubjectsPlaceholder"]" />
-                            </div>
-                        }
-                    </div>
-                </section>
 
                 <section class="profile-trainer-section">
                     <div class="profile-section-heading profile-trainer-heading">

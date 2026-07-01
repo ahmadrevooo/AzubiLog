@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using AzubiLog.Services.ReportEntries;
 using Microsoft.AspNetCore.Components;
 
@@ -38,6 +39,29 @@ public partial class ReportEntryPage : ComponentBase
         }
 
         ViewModel = await ReportEntryService.GetEditorAsync(EntryId, Date);
+        AutoApplySchoolDay();
+    }
+
+    private void AutoApplySchoolDay()
+    {
+        if (ViewModel?.SchoolDaySuggestion is not { IsSchoolDay: true } suggestion)
+            return;
+
+        if (ViewModel.Entry.Id.HasValue)
+            return;
+
+        ViewModel.Entry.IsVocationalSchoolDay = true;
+
+        if (suggestion.VocationalSchoolCategoryId is int categoryId
+            && ViewModel.Entry.CategoryId is null)
+        {
+            ViewModel.Entry.CategoryId = categoryId;
+        }
+
+        if (!ViewModel.Entry.IsOrderNumberOverridden)
+        {
+            ViewModel.Entry.OrderNumber = "SCHULE";
+        }
     }
 
     protected async Task HandleFieldChangedAsync(ReportEntryFormModel form)
@@ -61,6 +85,8 @@ public partial class ReportEntryPage : ComponentBase
         ViewModel = await ReportEntryService.RefreshEditorAsync(draft);
     }
 
+    protected string? SaveErrorMessage { get; private set; }
+
     protected async Task HandleSaveAsync(ReportEntryFormModel form)
     {
         if (ViewModel is null)
@@ -68,17 +94,28 @@ public partial class ReportEntryPage : ComponentBase
             return;
         }
 
-        var selectedDate = form.Date.Date;
-        await ReportEntryService.SaveEntryAsync(form);
-        ViewModel = await ReportEntryService.GetFreshEditorAsync(selectedDate);
-        SubmittedEntry = null;
-        Navigation.NavigateTo($"report-entries/new?date={selectedDate:yyyy-MM-dd}", replace: true);
+        SaveErrorMessage = null;
+
+        try
+        {
+            var selectedDate = form.Date.Date;
+            await ReportEntryService.SaveEntryAsync(form);
+            ViewModel = await ReportEntryService.GetFreshEditorAsync(selectedDate);
+            AutoApplySchoolDay();
+            SubmittedEntry = null;
+            Navigation.NavigateTo($"report-entries/new?date={selectedDate:yyyy-MM-dd}", replace: true);
+        }
+        catch (ValidationException ex)
+        {
+            SaveErrorMessage = ex.Message;
+        }
     }
 
     protected async Task HandleDateChangedAsync(DateTime date)
     {
         var selectedDate = date.Date;
         ViewModel = await ReportEntryService.GetFreshEditorAsync(selectedDate);
+        AutoApplySchoolDay();
         SubmittedEntry = null;
         Navigation.NavigateTo($"report-entries/new?date={selectedDate:yyyy-MM-dd}", replace: true);
     }
@@ -92,6 +129,7 @@ public partial class ReportEntryPage : ComponentBase
 
         var selectedDate = ViewModel.Entry.Date.Date;
         ViewModel = await ReportEntryService.GetFreshEditorAsync(selectedDate);
+        AutoApplySchoolDay();
         SubmittedEntry = null;
         Navigation.NavigateTo($"report-entries/new?date={selectedDate:yyyy-MM-dd}", replace: true);
     }
@@ -145,11 +183,6 @@ public partial class ReportEntryPage : ComponentBase
             {
                 ViewModel.Entry.Subject = string.Join(", ", subjects);
             }
-        }
-
-        if (string.IsNullOrWhiteSpace(ViewModel.Entry.Description))
-        {
-            ViewModel.Entry.Description = suggestion.SubjectsText;
         }
 
         ViewModel = await ReportEntryService.RefreshEditorAsync(ViewModel.Entry);

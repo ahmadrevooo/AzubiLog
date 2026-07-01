@@ -1,17 +1,19 @@
 using AzubiLog.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
+using System.Text.Json;
 
 namespace AzubiLog.Services.Identity;
 
 public static class AccountEndpointExtensions
 {
+    private const string RegistrationErrorsQueryKey = "errors";
+
     public static IEndpointRouteBuilder MapAccountEndpoints(this IEndpointRouteBuilder endpoints)
     {
         endpoints.MapPost("/account/register/submit", async (
             HttpContext context,
-            AccountFlowService accountFlow,
-            UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager) =>
+            AccountFlowService accountFlow) =>
         {
             var form = await context.Request.ReadFormAsync();
             var firstName = form["firstName"].ToString();
@@ -19,48 +21,23 @@ public static class AccountEndpointExtensions
             var email = form["email"].ToString();
             var password = form["password"].ToString();
             var confirmPassword = form["confirmPassword"].ToString();
-
             if (string.IsNullOrWhiteSpace(firstName)
                 || string.IsNullOrWhiteSpace(lastName)
                 || string.IsNullOrWhiteSpace(email)
-                || string.IsNullOrWhiteSpace(password))
+                || string.IsNullOrWhiteSpace(password)
+                || password != confirmPassword)
             {
-                return Results.Redirect("/account/register?error=missing_fields");
-            }
-
-            if (password != confirmPassword)
-            {
-                return Results.Redirect("/account/register?error=password_mismatch");
-            }
-
-            if (password.Length < 8)
-            {
-                return Results.Redirect("/account/register?error=password_short");
+                return Results.Redirect("/account/register?error=invalid");
             }
 
             var result = await accountFlow.RegisterAsync(firstName, lastName, email, password, context.RequestAborted);
             if (!result.Succeeded)
             {
-                var errors = result.Errors.Select(e => e.Code).ToList();
-                if (errors.Contains("DuplicateUserName") || errors.Contains("DuplicateEmail"))
-                {
-                    return Results.Redirect("/account/register?error=duplicate_email");
-                }
-                if (errors.Any(e => e.Contains("Password")))
-                {
-                    return Results.Redirect("/account/register?error=password_weak");
-                }
-                return Results.Redirect("/account/register?error=failed");
+                var encodedErrors = EncodeErrors(result.Errors.Select(static error => error.Description));
+                return Results.Redirect($"/account/register?error=failed&{RegistrationErrorsQueryKey}={Uri.EscapeDataString(encodedErrors)}");
             }
 
-            var user = await userManager.FindByEmailAsync(email);
-            if (user is null)
-            {
-                return Results.Redirect("/account/login?registered=true");
-            }
-
-            await signInManager.SignInAsync(user, isPersistent: false);
-            return Results.Redirect("/");
+            return Results.Redirect("/account/login?registered=true");
         }).AllowAnonymous().DisableAntiforgery();
 
         endpoints.MapPost("/account/login/submit", async (
@@ -104,7 +81,7 @@ public static class AccountEndpointExtensions
             var email = form["email"].ToString();
             var user = await userManager.FindByEmailAsync(email);
 
-            if (user is not null && await userManager.IsEmailConfirmedAsync(user))
+            if (user is not null)
             {
                 await accountFlow.SendPasswordResetLinkAsync(user);
             }
@@ -154,5 +131,11 @@ public static class AccountEndpointExtensions
         return !string.IsNullOrWhiteSpace(returnUrl) && Uri.TryCreate(returnUrl, UriKind.Relative, out _)
             ? returnUrl
             : "/";
+    }
+
+    private static string EncodeErrors(IEnumerable<string> errors)
+    {
+        var json = JsonSerializer.Serialize(errors.Where(static error => !string.IsNullOrWhiteSpace(error)));
+        return WebEncoders.Base64UrlEncode(System.Text.Encoding.UTF8.GetBytes(json));
     }
 }
