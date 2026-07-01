@@ -9,38 +9,34 @@
         </a>
 
         <nav class="app-navbar__desktop-nav" aria-label="@Localizer["AppName"]">
-            @foreach (var item in Navigation.GetMainNavigation())
+            @foreach (var item in Navigation.GetMainNavigation().Take(4))
             {
                 @if (item.IsEnabled)
                 {
-                    <NavLink class="app-navbar__link" href="@item.Href" Match="@GetMatch(item)">
-                        <span class="bi @item.IconCssClass" aria-hidden="true"></span>
-                        <span>@Localizer[item.ResourceKey]</span>
+                    <NavLink class="app-navbar__tab" href="@item.Href" Match="@GetMatch(item)">
+                        @Localizer[item.ResourceKey]
                     </NavLink>
                 }
-                else
-                {
-                    <span class="app-navbar__link app-navbar__link--disabled" title="@Localizer["ComingSoon"]">
-                        <span class="bi @item.IconCssClass" aria-hidden="true"></span>
-                        <span>@Localizer[item.ResourceKey]</span>
-                    </span>
-                }
             }
-            <NavLink class="app-navbar__link" href="timetable" Match="NavLinkMatch.Prefix">
-                <span class="bi bi-calendar-week-nav-menu" aria-hidden="true"></span>
-                <span>@Localizer["TimetableNavItem"]</span>
-            </NavLink>
+            <div class="app-navbar__more" @onfocusout="CloseMoreAsync">
+                <button class="app-navbar__more-btn" type="button" @onclick="ToggleMoreAsync">
+                    Mehr <span class="app-navbar__more-arrow">&#9662;</span>
+                </button>
+                <div class="app-navbar__more-dropdown @(IsMoreOpen ? "is-open" : null)">
+                    @foreach (var item in Navigation.GetMainNavigation().Skip(4))
+                    {
+                        @if (item.IsEnabled)
+                        {
+                            <NavLink class="app-navbar__more-item" href="@item.Href" Match="@GetMatch(item)" @onclick="CloseMoreAsync">
+                                @Localizer[item.ResourceKey]
+                            </NavLink>
+                        }
+                    }
+                </div>
+            </div>
         </nav>
 
         <div class="app-navbar__actions">
-            <label class="app-navbar__theme-switcher">
-                <span>@Localizer["ThemeLabel"]</span>
-                <select class="app-navbar__theme-select" value="@CurrentTheme" @onchange="HandleThemeChangedAsync">
-                    <option value="light">@Localizer["ThemeLight"]</option>
-                    <option value="dark">@Localizer["ThemeDark"]</option>
-                </select>
-            </label>
-
             <AuthorizeView>
                 <Authorized>
                     <a class="app-navbar__account-link" href="/account/logout">@Localizer["AccountLogoutAction"]</a>
@@ -52,7 +48,7 @@
 
             <button class="app-navbar__toggle"
                     type="button"
-                    aria-label="@Localizer["AppName"]"
+                    aria-label="Menu"
                     aria-expanded="@IsMenuOpen.ToString().ToLowerInvariant()"
                     @onclick="ToggleMenuAsync">
                 <span></span>
@@ -70,31 +66,11 @@
                 @if (item.IsEnabled)
                 {
                     <NavLink class="app-navbar__mobile-link" href="@item.Href" Match="@GetMatch(item)" @onclick="CloseMenuAsync">
-                        <span class="bi @item.IconCssClass" aria-hidden="true"></span>
-                        <span>@Localizer[item.ResourceKey]</span>
+                        @Localizer[item.ResourceKey]
                     </NavLink>
                 }
-                else
-                {
-                    <span class="app-navbar__mobile-link app-navbar__link--disabled" title="@Localizer["ComingSoon"]">
-                        <span class="bi @item.IconCssClass" aria-hidden="true"></span>
-                        <span>@Localizer[item.ResourceKey]</span>
-                    </span>
-                }
             }
-            <NavLink class="app-navbar__mobile-link" href="timetable" Match="NavLinkMatch.Prefix" @onclick="CloseMenuAsync">
-                <span class="bi bi-calendar-week-nav-menu" aria-hidden="true"></span>
-                <span>@Localizer["TimetableNavItem"]</span>
-            </NavLink>
             <div class="app-navbar__mobile-meta">
-                <label class="app-navbar__theme-switcher app-navbar__theme-switcher--mobile">
-                    <span>@Localizer["ThemeLabel"]</span>
-                    <select class="app-navbar__theme-select" value="@CurrentTheme" @onchange="HandleThemeChangedAsync">
-                        <option value="light">@Localizer["ThemeLight"]</option>
-                        <option value="dark">@Localizer["ThemeDark"]</option>
-                    </select>
-                </label>
-
                 <AuthorizeView>
                     <Authorized>
                         <a class="app-navbar__account-link app-navbar__account-link--mobile" href="/account/logout" @onclick="CloseMenuAsync">@Localizer["AccountLogoutAction"]</a>
@@ -110,6 +86,7 @@
 
 @code {
     private bool IsMenuOpen { get; set; }
+    private bool IsMoreOpen { get; set; }
     private string CurrentTheme { get; set; } = "light";
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -123,12 +100,6 @@
         StateHasChanged();
     }
 
-    private async Task HandleThemeChangedAsync(ChangeEventArgs args)
-    {
-        CurrentTheme = args.Value?.ToString() == "dark" ? "dark" : "light";
-        await JsRuntime.InvokeVoidAsync("azubiLogPreferences.setTheme", CurrentTheme);
-    }
-
     private Task ToggleMenuAsync()
     {
         IsMenuOpen = !IsMenuOpen;
@@ -138,6 +109,18 @@
     private Task CloseMenuAsync()
     {
         IsMenuOpen = false;
+        return Task.CompletedTask;
+    }
+
+    private Task ToggleMoreAsync()
+    {
+        IsMoreOpen = !IsMoreOpen;
+        return Task.CompletedTask;
+    }
+
+    private Task CloseMoreAsync()
+    {
+        IsMoreOpen = false;
         return Task.CompletedTask;
     }
 

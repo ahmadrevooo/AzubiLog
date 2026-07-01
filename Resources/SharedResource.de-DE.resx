@@ -19,7 +19,7 @@
     <value>Dashboard</value>
   </data>
   <data name="NavWeeklyReports" xml:space="preserve">
-    <value>Wochenberichte</value>
+    <value>Wochenübersicht</value>
   </data>
   <data name="NavWeeklyReportsGrid" xml:space="preserve">
     <value>Wochenraster</value>
@@ -28,10 +28,10 @@
     <value>Wochenliste</value>
   </data>
   <data name="NavTodos" xml:space="preserve">
-    <value>Aufgaben</value>
+    <value>To-dos</value>
   </data>
   <data name="NavNewEntry" xml:space="preserve">
-    <value>Neuer Eintrag</value>
+    <value>Einträge</value>
   </data>
   <data name="NavCategories" xml:space="preserve">
     <value>Kategorien</value>
@@ -202,7 +202,7 @@
     <value>Eintrag speichern</value>
   </data>
   <data name="ReportEntryNewEntry" xml:space="preserve">
-    <value>Neuer Eintrag</value>
+    <value>Einträge</value>
   </data>
   <data name="DailySummaryEyebrow" xml:space="preserve">
     <value>Tagesübersicht</value>
@@ -274,7 +274,7 @@
     <value>Freitag</value>
   </data>
   <data name="TodoPageTitle" xml:space="preserve">
-    <value>Aufgaben</value>
+    <value>To-dos</value>
   </data>
   <data name="TodoLoading" xml:space="preserve">
     <value>Aufgaben werden geladen...</value>
