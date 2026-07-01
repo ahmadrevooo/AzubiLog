@@ -252,6 +252,9 @@
   <data name="WeeklyOverviewNavigation" xml:space="preserve">
     <value>Wochennavigation</value>
   </data>
+  <data name="WeeklyOverviewCurrentWeek" xml:space="preserve">
+    <value>Diese Woche</value>
+  </data>
   <data name="WeeklyOverviewPreviousWeek" xml:space="preserve">
     <value>Vorherige Woche</value>
   </data>
