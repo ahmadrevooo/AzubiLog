@@ -87,47 +87,69 @@
                 </label>
             </section>
 
-            <section class="report-entry-section">
-                <div class="report-entry-time-grid">
-                    <label>
-                        <span>@Localizer["ReportEntryStartTime"]</span>
-                        <div class="report-entry-time-control">
-                            <input class="form-control report-entry-time-input" type="text" inputmode="numeric" maxlength="5" placeholder="08:00" value="@Model.StartTime" @oninput="HandleStartTimeTypingAsync" @onchange="HandleStartTimeCommitAsync" />
-                            <div class="report-entry-time-stepper">
-                                <button type="button" title="Startzeit erhöhen" aria-label="Startzeit erhöhen" @onclick="IncreaseStartTimeAsync">+</button>
-                                <button type="button" title="Startzeit verringern" aria-label="Startzeit verringern" @onclick="DecreaseStartTimeAsync">-</button>
-                            </div>
-                        </div>
-                        @if (!IsStartTimeValid)
-                        {
-                            <span class="report-entry-field-hint">Bitte im Format HH:mm eingeben.</span>
-                        }
-                    </label>
+                <section class="report-entry-section">
+                    <div class="report-entry-time-grid">
+                        <label>
+                            <span>@Localizer["ReportEntryStartTime"]</span>
+                            <div class="report-entry-time-control">
+                                <input class="form-control report-entry-time-input"
+                                       type="text"
+                                       inputmode="numeric"
+                                       maxlength="5"
+                                       placeholder="08:00"
+                                       value="@Model.StartTime"
+                                       @oninput="HandleStartTimeTypingAsync"
+                                       @onchange="HandleStartTimeCommitAsync" />
 
-                    <label>
-                        <span>@Localizer["ReportEntryEndTime"]</span>
-                        <div class="report-entry-time-control">
-                            <input class="form-control report-entry-time-input" type="text" inputmode="numeric" maxlength="5" placeholder="16:00" value="@Model.EndTime" @oninput="HandleEndTimeTypingAsync" @onchange="HandleEndTimeCommitAsync" />
-                            <div class="report-entry-time-stepper">
-                                <button type="button" title="Endzeit erhöhen" aria-label="Endzeit erhöhen" @onclick="IncreaseEndTimeAsync">+</button>
-                                <button type="button" title="Endzeit verringern" aria-label="Endzeit verringern" @onclick="DecreaseEndTimeAsync">-</button>
+                                <div class="report-entry-time-stepper">
+                                    <button type="button" title="Startzeit erhöhen" aria-label="Startzeit erhöhen" @onclick="IncreaseStartTimeAsync">+</button>
+                                    <button type="button" title="Startzeit verringern" aria-label="Startzeit verringern" @onclick="DecreaseStartTimeAsync">-</button>
+                                </div>
                             </div>
-                        </div>
-                        @if (!IsEndTimeValid)
-                        {
-                            <span class="report-entry-field-hint">Bitte im Format HH:mm eingeben.</span>
-                        }
-                        else if (!HasChronologicalTimes)
-                        {
-                            <span class="report-entry-field-hint">Endzeit muss nach Startzeit liegen.</span>
-                        }
-                    </label>
 
-                    <div class="report-entry-duration">
-                        <span>@Localizer["ReportEntryCalculatedHours"]: @CalculatedHours.ToString("0.##") h</span>
+                            <span class="report-entry-field-hint @(IsStartTimeValid ? "is-hidden" : "")">
+                                @if (!IsStartTimeValid)
+                                {
+                                    @:Bitte im Format HH:mm eingeben.
+                                }
+                            </span>
+                        </label>
+
+                        <label>
+                            <span>@Localizer["ReportEntryEndTime"]</span>
+                            <div class="report-entry-time-control">
+                                <input class="form-control report-entry-time-input"
+                                       type="text"
+                                       inputmode="numeric"
+                                       maxlength="5"
+                                       placeholder="16:00"
+                                       value="@Model.EndTime"
+                                       @oninput="HandleEndTimeTypingAsync"
+                                       @onchange="HandleEndTimeCommitAsync" />
+
+                                <div class="report-entry-time-stepper">
+                                    <button type="button" title="Endzeit erhöhen" aria-label="Endzeit erhöhen" @onclick="IncreaseEndTimeAsync">+</button>
+                                    <button type="button" title="Endzeit verringern" aria-label="Endzeit verringern" @onclick="DecreaseEndTimeAsync">-</button>
+                                </div>
+                            </div>
+
+                            <span class="report-entry-field-hint @(IsEndTimeValid && HasChronologicalTimes ? "is-hidden" : "")">
+                                @if (!IsEndTimeValid)
+                                {
+                                    @:Bitte im Format HH:mm eingeben.
+                                }
+                                else if (!HasChronologicalTimes)
+                                {
+                                    @:Endzeit muss nach Startzeit liegen.
+                                }
+                            </span>
+                        </label>
+
+                        <div class="report-entry-duration">
+                            <span>@Localizer["ReportEntryCalculatedHours"]: @CalculatedHours.ToString("0.##") h</span>
+                        </div>
                     </div>
-                </div>
-            </section>
+                </section>
             }
 
             <section class="report-entry-section">

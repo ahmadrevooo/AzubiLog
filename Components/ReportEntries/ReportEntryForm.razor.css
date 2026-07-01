@@ -101,7 +101,7 @@
 }
 
 .report-entry-time-grid {
-    align-items: end;
+    align-items: start;
     grid-template-columns: repeat(2, minmax(0, 8.5rem)) minmax(11rem, auto);
     justify-content: start;
 }
@@ -229,7 +229,8 @@
 }
 
 .report-entry-duration {
-    align-self: end;
+    align-self: start;
+    margin-top: 1.55rem;
     background: color-mix(in srgb, var(--app-accent-blue-soft) 76%, var(--app-surface-muted));
     border: 1px solid color-mix(in srgb, var(--app-accent-blue) 52%, var(--app-border));
     border-radius: 6px;
@@ -247,8 +248,15 @@
 
 .report-entry-field-hint {
     color: var(--app-danger);
+    display: block;
     font-size: 0.78rem;
+    line-height: 1.1rem;
     margin-top: 0.25rem;
+    min-height: 2.2rem;
+}
+
+.report-entry-field-hint.is-hidden {
+    visibility: hidden;
 }
 
 .report-entry-category-control {
