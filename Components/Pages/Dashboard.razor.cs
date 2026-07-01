@@ -39,6 +39,9 @@ public partial class Dashboard : ComponentBase, IAsyncDisposable
     [Inject]
     private ITodoService TodoService { get; set; } = null!;
 
+    [Inject]
+    private NavigationManager NavigationManager { get; set; } = null!;
+
     protected DashboardViewModel? ViewModel { get; private set; }
 
     private CultureInfo CurrentCulture => CultureInfo.CurrentCulture;
@@ -65,9 +68,16 @@ public partial class Dashboard : ComponentBase, IAsyncDisposable
 
     protected override async Task OnInitializedAsync()
     {
-        ViewModel = await DashboardService.GetDashboardAsync();
-        OpenTodos = await TodoService.GetOpenTodosAsync(5);
-        await LoadMarkersForDisplayedMonthAsync();
+        try
+        {
+            ViewModel = await DashboardService.GetDashboardAsync();
+            OpenTodos = await TodoService.GetOpenTodosAsync(5);
+            await LoadMarkersForDisplayedMonthAsync();
+        }
+        catch (UnauthorizedAccessException)
+        {
+            NavigationManager.NavigateTo("/account/login", forceLoad: true);
+        }
     }
 
     public async ValueTask DisposeAsync()

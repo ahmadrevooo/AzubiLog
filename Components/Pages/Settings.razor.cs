@@ -55,4 +55,13 @@ public partial class Settings : ComponentBase
     {
         Profile.Trainers.Remove(trainer);
     }
+
+    protected void HandleColorChanged(ChangeEventArgs args)
+    {
+        var color = args.Value?.ToString();
+        if (!string.IsNullOrWhiteSpace(color))
+        {
+            Profile.PdfAccentColor = color;
+        }
+    }
 }

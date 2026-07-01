@@ -9,7 +9,8 @@ public sealed class AccountFlowService(
     UserManager<ApplicationUser> userManager,
     IHttpContextAccessor httpContextAccessor,
     DefaultUserData defaultUserData,
-    IAccountEmailSender emailSender)
+    IAccountEmailSender emailSender,
+    ILogger<AccountFlowService> logger)
 {
     public async Task<IdentityResult> RegisterAsync(
         string firstName,
@@ -36,7 +37,15 @@ public sealed class AccountFlowService(
         }
 
         await defaultUserData.EnsureDefaultCategoriesAsync(user.Id, cancellationToken);
-        await SendConfirmationLinkAsync(user);
+
+        try
+        {
+            await SendConfirmationLinkAsync(user);
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "E-Mail-Bestätigung konnte nicht gesendet werden für {Email}", user.Email);
+        }
 
         return result;
     }

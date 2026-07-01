@@ -19,7 +19,7 @@
     <value>Dashboard</value>
   </data>
   <data name="NavWeeklyReports" xml:space="preserve">
-    <value>Wochenberichte</value>
+    <value>Wochenübersicht</value>
   </data>
   <data name="NavWeeklyReportsGrid" xml:space="preserve">
     <value>Wochenraster</value>
@@ -28,16 +28,19 @@
     <value>Wochenliste</value>
   </data>
   <data name="NavTodos" xml:space="preserve">
-    <value>Aufgaben</value>
+    <value>To-dos</value>
   </data>
   <data name="NavNewEntry" xml:space="preserve">
-    <value>Neuer Eintrag</value>
+    <value>Einträge</value>
   </data>
   <data name="NavCategories" xml:space="preserve">
     <value>Kategorien</value>
   </data>
   <data name="NavTrainers" xml:space="preserve">
     <value>Ausbilder</value>
+  </data>
+  <data name="NavAccountOverview" xml:space="preserve">
+    <value>Kontoübersicht</value>
   </data>
   <data name="NavSettings" xml:space="preserve">
     <value>Einstellungen</value>
@@ -202,7 +205,7 @@
     <value>Eintrag speichern</value>
   </data>
   <data name="ReportEntryNewEntry" xml:space="preserve">
-    <value>Neuer Eintrag</value>
+    <value>Einträge</value>
   </data>
   <data name="DailySummaryEyebrow" xml:space="preserve">
     <value>Tagesübersicht</value>
@@ -274,7 +277,7 @@
     <value>Freitag</value>
   </data>
   <data name="TodoPageTitle" xml:space="preserve">
-    <value>Aufgaben</value>
+    <value>To-dos</value>
   </data>
   <data name="TodoLoading" xml:space="preserve">
     <value>Aufgaben werden geladen...</value>
@@ -516,9 +519,6 @@
   <data name="ReportEntryToday" xml:space="preserve">
     <value>Heute</value>
   </data>
-  <data name="WeeklyOverviewCurrentWeek" xml:space="preserve">
-    <value>Diese Woche</value>
-  </data>
   <data name="ProfilePageTitle" xml:space="preserve">
     <value>Profil und Stammdaten</value>
   </data>
@@ -621,28 +621,76 @@
   <data name="ReportEntryPrepareDailyEmail" xml:space="preserve">
     <value>Tagesbericht per E-Mail senden</value>
   </data>
-  <data name="ErrorPasswordMismatch" xml:space="preserve">
-    <value>Die Passwörter stimmen nicht überein.</value>
+  <data name="AccountRole" xml:space="preserve">
+    <value>Rolle</value>
   </data>
-  <data name="ErrorPasswordShort" xml:space="preserve">
-    <value>Das Passwort muss mindestens 8 Zeichen lang sein.</value>
+  <data name="RoleAzubi" xml:space="preserve">
+    <value>Azubi</value>
   </data>
-  <data name="ErrorPasswordWeak" xml:space="preserve">
-    <value>Das Passwort ist zu schwach. Verwende Groß-/Kleinbuchstaben und Zahlen.</value>
+  <data name="RoleKlassensprecher" xml:space="preserve">
+    <value>Klassensprecher</value>
   </data>
-  <data name="ErrorDuplicateEmail" xml:space="preserve">
-    <value>Diese E-Mail-Adresse ist bereits registriert.</value>
+  <data name="AccountSchool" xml:space="preserve">
+    <value>Schule</value>
   </data>
-  <data name="ErrorMissingFields" xml:space="preserve">
-    <value>Bitte fülle alle Pflichtfelder aus.</value>
+  <data name="AccountSchoolPlaceholder" xml:space="preserve">
+    <value>z.B. Berufskolleg Musterstadt</value>
   </data>
-  <data name="ErrorLoginInvalid" xml:space="preserve">
-    <value>E-Mail oder Passwort ist falsch.</value>
+  <data name="AccountClassName" xml:space="preserve">
+    <value>Klasse</value>
   </data>
-  <data name="ErrorLoginLocked" xml:space="preserve">
-    <value>Dein Konto wurde vorübergehend gesperrt. Versuche es später erneut.</value>
+  <data name="AccountClassNamePlaceholder" xml:space="preserve">
+    <value>z.B. IT10a</value>
   </data>
-  <data name="AccountRegistered" xml:space="preserve">
-    <value>Registrierung erfolgreich! Du kannst dich jetzt anmelden.</value>
+  <data name="TimetableManagementTitle" xml:space="preserve">
+    <value>Stundenplan verwalten</value>
+  </data>
+  <data name="TimetableManagementIntro" xml:space="preserve">
+    <value>Hier kannst du den Stundenplan f&#xFC;r deine Klasse erstellen und verwalten.</value>
+  </data>
+  <data name="TimetableSubjectsPlaceholder" xml:space="preserve">
+    <value>F&#xE4;cher kommagetrennt eingeben (z.B. EVPR, ITDL, SWDM, WBL)</value>
+  </data>
+  <data name="TimetableSave" xml:space="preserve">
+    <value>Stundenplan speichern</value>
+  </data>
+  <data name="TimetableSaved" xml:space="preserve">
+    <value>Stundenplan wurde gespeichert.</value>
+  </data>
+  <data name="TimetableSaveFailed" xml:space="preserve">
+    <value>Stundenplan konnte nicht gespeichert werden.</value>
+  </data>
+  <data name="TimetableNoSchoolDay" xml:space="preserve">
+    <value>Kein Schultag</value>
+  </data>
+  <data name="TimetableCancelled" xml:space="preserve">
+    <value>Entf&#xE4;llt</value>
+  </data>
+  <data name="TimetableCancelSubject" xml:space="preserve">
+    <value>Fach als entfallen markieren</value>
+  </data>
+  <data name="TimetableCancelReason" xml:space="preserve">
+    <value>Grund (optional)</value>
+  </data>
+  <data name="TimetableNavItem" xml:space="preserve">
+    <value>Stundenplan</value>
+  </data>
+  <data name="TimetableSchoolDayInfo" xml:space="preserve">
+    <value>Berufsschultag</value>
+  </data>
+  <data name="TimetableSubjectDescription" xml:space="preserve">
+    <value>Was hast du in diesem Fach gemacht?</value>
+  </data>
+  <data name="TimetableCancellations" xml:space="preserve">
+    <value>Ausf&#xE4;lle verwalten</value>
+  </data>
+  <data name="TimetableCancellationDate" xml:space="preserve">
+    <value>Datum</value>
+  </data>
+  <data name="TimetableCancellationAdd" xml:space="preserve">
+    <value>Ausfall hinzuf&#xFC;gen</value>
+  </data>
+  <data name="TimetableCancellationRemove" xml:space="preserve">
+    <value>Ausfall entfernen</value>
   </data>
 </root>

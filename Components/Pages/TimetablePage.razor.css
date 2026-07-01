@@ -1,0 +1,375 @@
+.timetable-header-badge {
+    align-items: flex-end;
+    display: grid;
+    gap: 0.15rem;
+    justify-items: end;
+}
+
+.timetable-header-badge strong {
+    color: var(--app-text);
+    font-size: 1.15rem;
+    font-weight: 820;
+}
+
+.timetable-header-badge span {
+    color: var(--app-text-muted);
+    font-size: 0.8rem;
+}
+
+.timetable-day-tabs {
+    display: flex;
+    gap: 0.35rem;
+    border-bottom: 1px solid var(--app-border);
+    padding-bottom: 0;
+    overflow-x: auto;
+}
+
+.timetable-tab {
+    align-items: center;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--app-text-muted);
+    cursor: pointer;
+    display: flex;
+    font-size: 0.9rem;
+    font-weight: 600;
+    gap: 0.4rem;
+    padding: 0.75rem 1rem;
+    transition: color 150ms ease, border-color 150ms ease;
+    white-space: nowrap;
+}
+
+.timetable-tab:hover {
+    color: var(--app-text);
+}
+
+.timetable-tab.is-active {
+    border-bottom-color: var(--app-primary);
+    color: var(--app-primary);
+    font-weight: 700;
+}
+
+.timetable-tab.has-status {
+    color: #dc2626;
+}
+
+.timetable-tab.has-status.is-active {
+    border-bottom-color: #dc2626;
+}
+
+.timetable-tab-count {
+    background: color-mix(in srgb, var(--app-primary) 15%, var(--app-surface));
+    border-radius: 999px;
+    color: var(--app-primary);
+    font-size: 0.72rem;
+    font-weight: 760;
+    min-width: 1.4rem;
+    padding: 0.15rem 0.4rem;
+    text-align: center;
+}
+
+.timetable-tab-status {
+    background: color-mix(in srgb, #dc2626 12%, var(--app-surface));
+    border-radius: 999px;
+    color: #dc2626;
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 0.15rem 0.45rem;
+}
+
+.timetable-tab-short {
+    display: none;
+}
+
+.timetable-day-content {
+    display: grid;
+    gap: 1rem;
+    padding: 1rem 0 0;
+}
+
+.timetable-day-content-header {
+    align-items: center;
+    display: flex;
+    gap: 0.75rem;
+    justify-content: space-between;
+}
+
+.timetable-day-content-header h3 {
+    font-size: 1.05rem;
+    font-weight: 720;
+    margin: 0;
+}
+
+.timetable-day-status-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.timetable-day-status-label {
+    color: var(--app-text-muted);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.timetable-status-options {
+    display: flex;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+}
+
+.timetable-status-btn {
+    background: var(--app-bg);
+    border: 1px solid var(--app-border);
+    border-radius: 999px;
+    color: var(--app-text-muted);
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.4rem 0.85rem;
+    transition: all 150ms ease;
+}
+
+.timetable-status-btn:hover {
+    border-color: var(--app-text-muted);
+    color: var(--app-text);
+}
+
+.timetable-status-btn.is-active {
+    background: color-mix(in srgb, var(--app-primary) 12%, var(--app-surface));
+    border-color: var(--app-primary);
+    color: var(--app-primary);
+    font-weight: 700;
+}
+
+.timetable-status-btn.status-krank.is-active {
+    background: color-mix(in srgb, #dc2626 10%, var(--app-surface));
+    border-color: #dc2626;
+    color: #dc2626;
+}
+
+.timetable-status-btn.status-urlaub.is-active {
+    background: color-mix(in srgb, #2563eb 10%, var(--app-surface));
+    border-color: #2563eb;
+    color: #2563eb;
+}
+
+.timetable-status-btn.status-betrieb.is-active {
+    background: color-mix(in srgb, #d97706 10%, var(--app-surface));
+    border-color: #d97706;
+    color: #d97706;
+}
+
+.timetable-status-btn.status-feiertag.is-active {
+    background: color-mix(in srgb, #7c3aed 10%, var(--app-surface));
+    border-color: #7c3aed;
+    color: #7c3aed;
+}
+
+.timetable-day-status-notice {
+    background: color-mix(in srgb, #dc2626 6%, var(--app-bg));
+    border: 1px solid color-mix(in srgb, #dc2626 25%, transparent);
+    border-radius: 8px;
+    color: #dc2626;
+    font-size: 0.88rem;
+    padding: 0.65rem 1rem;
+}
+
+.timetable-day-status-notice strong {
+    font-weight: 700;
+}
+
+.timetable-day-status-notice span {
+    color: var(--app-text-muted);
+}
+
+.timetable-subject-list {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.timetable-subject-item {
+    align-items: start;
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: auto 1fr auto;
+    padding: 0.65rem 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--app-border) 40%, transparent);
+    transition: opacity 150ms ease;
+}
+
+.timetable-subject-item:last-child {
+    border-bottom: none;
+}
+
+.timetable-subject-item.is-cancelled {
+    opacity: 0.5;
+}
+
+.timetable-subject-item.is-cancelled .timetable-subject-fields .form-control {
+    text-decoration: line-through;
+}
+
+.timetable-subject-index {
+    align-items: center;
+    background: color-mix(in srgb, var(--app-primary) 10%, var(--app-surface));
+    border-radius: 50%;
+    color: var(--app-primary);
+    display: flex;
+    font-size: 0.78rem;
+    font-weight: 760;
+    height: 1.8rem;
+    justify-content: center;
+    margin-top: 0.4rem;
+    width: 1.8rem;
+}
+
+.timetable-subject-item.is-cancelled .timetable-subject-index {
+    background: color-mix(in srgb, #dc2626 10%, var(--app-surface));
+    color: #dc2626;
+}
+
+.timetable-subject-fields {
+    display: grid;
+    gap: 0.4rem;
+    grid-template-columns: 1fr 1fr 0.8fr;
+}
+
+.timetable-subject-actions {
+    display: flex;
+    align-items: start;
+    gap: 0.35rem;
+    margin-top: 0.3rem;
+}
+
+.btn-entfall {
+    background: var(--app-bg);
+    border: 1px solid var(--app-border);
+    border-radius: 999px;
+    color: var(--app-text-muted);
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.35rem 0.7rem;
+    transition: all 150ms ease;
+    white-space: nowrap;
+}
+
+.btn-entfall:hover {
+    border-color: #dc2626;
+    color: #dc2626;
+}
+
+.btn-entfall.is-active {
+    background: color-mix(in srgb, #dc2626 10%, var(--app-surface));
+    border-color: #dc2626;
+    color: #dc2626;
+    font-weight: 700;
+}
+
+.btn-entfall:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+}
+
+.btn-icon-danger {
+    align-items: center;
+    background: transparent;
+    border: 1px solid color-mix(in srgb, #ef4444 40%, transparent);
+    border-radius: 50%;
+    color: #ef4444;
+    cursor: pointer;
+    display: flex;
+    font-size: 1.1rem;
+    height: 2rem;
+    justify-content: center;
+    transition: background 150ms ease;
+    width: 2rem;
+}
+
+.btn-icon-danger:hover {
+    background: color-mix(in srgb, #ef4444 10%, var(--app-surface));
+}
+
+.timetable-add-btn {
+    justify-self: start;
+}
+
+.timetable-empty-state {
+    background: color-mix(in srgb, var(--app-border) 12%, var(--app-bg));
+    border: 1px dashed color-mix(in srgb, var(--app-border) 60%, transparent);
+    border-radius: 10px;
+    display: grid;
+    gap: 0.25rem;
+    justify-items: center;
+    padding: 2rem 1rem;
+    text-align: center;
+}
+
+.timetable-empty-state span {
+    color: var(--app-text-muted);
+    font-size: 0.88rem;
+}
+
+.timetable-actions {
+    border-top: 1px solid color-mix(in srgb, var(--app-border) 58%, transparent);
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 1rem;
+}
+
+@media (max-width: 640px) {
+    .timetable-tab-full {
+        display: none;
+    }
+
+    .timetable-tab-short {
+        display: inline;
+    }
+
+    .timetable-subject-fields {
+        grid-template-columns: 1fr;
+    }
+
+    .timetable-subject-item {
+        grid-template-columns: auto 1fr;
+    }
+
+    .timetable-subject-actions {
+        grid-column: 1 / -1;
+        justify-content: flex-end;
+    }
+
+    .timetable-day-tabs {
+        gap: 0;
+    }
+
+    .timetable-tab {
+        flex: 1;
+        justify-content: center;
+        padding: 0.7rem 0.5rem;
+    }
+
+    .timetable-actions .btn {
+        width: 100%;
+    }
+
+    .timetable-day-status-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .timetable-status-options {
+        flex-wrap: wrap;
+    }
+
+    .timetable-header-badge {
+        justify-items: start;
+    }
+
+    .timetable-tab-status {
+        display: none;
+    }
+}
