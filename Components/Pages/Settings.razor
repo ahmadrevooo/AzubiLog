@@ -79,7 +79,6 @@ else
                         <ValidationMessage For="() => Profile.ClassName" />
                     </label>
                     <label>
-                    <label>
                         <span>PDF-Akzentfarbe</span>
                         <div class="profile-color-picker">
                             <input type="color" class="profile-color-input" value="@Profile.PdfAccentColor" @onchange="HandleColorChanged" />
@@ -87,6 +86,7 @@ else
                         </div>
                         <ValidationMessage For="() => Profile.PdfAccentColor" />
                     </label>
+                    <label>
                         <span>@Localizer["ProfileWeeklyTargetHours"] *</span>
                         <InputNumber class="form-control" @bind-Value="Profile.WeeklyTargetHours" />
                         <ValidationMessage For="() => Profile.WeeklyTargetHours" />
