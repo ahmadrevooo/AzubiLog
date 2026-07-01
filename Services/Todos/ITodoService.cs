@@ -7,5 +7,6 @@ public interface ITodoService
     Task<int> GetOpenTodoCountAsync(CancellationToken cancellationToken = default);
     Task CreateTodoAsync(TodoFormModel form, CancellationToken cancellationToken = default);
     Task CompleteTodoAsync(int todoId, CancellationToken cancellationToken = default);
+    Task ReopenTodoAsync(int todoId, CancellationToken cancellationToken = default);
     Task DeleteTodoAsync(int todoId, CancellationToken cancellationToken = default);
 }
