@@ -44,11 +44,11 @@
             <button class="app-navbar__theme-toggle" type="button" title="@(CurrentTheme == "dark" ? "Light Mode" : "Dark Mode")" @onclick="ToggleThemeAsync">
                 @if (CurrentTheme == "dark")
                 {
-                    <span class="bi bi-sun" aria-hidden="true"></span>
+                    <span aria-hidden="true">&#9788;</span>
                 }
                 else
                 {
-                    <span class="bi bi-moon" aria-hidden="true"></span>
+                    <span aria-hidden="true">&#9790;</span>
                 }
             </button>
             <AuthorizeView>
@@ -87,6 +87,9 @@
                     }
                 }
                 <div class="app-navbar__mobile-meta">
+                    <button class="app-navbar__mobile-link" type="button" @onclick="ToggleThemeAsync">
+                        @(CurrentTheme == "dark" ? "Light Mode" : "Dark Mode")
+                    </button>
                     <AuthorizeView>
                         <Authorized>
                             <a class="app-navbar__account-link app-navbar__account-link--mobile" href="/account/logout" @onclick="CloseMenuAsync">@Localizer["AccountLogoutAction"]</a>
