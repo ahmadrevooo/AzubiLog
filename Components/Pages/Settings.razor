@@ -78,11 +78,6 @@ else
                         <InputText class="form-control" @bind-Value="Profile.ClassName" />
                         <ValidationMessage For="() => Profile.ClassName" />
                     </label>
-                    <label class="profile-grid-wide">
-                        <span>@Localizer["ProfileSubjects"]</span>
-                        <InputTextArea class="form-control profile-subjects" @bind-Value="Profile.Subjects" />
-                        <ValidationMessage For="() => Profile.Subjects" />
-                    </label>
                     <label>
                         <span>@Localizer["ProfileWeeklyTargetHours"] *</span>
                         <InputNumber class="form-control" @bind-Value="Profile.WeeklyTargetHours" />
