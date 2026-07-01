@@ -2,8 +2,8 @@
     display: grid;
     gap: 1.35rem;
     margin-inline: auto;
-    max-width: 72rem;
-    padding: 1rem 0 2.5rem;
+    max-width: 82rem;
+    padding: 1.75rem 0 2.5rem;
 }
 
 .todos-page-loading {
@@ -37,17 +37,21 @@
 .todos-grid {
     align-items: start;
     display: grid;
-    gap: 1.15rem;
-    grid-template-columns: minmax(18rem, 0.8fr) minmax(0, 1fr);
+    gap: 1.35rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .todo-create-card {
-    background: var(--app-surface);
+    background:
+        linear-gradient(180deg, color-mix(in srgb, var(--app-accent-green-soft) 18%, var(--app-surface)), var(--app-surface) 54%),
+        var(--app-surface);
     border: 1px solid color-mix(in srgb, var(--app-accent-green) 64%, var(--app-border));
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+    display: grid;
     min-width: 0;
-    padding: 1.5rem;
+    min-height: 28rem;
+    padding: 1.45rem;
     transition:
         background-color 150ms ease,
         border-color 150ms ease,
@@ -58,7 +62,7 @@
 
 .todo-create-form {
     display: grid;
-    gap: 1.1rem;
+    gap: 1rem;
 }
 
 .todo-create-heading {
@@ -108,11 +112,11 @@
     border-color: color-mix(in srgb, var(--app-border) 82%, transparent);
     border-radius: 8px;
     color: var(--app-text);
-    min-height: 2.55rem;
+    min-height: 2.65rem;
 }
 
 .todo-field textarea.form-control {
-    min-height: 8rem;
+    min-height: 8.4rem;
     resize: vertical;
 }
 
@@ -141,16 +145,29 @@
 .todos-grid ::deep .todo-list-panel {
     --todo-panel-accent: var(--app-accent-blue);
     --todo-panel-soft: var(--app-accent-blue-soft);
+    min-height: 28rem;
 }
 
-.todos-grid ::deep .todo-list-panel:first-of-type {
-    grid-column: 2;
-}
-
-.todos-grid ::deep .todo-list-panel:last-of-type {
+.todos-grid ::deep .todo-list-panel:nth-of-type(3) {
     --todo-panel-accent: var(--app-accent-orange);
     --todo-panel-soft: var(--app-accent-orange-soft);
-    grid-column: 1 / -1;
+}
+
+.todos-grid ::deep .todo-list-panel:nth-of-type(3) .todo-list-empty-icon::before {
+    border: 0.16rem solid currentColor;
+    border-radius: 999px;
+    height: 1.2rem;
+    width: 1.2rem;
+}
+
+.todos-grid ::deep .todo-list-panel:nth-of-type(3) .todo-list-empty-icon::after {
+    background: transparent;
+    border-bottom: 0.16rem solid currentColor;
+    border-right: 0.16rem solid currentColor;
+    border-radius: 0;
+    height: 0.7rem;
+    transform: rotate(45deg);
+    width: 0.38rem;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -170,10 +187,5 @@
 @media (max-width: 860px) {
     .todos-grid {
         grid-template-columns: 1fr;
-    }
-
-    .todos-grid ::deep .todo-list-panel:first-of-type,
-    .todos-grid ::deep .todo-list-panel:last-of-type {
-        grid-column: auto;
     }
 }
