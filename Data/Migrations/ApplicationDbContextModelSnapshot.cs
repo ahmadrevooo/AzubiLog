@@ -550,10 +550,10 @@ namespace AzubiLog.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("AzubiLog.Models.Category", b =>
+            modelBuilder.Entity("AzubiLog.Models.CalendarDayMarker", b =>
                 {
                     b.HasOne("AzubiLog.Models.ApplicationUser", "User")
-                        .WithMany("Categories")
+                        .WithMany("CalendarDayMarkers")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

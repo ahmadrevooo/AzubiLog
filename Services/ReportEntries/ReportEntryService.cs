@@ -967,15 +967,15 @@ public class ReportEntryService(
 
         if (!string.IsNullOrWhiteSpace(trainerName))
         {
-            // lines.Add($"Ausbilder: {trainerName}");
+            lines.Add($"Ausbilder: {trainerName}");
         }
 
         lines.AddRange(
         [
             string.Empty,
-        "Einträge",
-        separator,
-        string.Empty
+            "Einträge",
+            separator,
+            string.Empty
         ]);
 
         if (summary.Entries.Count == 0)
@@ -988,7 +988,7 @@ public class ReportEntryService(
             {
                 lines.Add(entry.TimeRange);
                 lines.Add($"Dauer: {entry.Hours:0.##} h");
-                //lines.Add("");
+
                 lines.Add($"Tätigkeit: {entry.Title}");
                 lines.Add($"Beschreibung: {entry.DescriptionPreview}");
                 lines.Add(string.Empty);

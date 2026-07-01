@@ -248,16 +248,6 @@
     [Parameter]
     public EventCallback OnDelete { get; set; }
 
-    private static readonly IReadOnlyList<OrderNumberOption> OrderNumberOptions =
-    [
-        new("BETRIEB", "Betrieb"),
-        new("SCHULE", "Berufsschule"),
-        new("URLAUB", "Urlaub"),
-        new("KRANK", "Krankheit"),
-        new("ÜBERSTUNDEN", "Überstunden"),
-        new("SONSTIGES", "Sonstiges")
-    ];
-
     private string NewCategoryName { get; set; } = string.Empty;
     private bool IsCategoryCreatorOpen { get; set; }
     private bool IsNoteOpen { get; set; }
@@ -417,18 +407,6 @@
 
     private Task CategoryChangedAsync()
     {
-        if (!Model.IsOrderNumberOverridden)
-        {
-            var categoryName = Categories.FirstOrDefault(category => category.Id == Model.CategoryId)?.Name;
-            Model.OrderNumber = GetDefaultOrderNumber(categoryName);
-        }
-
-        return FieldChangedAsync();
-    }
-
-    private Task OrderNumberChangedAsync()
-    {
-        Model.IsOrderNumberOverridden = true;
         return FieldChangedAsync();
     }
 
@@ -563,5 +541,4 @@
         return stepped.ToString("hh\\:mm", CultureInfo.InvariantCulture);
     }
 
-    private sealed record OrderNumberOption(string Code, string Label);
 }
