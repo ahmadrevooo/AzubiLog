@@ -669,6 +669,27 @@ h1:focus {
     }
 }
 
+@media (min-width: 641px) {
+    .app-navbar__inner {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+    }
+
+    .app-navbar__brand {
+        justify-self: start;
+    }
+
+    .app-navbar__desktop-nav {
+        justify-self: center;
+    }
+
+    .app-navbar__actions {
+        justify-self: end;
+        margin-left: 0;
+    }
+}
+
 @media (max-width: 640.98px) {
     .app-navbar__actions > .app-navbar__account-link {
         display: none;
